@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trading With Leverage Without Blowing Up — Module 25</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:1px;}
+  .toc a{display:flex; gap:8px; align-items:baseline; color:var(--ink-soft); font-size:13.5px; padding:6px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:46px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:50px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:30px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16px; margin:0 0 24px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:20px; margin:30px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:26px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:16px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:18px 0; font-size:14px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:8px 10px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:22px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:16px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:16px;}
+  .card p{font-size:13.5px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 25</div>
+    <p class="toc-title">Trading With Leverage<br>Without Blowing Up</p>
+    <ol>
+      <li><a href="#why-kills">Why Leverage Kills New Traders</a></li>
+      <li><a href="#leverage-margin">Leverage and Margin</a></li>
+      <li><a href="#global-landscape">The Global Leverage Landscape</a></li>
+      <li><a href="#margin-call">The Margin Call Isn't What You Think</a></li>
+      <li><a href="#effective-leverage">Effective vs. Offered Leverage</a></li>
+      <li><a href="#six-myths">Six Leverage Myths</a></li>
+      <li><a href="#prop-firms-leverage">Prop Firms: Same Risk, New Path</a></li>
+      <li><a href="#use-leverage-safely">Using Leverage Without Blowing Up</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 25 of the Trading Curriculum</div>
+      <h1>Trading With Leverage Without Blowing Up</h1>
+      <p class="lede">Leverage is the reason most traders blow their first account. Most know it exists, but few understand why it's so destructive. This module covers what leverage actually does to your account, what regulators have done to limit it, the myths that make it dangerous, and a framework for using it safely.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="50" width="30" height="8" fill="#1E7B4D"/>
+        <rect x="20" y="36" width="60" height="8" fill="#A8772E"/>
+        <rect x="20" y="22" width="120" height="8" fill="#B23A2E"/>
+        <rect x="20" y="8" width="240" height="8" fill="#B23A2E"/>
+        <text x="270" y="15" font-family="JetBrains Mono" font-size="9" fill="#B23A2E">leverage amplifies both ways</text>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="why-kills">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>Why Leverage Kills Most New Traders</h2>
+      <p class="dek">Not because of bad strategy or bad luck — because of a tool handed over without explanation.</p>
+      <p>Leverage lets you control a position larger than your actual account balance by borrowing the difference from your broker. This amplifies both gains and losses proportionally — a 1% adverse move on a position 50 times your account size is a 50% loss on your actual capital. Most new traders use leverage near the maximum offered without understanding this multiplier effect, turning ordinary, survivable market noise into account-ending moves.</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="leverage-margin">
+      <div class="lesson-kicker"><span class="num">02</span> Mechanics</div>
+      <h2>Leverage and Margin: What's Actually Happening in Your Account</h2>
+      <p class="dek">Mixing the two up is one of the fastest ways to misread your account.</p>
+      <table class="ref">
+        <tr><th>Term</th><th>What it means</th></tr>
+        <tr><td>Leverage</td><td>The ratio between position size and required capital (e.g. 30:1)</td></tr>
+        <tr><td>Margin</td><td>The actual capital set aside as collateral to open and hold a leveraged position</td></tr>
+        <tr><td>Free margin</td><td>Account equity not currently tied up as margin on open positions</td></tr>
+        <tr><td>Margin level</td><td>Equity divided by used margin, expressed as a percentage — the key number brokers monitor</td></tr>
+      </table>
+      <div class="figure">
+        <svg viewBox="0 0 760 110" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="110" fill="#FFFFFF"/>
+          <text x="380" y="55" text-anchor="middle" font-family="JetBrains Mono" font-size="14" fill="#1C2024">Leverage = Position Size ÷ Margin Required</text>
+        </svg>
+        <figcaption>Fig. 1 — The defining relationship between leverage and margin.</figcaption>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="global-landscape">
+      <div class="lesson-kicker"><span class="num">03</span> Regulation</div>
+      <h2>The Global Leverage Landscape: What You're Actually Allowed to Use</h2>
+      <p class="dek">The 1000:1 leverage world is mostly gone for retail traders in major regulated markets.</p>
+      <p>Following widespread retail losses, major regulators in the EU, UK, US, and Australia introduced leverage caps for retail forex accounts — commonly in the range of 30:1 or lower for major currency pairs, with tighter limits for more volatile instruments. Offshore, less-regulated brokers may still advertise far higher leverage, which is itself a signal worth treating with caution rather than excitement (Module 27 on broker scams revisits this).</p>
+      <div class="warn"><strong>What this regulatory shift reflects:</strong> the cap exists specifically because regulators observed how reliably extreme leverage destroyed retail accounts — it's a response to documented harm, not an arbitrary restriction.</div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="margin-call">
+      <div class="lesson-kicker"><span class="num">04</span> A Common Misunderstanding</div>
+      <h2>The Margin Call Isn't What You Think It Is</h2>
+      <p class="dek">A margin call is a warning. The stop-out is what actually closes your positions.</p>
+      <table class="ref">
+        <tr><th>Event</th><th>What actually happens</th></tr>
+        <tr><td>Margin call</td><td>A warning that margin level has fallen below a threshold — typically just a notification, not an automatic closure</td></tr>
+        <tr><td>Stop-out</td><td>The broker automatically force-closes positions once margin level falls to a lower, critical threshold</td></tr>
+      </table>
+      <div class="warn"><strong>The dangerous misconception:</strong> assuming you'll always see and react to a margin call before anything closes. In a fast-moving market, price can blow through both the margin call and stop-out thresholds before you've had any chance to respond.</div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="effective-leverage">
+      <div class="lesson-kicker"><span class="num">05</span> The Real Number</div>
+      <h2>Effective Leverage vs. Offered Leverage: The Number That Actually Matters</h2>
+      <p class="dek">Your broker advertises 30:1 — that's not the leverage you're actually using.</p>
+      <p>Offered leverage is the maximum ratio your broker permits. Effective leverage is the ratio you are actually using, based on your real position size relative to your account equity — and it's entirely within your control regardless of what your broker offers.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 110" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="110" fill="#FFFFFF"/>
+          <text x="380" y="55" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#1C2024">Effective Leverage = Total Position Size ÷ Account Equity</text>
+        </svg>
+        <figcaption>Fig. 2 — Calculate this number yourself for every open position — it's the one that determines your actual risk.</figcaption>
+      </div>
+      <p>A trader with a $10,000 account and a $20,000 total open position is using 2:1 effective leverage — regardless of whether their broker offers 30:1 or 500:1. The gap between offered and effective leverage is entirely a matter of choice.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="six-myths">
+      <div class="lesson-kicker"><span class="num">06</span> Common Misconceptions</div>
+      <h2>Six Leverage Myths That Destroy Accounts</h2>
+      <p class="dek">Leverage hurts traders through bad beliefs as much as bad luck.</p>
+      <div class="grid-cards">
+        <div class="card"><span class="tag">Myth 1</span><h4>"Higher leverage means higher risk automatically"</h4><p>Effective leverage (lesson 5), not offered leverage, determines actual risk.</p></div>
+        <div class="card"><span class="tag">Myth 2</span><h4>"I'll see the margin call in time"</h4><p>Fast markets can blow through both thresholds before any reaction is possible (lesson 4).</p></div>
+        <div class="card"><span class="tag">Myth 3</span><h4>"More leverage means more profit potential"</h4><p>It amplifies both outcomes equally — there's no asymmetric upside.</p></div>
+        <div class="card"><span class="tag">Myth 4</span><h4>"Using max leverage shows confidence"</h4><p>It reflects risk tolerance or inexperience, not skill or conviction.</p></div>
+        <div class="card"><span class="tag">Myth 5</span><h4>"Stop losses make high leverage safe"</h4><p>Slippage and gaps (Module 23/26) mean stops don't always execute at the intended price.</p></div>
+        <div class="card"><span class="tag">Myth 6</span><h4>"Leverage caps don't apply to skilled traders"</h4><p>Skill affects edge, not the math of how leverage amplifies any given move.</p></div>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="prop-firms-leverage">
+      <div class="lesson-kicker"><span class="num">07</span> A Modern Variant</div>
+      <h2>Prop Firms and Funded Accounts: A New Path, Same Risk</h2>
+      <p class="dek">A small entry fee, high leverage, and a high failure rate.</p>
+      <p>Retail prop firms let traders pay a fee to attempt a funded-account challenge, trading the firm's capital rather than their own once passed. This doesn't remove the leverage dynamics covered in this module — challenge accounts often carry their own strict daily and total drawdown rules, which function much like the stop-out mechanics in lesson 4, just framed around the firm's specific challenge terms. Module 28 covers prop firms in full depth.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="lesson" id="use-leverage-safely">
+      <div class="lesson-kicker"><span class="num">08</span> A Practical Framework</div>
+      <h2>How to Use Leverage Without Blowing Your Account</h2>
+      <p class="dek">Specific numbers, actual formulas, a framework for every trade.</p>
+      <ol>
+        <li><strong>Calculate position size from your risk percentage first</strong> (Module 24), not from your maximum available leverage.</li>
+        <li><strong>Check your effective leverage</strong> (lesson 5) after sizing — if it's uncomfortably high relative to your risk tolerance (Module 23), reduce position size rather than your stop distance.</li>
+        <li><strong>Keep a meaningful margin buffer.</strong> Never size a position so large that a routine, expected pullback risks triggering a margin call.</li>
+        <li><strong>Treat the stop-out level as a worst-case backstop, never a plan.</strong> Your own stop-loss should always trigger well before the broker's mechanism would ever need to.</li>
+      </ol>
+      <div class="callout"><strong>The core reframe:</strong> leverage is a tool for capital efficiency, not a tool for generating outsized returns from a small account. Treating it as the latter is the single most common path to a blown account in this entire curriculum.</div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Trading With Leverage Without Blowing Up</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. What is the key difference between offered leverage and effective leverage?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Offered leverage is your broker's maximum ratio; effective leverage is the ratio you actually use, based on your real position size</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) They are identical and interchangeable terms</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Effective leverage is set entirely by the broker, with no trader input</label>
+        <div class="reveal"><strong>Answer: A.</strong> Effective leverage is within the trader's control, regardless of the maximum the broker permits.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. What is the actual function of a margin call?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) It automatically and immediately closes all open positions</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) It is a warning that margin level has fallen below a threshold — the stop-out, a separate event, is what force-closes positions</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) It guarantees the trader will be notified in time to react before any losses occur</label>
+        <div class="reveal"><strong>Answer: B.</strong> The margin call is a warning; the stop-out is the actual forced closure, and in fast markets both can be breached before a trader can react.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why did major regulators in regions like the EU, UK, and US introduce leverage caps for retail forex accounts?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) In response to documented, widespread retail account losses linked to extreme leverage</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) To make trading more difficult for no particular reason</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Leverage caps only exist in unregulated offshore markets</label>
+        <div class="reveal"><strong>Answer: A.</strong> The caps reflect a regulatory response to observed harm from excessive retail leverage use, not an arbitrary restriction.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. Why is "more leverage means more profit potential" considered a myth?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) Leverage amplifies both gains and losses proportionally — there's no asymmetric upside</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Leverage only amplifies gains, never losses</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Leverage has no effect on potential profit or loss</label>
+        <div class="reveal"><strong>Answer: A.</strong> Leverage is a symmetric multiplier on both outcomes, not a one-sided enhancement of profit potential.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. According to the practical framework in this module, what should determine position size first?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) The maximum leverage the broker offers</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) The trader's chosen risk percentage from Module 24, with leverage checked afterward</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Whatever lot size feels intuitively comfortable that day</label>
+        <div class="reveal"><strong>Answer: B.</strong> Sizing from the risk percentage first, then checking the resulting effective leverage, keeps risk the primary driver rather than available leverage.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 25 — TRADING WITH LEVERAGE WITHOUT BLOWING UP · NEXT MODULE: POSITION SIZING FOR ACCOUNT SURVIVAL
+    </footer>
+  </main>
+</div>
+</body>
+</html>

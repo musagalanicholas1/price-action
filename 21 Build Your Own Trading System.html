@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Your Own Trading System — Module 21</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:48px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 21</div>
+    <p class="toc-title">Build Your Own<br>Trading System</p>
+    <ol>
+      <li><a href="#what-is-system">What Is a Trading System?</a></li>
+      <li><a href="#five-step">The 5-Step Design Framework</a></li>
+      <li><a href="#testing">Test Before Risking Real Money</a></li>
+      <li><a href="#pullback-system">A System in Action: Pullback</a></li>
+      <li><a href="#stick-or-adjust">Stick With It or Adjust?</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 21 of the Trading Curriculum</div>
+      <h1>Build Your Own Trading System</h1>
+      <p class="lede">Most traders spend years copying systems that don't fit them, tweaking indicators they don't understand, and abandoning strategies too soon. Learn how to build a trading system you can test, verify, and stick with through losing streaks.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <g font-family="JetBrains Mono" font-size="10" fill="#1C2024">
+          <rect x="10" y="20" width="120" height="24" rx="4" fill="#E3EFEE" stroke="#1F5F5B"/>
+          <rect x="160" y="20" width="120" height="24" rx="4" fill="#F1E6D2" stroke="#A8772E"/>
+          <rect x="310" y="20" width="120" height="24" rx="4" fill="#FBEAE7" stroke="#B23A2E"/>
+          <rect x="460" y="20" width="120" height="24" rx="4" fill="#E3F2E9" stroke="#1E7B4D"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-system">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Is A Trading System? And What Kind Should You Build?</h2>
+      <p class="dek">Why most traders misunderstand what a trading system actually is.</p>
+
+      <p>A trading system is a specific, objective, rule-based method for entering and exiting trades — distinct from the broader trading plan (Module 19), which governs your overall approach including risk, mindset, and review. Many beginners conflate "system" with "indicator setup," but a complete system specifies entries, exits, and risk rules together as one coherent unit.</p>
+
+      <table class="ref">
+        <tr><th>System type</th><th>Description</th></tr>
+        <tr><td>Discretionary</td><td>Rules provide a framework, but the trader exercises judgment on each individual decision within it</td></tr>
+        <tr><td>Mechanical/rule-based</td><td>Entry and exit conditions are fully objective, leaving little to no room for in-the-moment judgment</td></tr>
+        <tr><td>Hybrid</td><td>Objective criteria filter candidates, with discretionary judgment applied only to a narrower final decision</td></tr>
+      </table>
+
+      <div class="callout"><strong>Which to build first:</strong> beginners typically benefit from starting closer to the mechanical end of the spectrum — it's easier to test, easier to review against your journal (Module 22), and removes more emotional decision-making at the exact moments emotion is most likely to cause errors.</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="five-step">
+      <div class="lesson-kicker"><span class="num">02</span> Framework</div>
+      <h2>How to Design Your Trading System: The 5-Step Framework</h2>
+      <p class="dek">Five questions every system needs to answer before a single trade is taken.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="250" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" fill="#1C2024">
+            <rect x="20" y="10" width="720" height="38" rx="6" fill="#E3EFEE" stroke="#1F5F5B"/><text x="40" y="34" fill="#1F5F5B">1. WHAT MARKET &amp; ENVIRONMENT does this system trade? (Module 03)</text>
+            <rect x="20" y="58" width="720" height="38" rx="6" fill="#F1E6D2" stroke="#A8772E"/><text x="40" y="82" fill="#A8772E">2. WHAT EXACT CONDITION defines a valid entry signal?</text>
+            <rect x="20" y="106" width="720" height="38" rx="6" fill="#FCFBF9" stroke="#E1DDD3"/><text x="40" y="130" fill="#4A5159">3. WHERE EXACTLY does the stop-loss go? (Module 23)</text>
+            <rect x="20" y="154" width="720" height="38" rx="6" fill="#FBEAE7" stroke="#B23A2E"/><text x="40" y="178" fill="#B23A2E">4. WHERE EXACTLY does the profit target sit?</text>
+            <rect x="20" y="202" width="720" height="38" rx="6" fill="#E3F2E9" stroke="#1E7B4D"/><text x="40" y="226" fill="#1E7B4D">5. HOW MUCH is risked per trade? (Module 20, 24)</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 1 — The five questions every complete trading system must answer in writing, before the first trade.</figcaption>
+      </div>
+
+      <p>Notice that none of these five questions can be answered with "it depends" or "I'll know it when I see it" in a genuinely mechanical system — each needs a specific, objective, repeatable answer that someone else could follow from your written rules alone.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="testing">
+      <div class="lesson-kicker"><span class="num">03</span> Validation</div>
+      <h2>Test Your System Before You Risk Real Money</h2>
+      <p class="dek">The right testing process, and the mistakes that ruin results.</p>
+
+      <table class="ref">
+        <tr><th>Method</th><th>What it involves</th><th>Best for</th></tr>
+        <tr><td>Backtesting</td><td>Manually or programmatically applying the rules to historical chart data</td><td>An initial, fast read on whether the rules produce a plausible edge</td></tr>
+        <tr><td>Forward testing (demo)</td><td>Running the system in real time on a demo account</td><td>Confirming the rules work under live, unfolding conditions without risking capital</td></tr>
+        <tr><td>Small live testing</td><td>Trading the system with minimal real size</td><td>Confirming execution and psychology hold up with real money on the line</td></tr>
+      </table>
+
+      <h3>Common Testing Mistakes</h3>
+      <ul>
+        <li><strong>Cherry-picking the test sample.</strong> Testing only on a period where the system happened to work well, rather than a representative range of market conditions (trending and ranging, per Module 03).</li>
+        <li><strong>Curve-fitting.</strong> Adjusting rules repeatedly until they perfectly match historical data, producing a system tuned to the past rather than genuinely robust going forward.</li>
+        <li><strong>Too small a sample.</strong> Drawing conclusions from a handful of trades — Module 22 covers the statistical minimum sample size needed before trusting a result.</li>
+        <li><strong>Skipping forward testing entirely.</strong> A backtest alone can't reveal execution issues or how the trader actually behaves watching live, uncertain price action unfold.</li>
+      </ul>
+
+      <div class="warn"><strong>The discipline this requires:</strong> resist the urge to skip straight to live trading once a backtest looks promising — forward testing on a demo account, even briefly, catches a different category of problem entirely.</div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="pullback-system">
+      <div class="lesson-kicker"><span class="num">04</span> Worked Example</div>
+      <h2>A Trading System in Action: The Pullback System</h2>
+      <p class="dek">The 5-step framework, applied with real trade examples and risk rules.</p>
+
+      <p>Applying the five-step framework from lesson 2 to a simple trend-pullback system, building on Module 01's "trend continuation pullback" setup:</p>
+
+      <table class="ref">
+        <tr><th>Question</th><th>Pullback system answer</th></tr>
+        <tr><td>Market/environment</td><td>Trending markets only, confirmed via ADX and structure (Module 03)</td></tr>
+        <tr><td>Entry condition</td><td>Price pulls back to a prior swing point or moving average in the trend direction, then prints a confirming reversal candle</td></tr>
+        <tr><td>Stop-loss</td><td>Just beyond the pullback's extreme swing point</td></tr>
+        <tr><td>Profit target</td><td>The prior swing high/low in the trend direction (Module 01)</td></tr>
+        <tr><td>Risk per trade</td><td>A fixed, pre-determined percentage of account equity (Module 20)</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <polyline points="40,120 110,100 180,110 250,70 320,90 390,40" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="250" cy="70" r="5" fill="#1F5F5B"/><text x="220" y="55" font-family="Inter" font-size="10" fill="#1F5F5B">pullback to prior swing</text>
+          <circle cx="320" cy="90" r="5" fill="#1E7B4D"/><text x="330" y="85" font-family="Inter" font-size="10" fill="#1E7B4D">entry on reversal candle</text>
+        </svg>
+        <figcaption>Fig. 2 — The pullback system's entry logic, applied to a concrete trending chart shape.</figcaption>
+      </div>
+
+      <p>Every component traces back to a specific, named rule from an earlier module — nothing in the system relies on a vague feeling about "looking right."</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="stick-or-adjust">
+      <div class="lesson-kicker"><span class="num">05</span> Long-Term Discipline</div>
+      <h2>Know When to Stick With Your Trading System and When to Adjust It</h2>
+      <p class="dek">Surviving losing streaks, and improving the system without breaking its edge.</p>
+
+      <h3>Distinguishing Drawdown From System Failure</h3>
+      <p>Every real system, even a genuinely profitable one, will experience losing streaks — this is normal statistical variance, not necessarily evidence the system is broken. The honest test: has the market environment the system depends on (lesson 1, e.g. trending conditions for the pullback system) actually disappeared, or is this simply an unlucky run within otherwise normal conditions?</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <polyline points="40,40 100,60 160,50 220,80 280,70 340,100 400,90 460,60 520,50 580,30 640,40 700,20" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <text x="280" y="120" font-family="Inter" font-size="11" fill="#4A5159">Normal drawdown periods are expected within an overall upward-sloping equity curve.</text>
+        </svg>
+        <figcaption>Fig. 3 — A healthy equity curve still has dips — the question is whether the underlying logic still applies.</figcaption>
+      </div>
+
+      <p>Improving a system without breaking it means changing one rule at a time, based on a clear pattern observed across many journaled trades (Module 22) — not a reaction to the most recent one or two losses.</p>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Build Your Own Trading System</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. What distinguishes a complete trading system from a single indicator setup?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) A complete system specifies entries, exits, and risk rules together as one coherent unit</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) They are exactly the same thing</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) A trading system has no relationship to risk management</label>
+        <div class="reveal"><strong>Answer: A.</strong> An indicator alone is just a signal generator; a full system also defines exits and risk rules.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Why is curve-fitting a dangerous testing mistake?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) It produces a system tuned to fit the past perfectly, which doesn't guarantee it will hold up going forward</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Curve-fitting always improves a system's future performance</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Curve-fitting is the same thing as forward testing</label>
+        <div class="reveal"><strong>Answer: A.</strong> Repeatedly adjusting rules to match historical data risks overfitting to noise specific to that data, rather than capturing a genuinely repeatable edge.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why is forward testing on a demo account a useful step even after a promising backtest?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) It catches execution and real-time-decision issues that a historical backtest alone can't reveal</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Forward testing and backtesting are identical processes</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Forward testing is unnecessary if a backtest looks good</label>
+        <div class="reveal"><strong>Answer: A.</strong> Forward testing reveals how the system performs under live, unfolding conditions, including execution issues a backtest can't surface.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. How should a trader distinguish a normal losing streak from genuine system failure?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) By checking whether the market environment the system depends on has actually changed, rather than reacting to recent losses alone</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Any losing streak means the system should be abandoned immediately</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Losing streaks never occur in a genuinely profitable system</label>
+        <div class="reveal"><strong>Answer: A.</strong> Drawdowns are normal statistical variance; the real question is whether the underlying market conditions the system relies on still hold.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 21 — BUILD YOUR OWN TRADING SYSTEM · NEXT MODULE: KEEPING A TRADING JOURNAL
+    </footer>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Applying Macro Fundamentals — Module 08</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:50px; line-height:1.05; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 08</div>
+    <p class="toc-title">Applying Macro<br>Fundamentals</p>
+    <ol>
+      <li><a href="#thesis">Building a Top-Down Trade Thesis</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 08 of the Trading Curriculum</div>
+      <h1>Applying Macro Fundamentals</h1>
+      <p class="lede">This module synthesizes everything covered in Modules 05 through 07 into a structured process for building a top-down fundamental trade thesis on any currency pair.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <g font-family="JetBrains Mono" font-size="10" fill="#1C2024">
+          <rect x="0" y="20" width="100" height="24" rx="4" fill="#E3EFEE" stroke="#1F5F5B"/>
+          <rect x="130" y="20" width="100" height="24" rx="4" fill="#F1E6D2" stroke="#A8772E"/>
+          <rect x="260" y="20" width="100" height="24" rx="4" fill="#FBEAE7" stroke="#B23A2E"/>
+          <rect x="390" y="20" width="100" height="24" rx="4" fill="#E3F2E9" stroke="#1E7B4D"/>
+          <rect x="520" y="20" width="70" height="24" rx="4" fill="#F1E6D2" stroke="#A8772E"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="thesis">
+      <div class="lesson-kicker"><span class="num">01</span> Synthesis</div>
+      <h2>Building a Top-Down Macro Fundamental Trade Thesis</h2>
+      <p class="dek">You've learned macro regimes, central bank behavior, economic data, country risk, and geopolitical shocks. Now connect it all into one repeatable process.</p>
+
+      <p>A fundamental trade thesis is a written, structured argument for why one currency should strengthen or weaken against another over a meaningful horizon — typically weeks to months, not minutes. The five-step process below pulls together every concept from Modules 05–07 in the order they're actually used.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="320" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="12" fill="#1C2024">
+            <rect x="20" y="10" width="720" height="50" rx="6" fill="#E3EFEE" stroke="#1F5F5B"/>
+            <text x="40" y="40" fill="#1F5F5B">STEP 1 — Diagnose each economy's cycle phase and growth/inflation mix (Module 05)</text>
+
+            <rect x="20" y="70" width="720" height="50" rx="6" fill="#F1E6D2" stroke="#A8772E"/>
+            <text x="40" y="100" fill="#A8772E">STEP 2 — Compare central bank policy paths and identify divergence (Module 05)</text>
+
+            <rect x="20" y="130" width="720" height="50" rx="6" fill="#FCFBF9" stroke="#E1DDD3"/>
+            <text x="40" y="160" fill="#4A5159">STEP 3 — Check the data calendar and what's already priced in (Module 06)</text>
+
+            <rect x="20" y="190" width="720" height="50" rx="6" fill="#FBEAE7" stroke="#B23A2E"/>
+            <text x="40" y="220" fill="#B23A2E">STEP 4 — Screen for country risk and geopolitical wildcards (Module 07)</text>
+
+            <rect x="20" y="250" width="720" height="50" rx="6" fill="#E3F2E9" stroke="#1E7B4D"/>
+            <text x="40" y="280" fill="#1E7B4D">STEP 5 — Write the thesis: direction, conviction, invalidation level, time horizon</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 1 — The five-step thesis-building process, each step drawing directly on a prior module.</figcaption>
+      </div>
+
+      <h3>Step 1: Diagnose Each Economy's Cycle Phase</h3>
+      <p>Using the framework from Module 05, lesson 2, determine where each economy in the pair sits in the business cycle, and what its current growth and inflation mix looks like (Goldilocks, reflation, overheating, or stagflation).</p>
+
+      <h3>Step 2: Compare Central Bank Policy Paths</h3>
+      <p>Identify each central bank's current stance on the hawkish-dovish spectrum (Module 05, lesson 6) and where their policy paths appear to be heading. The clearest theses tend to involve genuine divergence — one bank tightening or signaling tightening while the other eases or holds.</p>
+
+      <h3>Step 3: Check What's Already Priced In</h3>
+      <p>Before committing to a direction, check the data calendar (Module 06) and market-implied policy expectations (Module 05, lesson 10). A thesis that's already fully priced in by the market offers little room for the trade to actually pay off, even if the underlying logic is correct.</p>
+
+      <h3>Step 4: Screen for Country Risk and Geopolitical Wildcards</h3>
+      <p>Run the pair through the country risk and geopolitical lens from Module 07. Is either currency carrying an elevated risk premium? Is there a live geopolitical or trade-policy wildcard that could override the fundamental story entirely?</p>
+
+      <h3>Step 5: Write the Thesis Down</h3>
+      <p>A complete thesis should specify:</p>
+      <ul>
+        <li><strong>Direction</strong> — which currency you expect to strengthen, and against which counterpart.</li>
+        <li><strong>Conviction level</strong> — how many independent factors from steps 1–4 are pointing the same way.</li>
+        <li><strong>Invalidation condition</strong> — the specific data outcome, policy shift, or event that would prove the thesis wrong.</li>
+        <li><strong>Time horizon</strong> — fundamental theses typically need weeks or months to play out, not minutes.</li>
+      </ul>
+
+      <div class="callout"><strong>Why writing it down matters:</strong> a thesis that exists only in your head is easy to silently revise after the fact to match whatever happened. A written thesis with an explicit invalidation condition forces honest accountability — you'll know clearly whether you were right, wrong, or just lucky.</div>
+
+      <h3>Combining With Price Action</h3>
+      <p>A macro thesis tells you <em>what</em> to look for and <em>which direction</em> to lean. It does not, by itself, tell you exactly when to enter. Most practitioners combine a fundamental thesis like this with the price action and multi-timeframe tools from Modules 01–04 to time the actual trade.</p>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Applying Macro Fundamentals</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. What typically makes for the clearest macro fundamental trade theses?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Two central banks moving in the same direction at the same pace</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Genuine policy divergence — one central bank tightening or signaling tightening while the other eases or holds</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Avoiding any reference to central bank policy entirely</label>
+        <div class="reveal"><strong>Answer: B.</strong> Policy divergence between two central banks tends to produce the clearest and most sustained fundamental currency theses.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Why is checking what's already "priced in" an essential step before committing to a thesis?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) A thesis that's already fully priced in offers little room to pay off even if the logic is correct</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Pricing has no bearing on whether a thesis will work</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Market expectations are always wrong</label>
+        <div class="reveal"><strong>Answer: A.</strong> Even a sound fundamental argument needs room left to run — if the market has already adjusted prices to reflect it, the edge may already be gone.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. What should an "invalidation condition" specify in a written trade thesis?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) The exact profit target in pips</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) The specific data outcome, policy shift, or event that would prove the thesis wrong</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) The trader's emotional state at the time of entry</label>
+        <div class="reveal"><strong>Answer: B.</strong> An invalidation condition defines in advance what evidence would mean the original thesis was wrong, enabling honest after-the-fact accountability.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. Why combine a macro fundamental thesis with price action tools from earlier modules?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) A macro thesis tells you what and which direction, but not precisely when to enter — price action helps with timing</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Price action and fundamentals can never be used together</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Fundamentals are only useful once a price action setup has already failed</label>
+        <div class="reveal"><strong>Answer: A.</strong> Fundamentals provide directional conviction over a longer horizon, while price action and multi-timeframe tools help pinpoint the actual entry.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 08 — APPLYING MACRO FUNDAMENTALS · NEXT MODULE: CURRENCY CROSSES
+    </footer>
+  </main>
+</div>
+</body>
+</html>

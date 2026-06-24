@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scaling In and Out of Trades — Module 28</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:48px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 28</div>
+    <p class="toc-title">Scaling In and Out<br>of Trades</p>
+    <ol>
+      <li><a href="#what-is-scaling">What Scaling Is and Isn't</a></li>
+      <li><a href="#scale-out">Scaling Out of a Winner</a></li>
+      <li><a href="#pyramiding">Pyramiding</a></li>
+      <li><a href="#atr-scaling">ATR-Based Scale Sizing</a></li>
+      <li><a href="#scale-into-loser">Scaling Into a Losing Zone</a></li>
+      <li><a href="#scaling-playbook">The Scaling Playbook</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 28 of the Trading Curriculum</div>
+      <h1>Scaling In and Out of Trades</h1>
+      <p class="lede">Opening a trade is the easy part. Knowing what to do while it's open is where most traders fall short. Learn how to scale in and out of positions: adding to winners, taking partial profits, and managing risk across multiple entries without ever violating your original risk budget.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="40" width="20" height="14" fill="#1E7B4D"/>
+        <rect x="50" y="28" width="20" height="26" fill="#1E7B4D"/>
+        <rect x="80" y="14" width="20" height="40" fill="#1E7B4D"/>
+        <rect x="160" y="14" width="20" height="40" fill="#B23A2E"/>
+        <rect x="190" y="28" width="20" height="26" fill="#B23A2E"/>
+        <rect x="220" y="40" width="20" height="14" fill="#B23A2E"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-scaling">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>Scaling: What It Is, What It Isn't, and What It Costs</h2>
+      <p class="dek">What every choice costs, including the ones most traders think are free.</p>
+
+      <p>Scaling means adding to or removing from a position while it's still open, rather than entering and exiting all at once. It's often confused with simply "changing your mind" mid-trade — the difference is that scaling follows a pre-planned structure (decided before entry, per Module 22's planning lesson), while changing your mind reactively is closer to abandoning the plan altogether.</p>
+
+      <table class="ref">
+        <tr><th>Choice</th><th>What it costs</th></tr>
+        <tr><td>All-at-once entry</td><td>No averaging benefit, but simplest to manage and journal</td></tr>
+        <tr><td>Scaling in (pyramiding)</td><td>Requires careful total-risk tracking; can increase average cost basis if mistimed</td></tr>
+        <tr><td>Scaling out</td><td>Locks in partial profit, but caps the size benefiting from a continued large move</td></tr>
+      </table>
+
+      <div class="callout"><strong>Nothing here is free.</strong> Every scaling choice trades one benefit for another — there is no version of scaling that captures all the upside of holding full size with none of the downside.</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="scale-out">
+      <div class="lesson-kicker"><span class="num">02</span> Taking Profit</div>
+      <h2>How to Scale Out of a Winning Position</h2>
+      <p class="dek">When to take partial profits, and how to plan it before you ever open the trade.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <polyline points="40,130 110,110 180,120 250,80 320,95 390,50 460,30" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="250" cy="80" r="5" fill="#1E7B4D"/><text x="220" y="65" font-family="Inter" font-size="10" fill="#1E7B4D">close 1/3 at first target</text>
+          <circle cx="390" cy="50" r="5" fill="#1E7B4D"/><text x="360" y="35" font-family="Inter" font-size="10" fill="#1E7B4D">close 1/3 at second target</text>
+          <circle cx="460" cy="30" r="5" fill="#A8772E"/><text x="420" y="15" font-family="Inter" font-size="10" fill="#A8772E">trail remainder (Module 03)</text>
+        </svg>
+        <figcaption>Fig. 1 — A typical scale-out plan: locking in partial profit at predefined levels while letting a portion run.</figcaption>
+      </div>
+
+      <p>A scale-out plan should specify, before entry: how much to close at each level, where those levels sit (typically prior structural levels from Module 01), and what happens to the remaining size — held to a final target, or managed with a trailing stop (Module 03).</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="pyramiding">
+      <div class="lesson-kicker"><span class="num">03</span> Adding to Winners</div>
+      <h2>Pyramiding: How to Add to a Winning Position</h2>
+      <p class="dek">Adding to a winning position in decreasing sizes, without ever exceeding your original risk budget.</p>
+
+      <p>Pyramiding adds to a position as it moves favorably, typically at each new confirmed pullback in a trend (Module 01's trend continuation setup), with each additional entry sized smaller than the last — preserving the principle that total risk across all tranches never exceeds what a single full-size entry would have risked under Module 24's per-trade limit.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <polyline points="40,130 100,110 160,120 220,80 280,90 340,50 400,60 460,25" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="160" cy="120" r="6" fill="#1E7B4D"/><text x="130" y="140" font-family="Inter" font-size="9" fill="#1E7B4D">entry 1 (full planned risk)</text>
+          <circle cx="280" cy="90" r="5" fill="#1E7B4D"/><text x="255" y="75" font-family="Inter" font-size="9" fill="#1E7B4D">entry 2 (half)</text>
+          <circle cx="400" cy="60" r="4" fill="#1E7B4D"/><text x="380" y="45" font-family="Inter" font-size="9" fill="#1E7B4D">entry 3 (quarter)</text>
+        </svg>
+        <figcaption>Fig. 2 — Decreasing tranche sizes keep total position risk bounded as you add to a winning trend.</figcaption>
+      </div>
+
+      <div class="warn"><strong>The discipline this demands:</strong> each new tranche needs its own valid setup confirmation (Module 01) — pyramiding isn't simply adding size because a trade is currently profitable, which is closer to chasing than to a structured system.</div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="atr-scaling">
+      <div class="lesson-kicker"><span class="num">04</span> Sizing Each Tranche</div>
+      <h2>ATR-Based Sizing for Scale-Ins and Scale-Outs</h2>
+      <p class="dek">Anchoring every tranche to what the market is actually moving.</p>
+
+      <p>Extending Module 26's volatility-adjusted sizing to scaled trades: space each pyramid entry by a fraction of current ATR (rather than a fixed pip distance) so additions are appropriately spaced for current volatility, and size each tranche's stop using the same ATR-buffer principle from Module 27, lesson 4.</p>
+
+      <table class="ref">
+        <tr><th>Element</th><th>ATR-based approach</th></tr>
+        <tr><td>Spacing between pyramid entries</td><td>A set multiple of current ATR, not a fixed pip count</td></tr>
+        <tr><td>Each tranche's individual stop</td><td>Structural level ± ATR buffer (Module 27)</td></tr>
+        <tr><td>Scale-out target spacing</td><td>Set relative to ATR-derived measured moves (Module 02)</td></tr>
+      </table>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="scale-into-loser">
+      <div class="lesson-kicker"><span class="num">05</span> The Dangerous Variant</div>
+      <h2>Scaling Into a Zone: Adding to a Losing Position</h2>
+      <p class="dek">One of the most dangerous and most misunderstood things you can do in trading.</p>
+
+      <p>Adding to a position that's currently moving against you — distinct from pyramiding into a winner — is sometimes done deliberately within a pre-defined demand or supply zone (Module 01), with strict prerequisites: the additional entry must still be within the original zone the trade thesis was built on, the total combined risk must still respect Module 24's per-trade limit, and the practice must never be used reactively as an emotional response to an unplanned loss.</p>
+
+      <div class="warn"><strong>Why most traders should not attempt this without passing those prerequisites first:</strong> the undisciplined version of this — adding to a loser hoping for a reversal, with no zone logic or total-risk ceiling — is one of the most common ways an otherwise survivable loss turns into an account-ending one. The structured version and the undisciplined version look superficially similar but are fundamentally different practices.</div>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="scaling-playbook">
+      <div class="lesson-kicker"><span class="num">06</span> Synthesis</div>
+      <h2>The Scaling Playbook</h2>
+      <p class="dek">Rules, platform mechanics, and considerations across markets and prop firms, in one reference.</p>
+      <ol>
+        <li>Decide your scaling plan (in, out, both, or neither) before entry — never improvised mid-trade.</li>
+        <li>Track total combined risk across all tranches against your Module 24 per-trade limit at every stage.</li>
+        <li>Use ATR-based spacing and stops for each tranche (lesson 4), not fixed pip distances.</li>
+        <li>Pyramid only into confirmed new setups within an established trend — never simply because a trade is currently profitable.</li>
+        <li>If scaling into a losing zone, confirm it's within the original thesis zone and never a reactive response to an unplanned loss.</li>
+        <li><strong>Prop firm note:</strong> many funded-account challenges (Module 30) impose their own rules on total open risk — confirm scaling plans comply with those specific terms before applying this playbook on a funded account.</li>
+      </ol>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Scaling In and Out</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. What distinguishes planned scaling from simply "changing your mind" mid-trade?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Scaling follows a structure decided before entry; changing your mind reactively is closer to abandoning the plan</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) They are exactly the same thing</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Scaling can only ever be done reactively</label>
+        <div class="reveal"><strong>Answer: A.</strong> Genuine scaling is pre-planned; reactive mid-trade changes are a departure from the original plan.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. In pyramiding, why does each additional tranche typically use a smaller size than the previous one?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) To keep total combined risk across all tranches from exceeding the original per-trade risk limit</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Smaller tranches have no relationship to total risk</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Larger tranches are always required for each addition</label>
+        <div class="reveal"><strong>Answer: A.</strong> Decreasing tranche sizes keep total risk bounded as the position grows.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why use ATR-based spacing between pyramid entries instead of a fixed pip distance?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) It adjusts entry spacing to current market volatility, rather than treating all conditions identically</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) ATR has no relevance to spacing pyramid entries</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Fixed pip distances always work better in every condition</label>
+        <div class="reveal"><strong>Answer: A.</strong> ATR-based spacing keeps entries appropriately distanced relative to current market movement, similar to the volatility-adjusted sizing from Module 26.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. What separates the disciplined version of scaling into a losing position from the dangerous, undisciplined version?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) The disciplined version respects a pre-defined zone and total risk ceiling; the undisciplined version is a reactive, emotional response with no such limits</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) There is no meaningful difference between the two</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) The undisciplined version is always safer because it requires less planning</label>
+        <div class="reveal"><strong>Answer: A.</strong> The structured version follows pre-set zone logic and a risk ceiling; the dangerous version is an unplanned emotional reaction.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Why does the Scaling Playbook specifically note a consideration for prop firm accounts?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) Many funded-account challenges impose their own rules on total open risk that scaling plans must comply with</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) Prop firms never allow any form of scaling</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Prop firm rules have no bearing on scaling decisions</label>
+        <div class="reveal"><strong>Answer: A.</strong> Funded account challenge terms often include their own total-risk constraints that scaling plans need to respect.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 28 — SCALING IN AND OUT OF TRADES · NEXT MODULE: CURRENCY CORRELATIONS
+    </footer>
+  </main>
+</div>
+</body>
+</html>

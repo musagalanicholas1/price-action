@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intermarket Analysis — Module 14</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:1px;}
+  .toc a{display:flex; gap:8px; align-items:baseline; color:var(--ink-soft); font-size:13px; padding:5px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:10.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  .toc .bonus-link::before{content:"★"; color:var(--gold);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:48px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:50px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:30px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16px; margin:0 0 24px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:20px; margin:30px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:26px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:16px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:18px 0; font-size:14px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:8px 10px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:22px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:16px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:16px;}
+  .card p{font-size:13.5px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 14</div>
+    <p class="toc-title">Intermarket<br>Analysis</p>
+    <ol>
+      <li><a href="#what-is-intermarket">What Is Intermarket Analysis?</a></li>
+      <li><a href="#risk-mood">Risk-On / Risk-Off</a></li>
+      <li><a href="#gold-moves">What Makes Gold Move?</a></li>
+      <li><a href="#gold-pairs">Gold, AUD/USD &amp; USD/CHF</a></li>
+      <li><a href="#oil-pairs">Oil, USD/CAD, USD/NOK &amp; CAD/JPY</a></li>
+      <li><a href="#dollar-oil">The Dollar and Oil</a></li>
+      <li><a href="#copper">Copper &amp; Industrial Metals</a></li>
+      <li><a href="#silver">Silver's Split Personality</a></li>
+      <li><a href="#bond-yields">Bond Yields &amp; Currencies</a></li>
+      <li><a href="#yield-spreads">Bond Yield Spreads</a></li>
+      <li><a href="#fixed-income">Fixed Income Securities</a></li>
+      <li><a href="#equities">Equities and Currencies</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+      <li><a href="#cheat-sheet" class="bonus-link">Cheat Sheet</a></li>
+      <li><a href="#beta-currencies" class="bonus-link">Beta Currencies</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 14 of the Trading Curriculum</div>
+      <h1>Intermarket Analysis</h1>
+      <p class="lede">Currency prices don't move in isolation. When oil surges, certain currencies follow. When bond yields diverge, exchange rates adjust. When investors pile into stocks, safe-haven currencies usually weaken. Intermarket analysis connects the dots between the world's major asset classes.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="80" cy="32" r="18" fill="#A8772E" opacity="0.8"/><text x="80" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#fff">GOLD</text>
+        <circle cx="220" cy="32" r="18" fill="#1C2024" opacity="0.8"/><text x="220" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#fff">OIL</text>
+        <circle cx="360" cy="32" r="18" fill="#1F5F5B" opacity="0.8"/><text x="360" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#fff">BONDS</text>
+        <circle cx="500" cy="32" r="18" fill="#1E7B4D" opacity="0.8"/><text x="500" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#fff">EQUITY</text>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-intermarket">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Is Intermarket Analysis?</h2>
+      <p class="dek">Reading stocks, bonds, commodities, and currencies together.</p>
+      <p>Intermarket analysis studies the relationships between major asset classes — equities, bonds, commodities, and currencies — to understand what's actually driving a move in any one of them. A currency move that looks confusing in isolation often makes immediate sense once you check what oil, gold, or bond yields were doing at the same time.</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="risk-mood">
+      <div class="lesson-kicker"><span class="num">02</span> The Core Lens</div>
+      <h2>Risk-On / Risk-Off: How Market Mood Moves Currencies</h2>
+      <p class="dek">This framework, first introduced in Module 12, is the central organizing lens for everything in this module.</p>
+      <p>Equities rallying, commodity prices firm, and bond yields rising together typically describes a risk-on environment that lifts AUD, NZD, and commodity currencies. The opposite combination — falling equities, falling yields, a firmer dollar — describes risk-off conditions. Every relationship covered in this module connects back to this basic mood, even when the specific mechanism (oil, copper, bond spreads) differs.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="gold-moves">
+      <div class="lesson-kicker"><span class="num">03</span> Commodities</div>
+      <h2>What Makes Gold's Price Move?</h2>
+      <p class="dek">Short- and long-term forces behind gold's price action.</p>
+      <table class="ref">
+        <tr><th>Driver</th><th>Effect on gold</th></tr>
+        <tr><td>Real interest rates (Module 05, lesson 7)</td><td>Falling real rates typically support gold, since it carries no yield of its own and becomes relatively more attractive</td></tr>
+        <tr><td>USD strength</td><td>Gold is dollar-denominated; broad dollar weakness mechanically tends to support gold prices, and vice versa</td></tr>
+        <tr><td>Safe-haven demand</td><td>Geopolitical stress and crises (Module 07) typically lift gold alongside other havens</td></tr>
+        <tr><td>Central bank buying</td><td>Sustained official-sector purchases provide a structural demand floor over the long term</td></tr>
+      </table>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="gold-pairs">
+      <div class="lesson-kicker"><span class="num">04</span> Commodities</div>
+      <h2>How Gold Affects AUD/USD and USD/CHF</h2>
+      <p class="dek">Why Australia and Switzerland react differently to gold moves.</p>
+      <p>Australia is a major gold producer, so rising gold prices tend to support its terms of trade and, by extension, AUD — a positive correlation. Switzerland's relationship is different: CHF has historically carried safe-haven characteristics of its own (Module 07), so gold and CHF often strengthen together during the <em>same</em> risk-off episodes, without gold directly driving the Swiss economy the way it does Australia's exports.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="130" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="40" y="40" width="320" height="50" fill="#E3F2E9" stroke="#1E7B4D"/><text x="200" y="62" fill="#1E7B4D">Gold ↑ → AUD/USD ↑</text><text x="200" y="80" fill="#1E7B4D" font-size="10">export terms-of-trade link</text>
+            <rect x="400" y="40" width="320" height="50" fill="#F1E6D2" stroke="#A8772E"/><text x="560" y="62" fill="#A8772E">Gold ↑ → USD/CHF ↓</text><text x="560" y="80" fill="#A8772E" font-size="10">shared safe-haven demand</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 1 — Two different mechanisms producing similar-looking correlations with gold.</figcaption>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="oil-pairs">
+      <div class="lesson-kicker"><span class="num">05</span> Commodities</div>
+      <h2>How Oil Moves with USD/CAD, USD/NOK, and CAD/JPY</h2>
+      <p class="dek">Why each pair reacts differently to the same oil move.</p>
+      <table class="ref">
+        <tr><th>Pair</th><th>Relationship to oil</th><th>Why</th></tr>
+        <tr><td>USD/CAD</td><td>Inverse — oil up tends to pressure USD/CAD lower (CAD strength)</td><td>Canada is a major oil exporter; higher oil supports its terms of trade</td></tr>
+        <tr><td>USD/NOK</td><td>Inverse, often more pronounced</td><td>Norway's economy is heavily oil-linked through its sovereign wealth fund and exports</td></tr>
+        <tr><td>CAD/JPY</td><td>Positive correlation with oil and broader risk sentiment</td><td>Combines an oil-exporter currency against a traditional funding/haven currency</td></tr>
+      </table>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="dollar-oil">
+      <div class="lesson-kicker"><span class="num">06</span> Evolving Relationships</div>
+      <h2>The Dollar and Oil: Why the Old Rules No Longer Apply</h2>
+      <p class="dek">How the U.S. shale revolution changed the relationship.</p>
+      <p>Historically, the U.S. was a large net oil importer, so higher oil prices drained dollars abroad to pay for it — supporting an inverse dollar-oil relationship. The shale revolution turned the U.S. into a major producer and, at times, a net exporter, weakening that old inverse link considerably. The relationship today is far less mechanically reliable than older trading lore suggests.</p>
+      <div class="warn"><strong>Practical implication:</strong> don't assume textbook dollar-oil inverse correlations hold in current conditions — check the relationship empirically rather than relying on dated rules of thumb.</div>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="copper">
+      <div class="lesson-kicker"><span class="num">07</span> Commodities</div>
+      <h2>Copper and Industrial Metals: What They Signal for Currencies</h2>
+      <p class="dek">A read on global growth, and a signal for AUD/USD.</p>
+      <p>Copper is heavily used in construction and manufacturing, making it a widely watched proxy for global industrial demand — sometimes nicknamed "Dr. Copper" for its perceived diagnostic value on the health of the global economy. As a major metals exporter, Australia's currency tends to track copper (and broader industrial metals) prices, alongside its more direct gold-export link from lesson 4. China's demand, as the world's largest metals consumer, is a key swing factor behind copper's moves.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="lesson" id="silver">
+      <div class="lesson-kicker"><span class="num">08</span> Commodities</div>
+      <h2>Silver: The Metal That Can't Make Up Its Mind</h2>
+      <p class="dek">A split personality between safe haven and industrial commodity.</p>
+      <p>Silver behaves partly like gold (a monetary/safe-haven metal) and partly like copper (an industrial input used heavily in electronics and solar panels) — meaning it can react inconsistently to the same macro news depending on which "personality" is dominant at the time. The gold-silver ratio (how many ounces of silver equal one ounce of gold) is a commonly watched gauge of which characteristic is currently in control.</p>
+    </section>
+
+    <!-- 9 -->
+    <section class="lesson" id="bond-yields">
+      <div class="lesson-kicker"><span class="num">09</span> Fixed Income</div>
+      <h2>How Bond Yields Affect Currency Movements</h2>
+      <p class="dek">Why higher yields attract foreign capital.</p>
+      <p>This directly extends Module 05, lesson 7: rising government bond yields tend to attract foreign capital seeking better returns, supporting the local currency, all else equal. Bond yields often move ahead of formal central bank decisions, making them a useful leading signal layered on top of the policy framework from Module 05.</p>
+    </section>
+
+    <!-- 10 -->
+    <section class="lesson" id="yield-spreads">
+      <div class="lesson-kicker"><span class="num">10</span> Fixed Income</div>
+      <h2>How Bond Yield Spreads Affect Currency Movements</h2>
+      <p class="dek">Why carry trades amplify the effect.</p>
+      <p>The yield spread between two countries' government bonds — rather than either country's yield in isolation — is often the more direct driver of the exchange rate between their currencies, echoing the rate-differential logic from Module 10 (Carry Trade). A widening spread in favor of one country tends to support that currency; a narrowing spread tends to pressure it.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="130" fill="#FFFFFF"/>
+          <polyline points="40,90 150,80 260,60 370,40 480,30 590,25" fill="none" stroke="#1E7B4D" stroke-width="2"/>
+          <polyline points="40,95 150,93 260,92 370,90 480,92 590,93" fill="none" stroke="#B23A2E" stroke-width="2"/>
+          <text x="600" y="20" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">Country A yield rising</text>
+          <text x="600" y="108" font-family="JetBrains Mono" font-size="10" fill="#B23A2E">Country B yield flat</text>
+          <text x="40" y="20" font-family="Inter" font-size="11" fill="#4A5159">A widening spread tends to support Country A's currency.</text>
+        </svg>
+        <figcaption>Fig. 2 — A widening yield spread, not the absolute yield level, is what tends to drive the currency relationship.</figcaption>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section class="lesson" id="fixed-income">
+      <div class="lesson-kicker"><span class="num">11</span> Fixed Income</div>
+      <h2>How Fixed Income Securities Affect Currency Movements</h2>
+      <p class="dek">Comparing government bond benchmarks across countries.</p>
+      <p>Traders typically compare specific maturity benchmarks across countries — the 2-year for near-term rate expectations, the 10-year for longer-term growth and inflation expectations — to build the kind of cross-country comparison this lesson and the previous one describe. Module 19 (Beginner's Guide to Global Liquidity) revisits related bond-market signals from a liquidity-stress angle.</p>
+    </section>
+
+    <!-- 12 -->
+    <section class="lesson" id="equities">
+      <div class="lesson-kicker"><span class="num">12</span> Equities</div>
+      <h2>Equities and Currencies: The Big Picture</h2>
+      <p class="dek">How equities shape risk sentiment and drive major currency moves.</p>
+      <p>Strong, rising equity markets are typically associated with a risk-on mood (lesson 2) that benefits higher-beta currencies, while sharp equity selloffs tend to coincide with flight-to-safety flows into the dollar, yen, and franc. This relationship is explored in much greater depth, including the specific Nikkei/USD-JPY case study, in Module 15 (Using Equities to Trade FX).</p>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Intermarket Analysis</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Why does AUD/USD tend to track gold prices?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Australia is a major gold producer, so rising gold supports its terms of trade</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) AUD/USD has no relationship to commodity prices</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Gold is priced exclusively in Australian dollars</label>
+        <div class="reveal"><strong>Answer: A.</strong> As a major gold exporter, Australia's terms of trade and currency tend to benefit when gold prices rise.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Why has the historical inverse dollar-oil relationship weakened in recent years?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) The U.S. shale revolution turned the country into a major oil producer rather than a pure importer</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Oil is no longer traded internationally</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) The dollar no longer exists as a tradeable currency</label>
+        <div class="reveal"><strong>Answer: A.</strong> Shifting from a net importer to a major producer changed the structural relationship between oil prices and dollar demand.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why is silver sometimes described as having a "split personality"?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) It behaves partly like a safe-haven metal (similar to gold) and partly like an industrial commodity (similar to copper)</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Silver has no relationship to any other commodity</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Silver only ever behaves like a currency</label>
+        <div class="reveal"><strong>Answer: A.</strong> Silver's dual industrial and monetary uses can make it react inconsistently depending on which characteristic dominates at a given time.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. What typically matters more for currency moves: a country's absolute bond yield, or its yield spread versus another country?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) The yield spread between the two countries, since it's the relative comparison currency markets price</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) The absolute yield level always matters more</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Bond yields have no relevance to currencies</label>
+        <div class="reveal"><strong>Answer: A.</strong> The yield spread, not either country's yield in isolation, is generally the more direct driver of the exchange rate between two currencies.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. What is the broad risk-on/risk-off lens that connects most of this module's relationships?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) Rising equities, firm commodities, and rising yields together typically describe risk-on conditions that lift higher-beta currencies; the reverse describes risk-off</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) Risk sentiment has no bearing on currency markets</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Risk-on and risk-off are unrelated to asset class correlations</label>
+        <div class="reveal"><strong>Answer: A.</strong> The risk-on/risk-off mood is the unifying lens behind most of the specific intermarket relationships covered in this module.</div>
+      </div>
+    </section>
+
+    <!-- BONUS 1 -->
+    <section class="lesson" id="cheat-sheet">
+      <div class="lesson-kicker"><span class="num">★</span> Bonus Lesson</div>
+      <h2>Intermarket Analysis Cheat Sheet</h2>
+      <p class="dek">The key relationships from this module, in one scannable reference.</p>
+      <table class="ref">
+        <tr><th>Asset</th><th>Key currency relationship</th></tr>
+        <tr><td>Gold ↑</td><td>Typically AUD/USD ↑, USD/CHF ↓</td></tr>
+        <tr><td>Oil ↑</td><td>Typically USD/CAD ↓, USD/NOK ↓, CAD/JPY ↑</td></tr>
+        <tr><td>Copper ↑</td><td>Typically supportive of AUD, reflects global growth optimism</td></tr>
+        <tr><td>Rising yield spread (favoring Country A)</td><td>Supports Country A's currency</td></tr>
+        <tr><td>Equities ↑ broadly</td><td>Risk-on — supports AUD, NZD; pressures USD, JPY, CHF</td></tr>
+        <tr><td>Equities ↓ sharply</td><td>Risk-off — supports USD, JPY, CHF; pressures AUD, NZD</td></tr>
+      </table>
+    </section>
+
+    <!-- BONUS 2 -->
+    <section class="lesson" id="beta-currencies">
+      <div class="lesson-kicker"><span class="num">★</span> Bonus Lesson</div>
+      <h2>Beta Currencies: First to Rally, First to Crack</h2>
+      <p class="dek">How AUD/JPY and NZD/JPY serve as real-time gauges of market mood.</p>
+      <p>"Beta currencies" move with amplified sensitivity to global risk sentiment — AUD and NZD against JPY are classic examples, combining a high-beta, risk-sensitive currency against a traditional low-yield funding/haven currency (Module 10). Because of this sensitivity, pairs like AUD/JPY and NZD/JPY are often watched by traders across all asset classes as a quick, real-time pulse check on whether the market is leaning risk-on or risk-off at any given moment — useful context to check even if you don't trade these pairs directly.</p>
+    </section>
+
+    <footer class="endcap">
+      MODULE 14 — INTERMARKET ANALYSIS · NEXT MODULE: USING EQUITIES TO TRADE FX
+    </footer>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carry Trade — Module 10</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:13.5px; padding:6px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:54px; line-height:1.04; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 10</div>
+    <p class="toc-title">Carry<br>Trade</p>
+    <ol>
+      <li><a href="#what-is-carry">What Is the Carry Trade?</a></li>
+      <li><a href="#how-it-works">How It Works in Forex</a></li>
+      <li><a href="#finding">Finding a Carry Trade</a></li>
+      <li><a href="#case-study">USD/JPY Case Study</a></li>
+      <li><a href="#when-works">When It Works and When It Doesn't</a></li>
+      <li><a href="#unwind">Carry Trade Unwind</a></li>
+      <li><a href="#risk-mgmt">Carry Trade Risk Management</a></li>
+      <li><a href="#nothing-lasts">Nothing Lasts Forever</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 10 of the Trading Curriculum</div>
+      <h1>Carry Trade</h1>
+      <p class="lede">The carry trade is one of the most widely used strategies in FX. This module breaks it down from the ground up: how it works, how to find viable setups, what makes it succeed or fail, and how to manage the risks that come with holding a position for weeks or months.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="50" x2="600" y2="50" stroke="#E1DDD3"/>
+        <rect x="20" y="20" width="20" height="30" fill="#1E7B4D"/><text x="30" y="15" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#1E7B4D">high yield</text>
+        <rect x="560" y="42" width="20" height="8" fill="#B23A2E"/><text x="570" y="15" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#B23A2E">low yield</text>
+        <line x1="50" y1="35" x2="550" y2="46" stroke="#A8772E" stroke-width="1.5" marker-end="url(#arrc)"/>
+        <defs><marker id="arrc" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#A8772E"/></marker></defs>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-carry">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Is the Carry Trade?</h2>
+      <p class="dek">One of the most popular strategies used by forex traders and big-money investors around the world.</p>
+
+      <p>A carry trade involves borrowing (or holding short exposure) in a currency with a low interest rate, and using those funds to hold a long position in a currency with a higher interest rate — earning the difference between the two rates, known as the interest rate differential, as long as the position is held.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="180" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="12" text-anchor="middle">
+            <rect x="40" y="50" width="280" height="60" fill="#FBEAE7" stroke="#B23A2E"/><text x="180" y="78" fill="#B23A2E">FUNDING CURRENCY</text><text x="180" y="98" fill="#B23A2E" font-size="11">Low interest rate (e.g. JPY)</text>
+            <rect x="440" y="50" width="280" height="60" fill="#E3F2E9" stroke="#1E7B4D"/><text x="580" y="78" fill="#1E7B4D">TARGET CURRENCY</text><text x="580" y="98" fill="#1E7B4D" font-size="11">Higher interest rate (e.g. AUD)</text>
+          </g>
+          <line x1="320" y1="80" x2="438" y2="80" stroke="#1C2024" stroke-width="2" marker-end="url(#arrc2)"/>
+          <text x="380" y="65" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1C2024">borrow / sell</text>
+          <text x="380" y="125" text-anchor="middle" font-family="Inter" font-size="12" fill="#4A5159">Earn the rate differential while held</text>
+          <defs><marker id="arrc2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1C2024"/></marker></defs>
+        </svg>
+        <figcaption>Fig. 1 — The basic carry trade structure: short the low-yielder, long the high-yielder, collect the difference.</figcaption>
+      </div>
+
+      <p>This isn't unique to forex — the same logic applies to bonds, emerging market debt, and other rate-sensitive assets globally. In FX specifically, the carry trade has been a persistent, widely-used strategy precisely because interest rate differentials between major economies can remain wide and stable for extended periods.</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="how-it-works">
+      <div class="lesson-kicker"><span class="num">02</span> Mechanics</div>
+      <h2>How Does the Carry Trade Work in Forex?</h2>
+      <p class="dek">Daily swap credits and debits, leverage, and what positive vs. negative carry looks like in practice.</p>
+
+      <p>In the retail spot forex market, you don't literally borrow and deposit cash overnight — your broker handles this through a daily <strong>swap</strong> (or rollover) charge or credit, applied to any position held overnight, reflecting the interest rate differential between the two currencies in the pair.</p>
+
+      <table class="ref">
+        <tr><th>Position</th><th>Result</th></tr>
+        <tr><td>Long the higher-yielding currency, short the lower-yielding one</td><td><strong>Positive carry</strong> — you receive a small swap credit each night held</td></tr>
+        <tr><td>Long the lower-yielding currency, short the higher-yielding one</td><td><strong>Negative carry</strong> — you pay a small swap debit each night held</td></tr>
+      </table>
+
+      <h3>The Role of Leverage</h3>
+      <p>Because daily interest differentials are typically small in percentage terms, carry traders historically used significant leverage to make the accumulated swap meaningful relative to account size. Leverage amplifies both the swap income <em>and</em> the price risk — a critical point picked up again in lesson 7.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="10" fill="#4A5159">DAILY SWAP ACCUMULATION (positive carry, illustrative)</text>
+          <g fill="#1E7B4D">
+            <rect x="30" y="100" width="14" height="20"/><rect x="60" y="92" width="14" height="28"/><rect x="90" y="82" width="14" height="38"/>
+            <rect x="120" y="70" width="14" height="50"/><rect x="150" y="55" width="14" height="65"/><rect x="180" y="38" width="14" height="82"/>
+          </g>
+          <text x="100" y="135" font-family="Inter" font-size="11" fill="#4A5159">Small daily credits compound into meaningful income held over weeks or months.</text>
+        </svg>
+        <figcaption>Fig. 2 — Carry income accrues slowly, night by night — the strategy's reward is patience-driven, not a single sharp move.</figcaption>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="finding">
+      <div class="lesson-kicker"><span class="num">03</span> Setup Identification</div>
+      <h2>Finding a Carry Trade: Criteria and Currency Pairs</h2>
+      <p class="dek">The two criteria every carry trade must meet, and which currencies have historically served as funding currencies.</p>
+
+      <h3>The Two Criteria</h3>
+      <ol>
+        <li><strong>A meaningful, stable interest rate differential</strong> between the two currencies — wide enough to matter, and from central banks not expected to converge sharply in the near term.</li>
+        <li><strong>A stable or appreciating target currency</strong> — since price moves can easily overwhelm the swap income earned (this is explored fully in lesson 5).</li>
+      </ol>
+
+      <h3>Historical Funding Currencies</h3>
+      <table class="ref">
+        <tr><th>Currency</th><th>Why it's historically used as a funding currency</th></tr>
+        <tr><td>JPY</td><td>Decades of ultra-low or negative Bank of Japan rates</td></tr>
+        <tr><td>CHF</td><td>Persistently low Swiss National Bank rates and a stable, low-inflation economy</td></tr>
+        <tr><td>EUR</td><td>An extended period of low/negative ECB rates in the 2010s and early 2020s</td></tr>
+      </table>
+
+      <div class="callout"><strong>This shifts over time.</strong> Funding-currency status is a function of the current rate cycle, not a permanent label — a theme returned to in the final lesson of this module.</div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="case-study">
+      <div class="lesson-kicker"><span class="num">04</span> Case Study</div>
+      <h2>A Carry Trade in Action: The USD/JPY Case Study</h2>
+      <p class="dek">How the USD/JPY carry trade played out from 2022 to 2023.</p>
+
+      <p>Starting in 2022, the Federal Reserve embarked on one of its most aggressive rate-hiking cycles in decades to combat surging inflation, while the Bank of Japan held its policy rate near zero, maintaining its long-standing ultra-accommodative stance. The result was one of the widest USD-JPY interest rate differentials seen in decades.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="10" fill="#4A5159">POLICY RATES, 2022–2023 (illustrative)</text>
+          <line x1="40" y1="190" x2="720" y2="190" stroke="#E1DDD3"/>
+          <polyline points="40,170 150,140 260,100 370,60 480,45 590,40 700,38" fill="none" stroke="#1E7B4D" stroke-width="2"/>
+          <text x="700" y="28" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">Fed Funds Rate ↑</text>
+          <polyline points="40,185 150,185 260,184 370,184 480,184 590,184 700,184" fill="none" stroke="#B23A2E" stroke-width="2"/>
+          <text x="700" y="200" font-family="JetBrains Mono" font-size="10" fill="#B23A2E">BoJ rate ≈ 0%</text>
+          <text x="40" y="215" font-family="Inter" font-size="11" fill="#4A5159">A widening gap drove sustained capital flow into the higher-yielding dollar, funded in yen.</text>
+        </svg>
+        <figcaption>Fig. 3 — A textbook divergence: one central bank hiking aggressively while the other holds near zero, producing one of the cleanest carry setups in years.</figcaption>
+      </div>
+
+      <p>USD/JPY trended persistently higher through this period, rewarding carry traders both through swap income and substantial currency appreciation — an unusually favorable combination, since (as lesson 5 explains) carry trades don't always get both at once.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="when-works">
+      <div class="lesson-kicker"><span class="num">05</span> Conditions</div>
+      <h2>When Carry Trades Work and When They Don't</h2>
+      <p class="dek">How to think about the market conditions behind the difference.</p>
+
+      <table class="ref">
+        <tr><th>Condition</th><th>Carry trades tend to...</th></tr>
+        <tr><td>Low volatility, "risk-on" environment</td><td>Work well — stable conditions let the carry accumulate without being overwhelmed by price swings</td></tr>
+        <tr><td>Wide, stable, or widening rate differential</td><td>Work well — more income to earn, less risk of the trade's basic premise reversing suddenly</td></tr>
+        <tr><td>Rising volatility / risk-off shock</td><td>Struggle or reverse sharply — see the unwind dynamic in the next lesson</td></tr>
+        <tr><td>Narrowing rate differential</td><td>Lose their basic rationale — less income to earn, less reason for capital to stay positioned</td></tr>
+      </table>
+
+      <div class="warn"><strong>The core vulnerability:</strong> carry trades earn small, steady income but are exposed to potentially large, fast currency moves. A single bad week of price action can erase months of accumulated swap income — the strategy's reward and risk profile are fundamentally asymmetric.</div>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="unwind">
+      <div class="lesson-kicker"><span class="num">06</span> Tail Risk</div>
+      <h2>Carry Trade Unwind: When It All Goes Wrong</h2>
+      <p class="dek">The August 2024 yen carry trade unwind shook global markets in a matter of days.</p>
+
+      <p>A carry trade "unwind" occurs when a large number of traders holding the same crowded carry position close out simultaneously — typically triggered by a shock that makes the trade suddenly look far riskier, such as an unexpected funding-currency rate hike or a sharp spike in global risk aversion.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="20" y="20" width="200" height="40" rx="6" fill="#F1E6D2" stroke="#A8772E"/><text x="120" y="44" fill="#A8772E">FUNDING-CURRENCY SHOCK</text>
+            <rect x="280" y="20" width="200" height="40" rx="6" fill="#FBEAE7" stroke="#B23A2E"/><text x="380" y="44" fill="#B23A2E">CARRY TRADE NO LONGER PROFITABLE</text>
+            <rect x="540" y="20" width="200" height="40" rx="6" fill="#FBEAE7" stroke="#B23A2E"/><text x="640" y="44" fill="#B23A2E">MASS UNWIND / DELEVERAGING</text>
+          </g>
+          <g stroke="#1C2024" stroke-width="1.5" fill="none" marker-end="url(#arru)">
+            <line x1="220" y1="40" x2="278" y2="40"/><line x1="480" y1="40" x2="538" y2="40"/>
+          </g>
+          <text x="380" y="100" text-anchor="middle" font-family="Inter" font-size="13" fill="#4A5159">In August 2024, a surprise BoJ rate hike combined with a weak U.S. jobs report</text>
+          <text x="380" y="120" text-anchor="middle" font-family="Inter" font-size="13" fill="#4A5159">triggered a rapid, violent unwind of crowded yen carry positions, with effects</text>
+          <text x="380" y="140" text-anchor="middle" font-family="Inter" font-size="13" fill="#4A5159">spilling into global equities as leveraged positions were liquidated broadly.</text>
+          <defs><marker id="arru" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1C2024"/></marker></defs>
+        </svg>
+        <figcaption>Fig. 4 — The unwind feedback loop: a shock makes the carry unprofitable, triggering deleveraging that itself becomes a second shock.</figcaption>
+      </div>
+
+      <h3>Why the Damage Spreads Beyond FX</h3>
+      <p>Because carry trades are often funded with leverage and used to finance positions in other asset classes (including equities), a forced unwind can trigger margin calls and selling well beyond the currency market itself — which is exactly what happened in August 2024, when yen-funded equity positions globally were forced to deleverage alongside the FX move.</p>
+
+      <div class="callout"><strong>The lesson:</strong> a crowded carry trade carries a hidden tail risk that's invisible during calm periods and can resolve violently and suddenly once a trigger appears.</div>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="risk-mgmt">
+      <div class="lesson-kicker"><span class="num">07</span> Risk Management</div>
+      <h2>Carry Trade Risk Management</h2>
+      <p class="dek">Sizing, stop-losses, voluntary exit signals, and protecting accumulated swap income.</p>
+
+      <ul>
+        <li><strong>Size conservatively.</strong> Given the leverage often used to make carry meaningful, position sizing principles from Module 14 apply with extra discipline here.</li>
+        <li><strong>Use a real stop-loss.</strong> A carry trade is still a directional FX position and needs the same stop-loss discipline as any other trade (Module 16) — the swap income is a bonus, not a substitute for risk control.</li>
+        <li><strong>Watch positioning data.</strong> Extreme, one-sided positioning in a popular carry pair (covered in Module 12's COT report lessons) is a warning sign of unwind risk building.</li>
+        <li><strong>Watch volatility indices.</strong> A sharp rise in the VIX or similar risk gauges (Module 12) often precedes carry trade stress.</li>
+        <li><strong>Consider partial profit-taking</strong> on accumulated swap income periodically, rather than letting it ride entirely on the position's continued survival.</li>
+      </ul>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <polyline points="40,110 150,95 260,80 370,60 480,45 590,90 700,130" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <line x1="40" y1="120" x2="700" y2="120" stroke="#B23A2E" stroke-dasharray="3 2"/>
+          <text x="600" y="115" font-family="JetBrains Mono" font-size="10" fill="#B23A2E">stop-loss level</text>
+          <text x="40" y="20" font-family="Inter" font-size="12" fill="#4A5159">Accumulated swap income protected by an actual price-based stop, not left exposed indefinitely.</text>
+        </svg>
+        <figcaption>Fig. 5 — A genuine stop-loss protects both your capital and the swap income you've already earned.</figcaption>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section class="lesson" id="nothing-lasts">
+      <div class="lesson-kicker"><span class="num">08</span> Evolving Cycles</div>
+      <h2>Nothing Lasts Forever (Especially a Good Carry Trade)</h2>
+      <p class="dek">How funding and target currency roles shift over time, and how to stay current as central banks move through their cycles.</p>
+
+      <p>The funding currency in today's most popular carry trade is whichever currency currently has the lowest rate among liquid, widely-traded options — and that label changes as central banks move through their own hiking and cutting cycles. A currency that funded carry trades for a decade can become the target currency once its central bank begins hiking aggressively (and vice versa).</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="10" fill="#4A5159">ROLE REVERSAL OVER A FULL RATE CYCLE</text>
+          <rect x="40" y="40" width="280" height="50" fill="#FBEAE7" stroke="#B23A2E"/><text x="180" y="70" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B23A2E">FUNDING CURRENCY (today)</text>
+          <line x1="330" y1="65" x2="440" y2="65" stroke="#1C2024" stroke-width="1.5" marker-end="url(#arrn)"/>
+          <text x="385" y="55" text-anchor="middle" font-family="Inter" font-size="9" fill="#4A5159">central bank hikes</text>
+          <rect x="440" y="40" width="280" height="50" fill="#E3F2E9" stroke="#1E7B4D"/><text x="580" y="70" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">TARGET CURRENCY (later)</text>
+          <defs><marker id="arrn" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1C2024"/></marker></defs>
+        </svg>
+        <figcaption>Fig. 6 — A currency's carry-trade role is tied to the rate cycle, not a fixed identity.</figcaption>
+      </div>
+
+      <p>Staying current means regularly revisiting central bank policy paths (Module 05) rather than assuming the funding/target relationships that worked in the past will hold indefinitely. The carry trade itself never disappears as a strategy — but which specific pair expresses it best is always evolving.</p>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Carry Trade</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. What is the basic structure of a carry trade?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Long the lower-yielding currency, short the higher-yielding one</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Long the higher-yielding currency, short the lower-yielding one, earning the rate differential</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Holding two currencies with identical interest rates</label>
+        <div class="reveal"><strong>Answer: B.</strong> A carry trade is structured to earn the interest rate differential by holding the higher-yielding currency funded against the lower-yielding one.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. What does "positive carry" mean for a retail forex position?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) You pay a swap charge each night the position is held</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) You receive a swap credit each night, since you're long the higher-yielding currency relative to the short side</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) The position has no interest rate exposure at all</label>
+        <div class="reveal"><strong>Answer: B.</strong> Positive carry means receiving a small nightly credit, reflecting the rate differential in your favor.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. In the 2022–2023 USD/JPY carry trade example, what created such a wide interest rate differential?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) The Fed cutting rates while the BoJ hiked aggressively</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) The Fed hiking aggressively to fight inflation while the BoJ held its rate near zero</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Both central banks moved in perfect lockstep</label>
+        <div class="reveal"><strong>Answer: B.</strong> The Fed's aggressive hiking cycle against the BoJ's continued near-zero policy created one of the widest USD-JPY rate differentials in decades.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. Why can a single bad week of price action erase months of accumulated carry trade income?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) Swap income and currency price risk are fundamentally asymmetric — small steady income against potentially large, fast currency moves</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Swap income is not real money</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Carry trades have no exposure to price movement</label>
+        <div class="reveal"><strong>Answer: A.</strong> Carry trades earn small, steady income but remain fully exposed to currency price risk, which can move far faster than the income accumulates.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. What triggered the August 2024 yen carry trade unwind, and why did its effects spread beyond FX?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) A surprise BoJ rate hike combined with a weak U.S. jobs report — leveraged yen-funded positions across asset classes were forced to deleverage</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) A scheduled, fully anticipated BoJ decision with no market impact</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) It was isolated entirely to the forex market with no effect elsewhere</label>
+        <div class="reveal"><strong>Answer: A.</strong> The shock made the yen carry trade suddenly unprofitable, and because leveraged yen-funded positions extended into other assets (including equities), the unwind spread well beyond FX.</div>
+      </div>
+
+      <div class="quiz-q" id="q6">
+        <p class="q">6. Why is the identity of "the" funding currency in carry trades not permanent?</p>
+        <label onclick="document.getElementById('q6').classList.add('show')">A) It's tied to each central bank's position in its own rate cycle, which shifts as policy evolves over time</label>
+        <label onclick="document.getElementById('q6').classList.add('show')">B) Funding currencies are fixed by international agreement</label>
+        <label onclick="document.getElementById('q6').classList.add('show')">C) Only one currency in history has ever served as a funding currency</label>
+        <div class="reveal"><strong>Answer: A.</strong> A currency's funding or target role depends on where its central bank sits in the broader rate cycle, which changes over time as policy shifts.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 10 — CARRY TRADE · NEXT MODULE: UNDERSTANDING AND TRADING THE NEWS
+    </footer>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Using Equities to Trade FX — Module 15</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:50px; line-height:1.05; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 15</div>
+    <p class="toc-title">Using Equities<br>to Trade FX</p>
+    <ol>
+      <li><a href="#why-matter">Why Stock Markets Matter</a></li>
+      <li><a href="#indices">Indices Behind the Major Currencies</a></li>
+      <li><a href="#theory-reality">Theory vs. Reality</a></li>
+      <li><a href="#nikkei-jpy">Nikkei &amp; USD/JPY</a></li>
+      <li><a href="#tracking">Tracking Equity Markets</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 15 of the Trading Curriculum</div>
+      <h1>Using Equities to Trade FX</h1>
+      <p class="lede">Learn how global equity markets move currency prices, which stock indices matter most, and how the relationship between stocks and currencies plays out in the real world — including a concrete framework for using stock market signals in your day-to-day trading.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="30" y="20" width="14" height="34" fill="#1E7B4D"/>
+        <rect x="60" y="10" width="14" height="44" fill="#1E7B4D"/>
+        <rect x="90" y="28" width="14" height="26" fill="#B23A2E"/>
+        <rect x="120" y="16" width="14" height="38" fill="#1E7B4D"/>
+        <polyline points="300,40 360,35 420,28 480,33 540,20 600,15" fill="none" stroke="#A8772E" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="why-matter">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>Why Stock Markets Matter to Currency Traders</h2>
+      <p class="dek">How international capital flows connect stock performance to exchange rates.</p>
+
+      <p>When foreign investors buy a country's stocks, they typically must first convert their own currency into the local currency to make the purchase — creating direct currency demand tied to equity inflows. Sustained foreign buying of a country's stock market is, in this sense, a sustained source of currency demand, separate from anything covered in the macro fundamentals modules.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="20" y="50" width="220" height="50" fill="#F1E6D2" stroke="#A8772E"/><text x="130" y="80" fill="#A8772E">FOREIGN INVESTOR</text>
+            <rect x="280" y="50" width="220" height="50" fill="#E3EFEE" stroke="#1F5F5B"/><text x="390" y="80" fill="#1F5F5B">CONVERTS TO LOCAL FX</text>
+            <rect x="540" y="50" width="200" height="50" fill="#E3F2E9" stroke="#1E7B4D"/><text x="640" y="80" fill="#1E7B4D">BUYS LOCAL EQUITIES</text>
+          </g>
+          <g stroke="#1C2024" stroke-width="1.5" fill="none" marker-end="url(#arre)">
+            <line x1="240" y1="75" x2="278" y2="75"/><line x1="500" y1="75" x2="538" y2="75"/>
+          </g>
+          <text x="380" y="130" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">Each step in this chain creates real currency demand tied directly to equity flows.</text>
+          <defs><marker id="arre" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1C2024"/></marker></defs>
+        </svg>
+        <figcaption>Fig. 1 — Foreign equity purchases require currency conversion, linking stock flows directly to FX demand.</figcaption>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="indices">
+      <div class="lesson-kicker"><span class="num">02</span> Key Benchmarks</div>
+      <h2>The Stock Market Indices Behind the Major Currencies</h2>
+      <p class="dek">Which global equity indices matter most, and how each connects to its currency.</p>
+
+      <table class="ref">
+        <tr><th>Index</th><th>Country/region</th><th>Currency link</th></tr>
+        <tr><td>S&amp;P 500</td><td>United States</td><td>USD — broad risk sentiment barometer</td></tr>
+        <tr><td>Nikkei 225</td><td>Japan</td><td>JPY — explored in depth in lesson 4</td></tr>
+        <tr><td>DAX / Euro Stoxx 50</td><td>Eurozone</td><td>EUR</td></tr>
+        <tr><td>FTSE 100</td><td>United Kingdom</td><td>GBP (though heavily export-weighted, see lesson 3)</td></tr>
+        <tr><td>ASX 200</td><td>Australia</td><td>AUD</td></tr>
+      </table>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="theory-reality">
+      <div class="lesson-kicker"><span class="num">03</span> Nuance</div>
+      <h2>The Stock Market-Currency Relationship: Theory vs Reality</h2>
+      <p class="dek">Which market leads, which follows, and how the relationship can flip over time.</p>
+
+      <p>The textbook theory (lesson 1) suggests rising local stocks should support the local currency through inflow demand. Reality is messier: a heavily export-weighted index (like the FTSE 100) can actually rise when the local currency <em>weakens</em>, since a weaker currency makes large exporters' overseas earnings worth more in local-currency terms once converted back.</p>
+
+      <div class="warn"><strong>The key lesson:</strong> check the composition of the specific index before assuming a simple "stocks up, currency up" relationship — export-heavy indices can behave in the opposite direction from what the basic theory predicts.</div>
+
+      <h3>Global Co-Movement</h3>
+      <p>Major equity markets worldwide also tend to move together to a significant degree, since global risk sentiment (the risk-on/risk-off theme from Modules 12 and 14) drives capital flows across borders simultaneously rather than country by country in isolation.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="nikkei-jpy">
+      <div class="lesson-kicker"><span class="num">04</span> Case Study</div>
+      <h2>Why the Nikkei and USD/JPY Move Together</h2>
+      <p class="dek">The yen carry trade drives this relationship — and the 2024 unwind revealed its risks.</p>
+
+      <p>The Nikkei and USD/JPY have historically shown a notably positive correlation: when USD/JPY rises (yen weakens), the Nikkei often rises too, and vice versa. Two forces drive this:</p>
+      <ul>
+        <li><strong>Export sensitivity</strong> — many large Nikkei constituents are major exporters, similar to the FTSE dynamic in lesson 3, benefiting when the yen weakens.</li>
+        <li><strong>The yen carry trade (Module 10)</strong> — yen-funded carry trades often finance positions in global equities, including Japanese stocks themselves, linking yen weakness/strength directly to equity flows.</li>
+      </ul>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <polyline points="40,120 120,110 200,100 280,80 360,60 440,50" fill="none" stroke="#1E7B4D" stroke-width="2"/>
+          <text x="40" y="20" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">USD/JPY rising (yen weakening)</text>
+          <polyline points="40,130 120,118 200,108 280,90 360,68 440,55" fill="none" stroke="#A8772E" stroke-width="2" stroke-dasharray="4 2"/>
+          <text x="40" y="145" font-family="JetBrains Mono" font-size="10" fill="#A8772E">Nikkei 225 rising</text>
+        </svg>
+        <figcaption>Fig. 2 — A historically positive co-movement, driven by export sensitivity and the yen carry trade.</figcaption>
+      </div>
+
+      <p>The August 2024 carry trade unwind (Module 10, lesson 6) showed this relationship's downside vividly: a sharp yen strengthening move, triggered by a surprise BoJ hike, coincided with a severe Nikkei selloff as carry-funded positions were forced to deleverage — the same link that supports the relationship in calm times amplified the damage during the shock.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="tracking">
+      <div class="lesson-kicker"><span class="num">05</span> Practical Setup</div>
+      <h2>How to Track Equity Markets as a Currency Trader</h2>
+      <p class="dek">A simple pre-session routine connecting stock conditions to FX trading.</p>
+
+      <div class="grid-cards">
+        <div class="card"><span class="tag">Check</span><h4>Overnight index performance</h4><p>How major global indices closed in their respective sessions, as an early risk-mood read.</p></div>
+        <div class="card"><span class="tag">Check</span><h4>Index futures pre-market</h4><p>A live read on how the next session is likely to open, ahead of your own market's open.</p></div>
+        <div class="card"><span class="tag">Check</span><h4>Sector composition shifts</h4><p>Whether an index's move is broad-based or concentrated in a few large, export-sensitive names.</p></div>
+      </div>
+
+      <p>None of this replaces the core analysis frameworks from earlier modules — it adds one more confirming (or contradicting) data point to weigh, in the same spirit as the confluence and sentiment-layering principles from Modules 01 and 12.</p>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Using Equities to Trade FX</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Why does foreign buying of a country's stock market create currency demand?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Foreign investors typically must convert their own currency into the local currency to make the purchase</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Stock markets and currencies are entirely unrelated</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Currency demand has nothing to do with capital flows</label>
+        <div class="reveal"><strong>Answer: A.</strong> The currency conversion required to purchase local equities directly creates demand for that currency.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Why might a heavily export-weighted index like the FTSE 100 actually rise when GBP weakens?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) A weaker currency makes large exporters' overseas earnings worth more once converted back to local currency</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Export-heavy indices always move identically to domestically-focused indices</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Currency weakness has no effect on company earnings</label>
+        <div class="reveal"><strong>Answer: A.</strong> Export-heavy companies often benefit from currency weakness through improved overseas earnings translation, which can override the simple "stocks up, currency up" theory.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. What are the two main drivers behind the historically positive correlation between the Nikkei and USD/JPY?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) Export sensitivity among Nikkei constituents, and the yen carry trade financing global equity positions</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) The two have no real connection and any correlation is coincidental</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Japanese law requires the two to move together</label>
+        <div class="reveal"><strong>Answer: A.</strong> Export sensitivity and the yen carry trade are the two structural forces behind this historically observed relationship.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. What did the August 2024 carry trade unwind reveal about the Nikkei/USD-JPY relationship?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) The same carry trade link that supports the relationship in calm times can amplify damage during a shock</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) The relationship completely disappeared during the event</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) The Nikkei and USD/JPY are never actually correlated</label>
+        <div class="reveal"><strong>Answer: A.</strong> The carry-trade mechanism that links the two in normal conditions worked in reverse during the unwind, amplifying losses across both the yen and Japanese equities simultaneously.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 15 — USING EQUITIES TO TRADE FX · NEXT MODULE: COUNTRY PROFILES
+    </footer>
+  </main>
+</div>
+</body>
+</html>

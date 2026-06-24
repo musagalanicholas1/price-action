@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beginner's Guide to Global Liquidity — Module 17</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:21px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:1px;}
+  .toc a{display:flex; gap:8px; align-items:baseline; color:var(--ink-soft); font-size:13px; padding:5px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:10.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:46px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:50px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:30px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16px; margin:0 0 24px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:20px; margin:30px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:26px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:16px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:18px 0; font-size:14px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:8px 10px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:22px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:16px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:16px;}
+  .card p{font-size:13.5px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 17</div>
+    <p class="toc-title">Global<br>Liquidity</p>
+    <ol>
+      <li><a href="#plumbing">Reading the Market's Plumbing</a></li>
+      <li><a href="#sofr-iorb">SOFR vs IORB</a></li>
+      <li><a href="#srf">The Standing Repo Facility</a></li>
+      <li><a href="#tga">Treasury General Account</a></li>
+      <li><a href="#doom-loop">The "Doom Loop Detector"</a></li>
+      <li><a href="#dxy-liquidity">DXY as a Liquidity Gauge</a></li>
+      <li><a href="#gold-btc">Gold &amp; Bitcoin Confirmation</a></li>
+      <li><a href="#cb-balance-sheets">Central Bank Balance Sheets</a></li>
+      <li><a href="#balance-sheet-fx">Balance Sheets &amp; Forex</a></li>
+      <li><a href="#m2">Global M2 Money Supply</a></li>
+      <li><a href="#cheat-sheet">Liquidity Cheat Sheet</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 17 of the Trading Curriculum</div>
+      <h1>Beginner's Guide to Global Liquidity</h1>
+      <p class="lede">Markets are driven by liquidity flows more than fundamentals in the short to medium term. You can track these flows using free, publicly available data. This module teaches you to observe what's happening with liquidity and position accordingly.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20,50 L20,20 L100,20 L100,50" fill="none" stroke="#1F5F5B" stroke-width="3"/>
+        <path d="M150,20 L150,50 L230,50 L230,20" fill="none" stroke="#A8772E" stroke-width="3"/>
+        <path d="M280,50 L280,20 L360,20 L360,50" fill="none" stroke="#1E7B4D" stroke-width="3"/>
+        <circle cx="450" cy="35" r="14" fill="none" stroke="#B23A2E" stroke-width="3"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="plumbing">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>Reading the Market's Plumbing: A Beginner's Guide to Global Liquidity Analysis</h2>
+      <p class="dek">Five global liquidity indicators that reveal when to be aggressive or defensive.</p>
+      <p>"Liquidity" here refers to the overall availability of money and credit moving through the global financial system — separate from, but interacting closely with, the fundamentals frameworks from Modules 05–08. When liquidity is abundant, asset prices across the board tend to be supported; when liquidity tightens, even fundamentally sound assets can struggle. This module introduces five practical, freely available gauges of that underlying condition.</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="sofr-iorb">
+      <div class="lesson-kicker"><span class="num">02</span> Funding Stress</div>
+      <h2>Understanding Overnight Lending Stress: SOFR vs IORB</h2>
+      <p class="dek">A real-time stress detector for dollar funding markets.</p>
+      <p><strong>SOFR</strong> (Secured Overnight Financing Rate) reflects the cost of overnight borrowing secured by Treasury collateral. <strong>IORB</strong> (Interest on Reserve Balances) is the rate the Fed pays banks on reserves held at the central bank. Under normal conditions, SOFR trades close to IORB. A SOFR spike notably above IORB signals stress in short-term dollar funding markets — a warning sign worth watching well before it shows up in broader asset prices.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="130" fill="#FFFFFF"/>
+          <line x1="40" y1="80" x2="720" y2="80" stroke="#A8772E" stroke-dasharray="3 2"/><text x="40" y="70" font-family="JetBrains Mono" font-size="10" fill="#A8772E">IORB</text>
+          <polyline points="40,80 150,79 260,81 370,80 480,40 590,75" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <text x="480" y="28" font-family="JetBrains Mono" font-size="10" fill="#B23A2E">SOFR spike — funding stress</text>
+        </svg>
+        <figcaption>Fig. 1 — A SOFR spike above IORB flags emerging stress in overnight dollar funding.</figcaption>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="srf">
+      <div class="lesson-kicker"><span class="num">03</span> The Fed's Backstop</div>
+      <h2>The Federal Reserve's Repo Market Backstop: Standing Repo Facility (SRF)</h2>
+      <p class="dek">When banks use the Fed's emergency window, and how to position for intervention.</p>
+      <p>The Standing Repo Facility lets eligible institutions borrow cash overnight from the Fed against Treasury and agency collateral, at a pre-set rate, acting as a backstop against funding stress like that flagged in lesson 2. Elevated, sustained SRF usage is a direct signal that liquidity conditions in the repo market are tight enough that institutions are turning to the central bank's emergency facility rather than the open market.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="tga">
+      <div class="lesson-kicker"><span class="num">04</span> Government Cash</div>
+      <h2>The Government's Checking Account: Treasury General Account (TGA)</h2>
+      <p class="dek">Tracking when government spending adds or drains liquidity from markets.</p>
+      <p>The TGA is the U.S. Treasury's operating account at the Fed. When the TGA balance rises (the Treasury issuing debt and building cash), money is effectively drained out of the private financial system into the government's account — a liquidity-tightening effect. When the TGA balance falls (the government spending down its cash), liquidity is released back into the system.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="130" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="60" y="30" width="280" height="50" fill="#FBEAE7" stroke="#B23A2E"/><text x="200" y="60" fill="#B23A2E">TGA balance rising</text>
+            <rect x="420" y="30" width="280" height="50" fill="#E3F2E9" stroke="#1E7B4D"/><text x="560" y="60" fill="#1E7B4D">TGA balance falling</text>
+          </g>
+          <text x="200" y="105" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">Liquidity drained from markets</text>
+          <text x="560" y="105" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">Liquidity released into markets</text>
+        </svg>
+        <figcaption>Fig. 2 — The TGA acts like a sponge: filling it drains market liquidity, emptying it releases liquidity.</figcaption>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="doom-loop">
+      <div class="lesson-kicker"><span class="num">05</span> Crisis Signal</div>
+      <h2>When Stocks and Bonds Fall Together: The "Doom Loop Detector"</h2>
+      <p class="dek">Spotting Treasury market dysfunction before Fed intervention.</p>
+      <p>Stocks and bonds typically have a degree of negative correlation — when investors flee equities, they often rotate into the relative safety of government bonds. When stocks <em>and</em> bonds fall together sharply, it suggests something more serious: a broad liquidity event where investors are selling everything, including normally safe assets, often to raise cash. This pattern has historically preceded direct central bank intervention to restore market function.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="dxy-liquidity">
+      <div class="lesson-kicker"><span class="num">06</span> Cross-Reference</div>
+      <h2>The Dollar Index (DXY): A Key Gauge of Global Liquidity</h2>
+      <p class="dek">Four critical DXY patterns that signal when to go long or short USD pairs.</p>
+      <p>Beyond its role as a currency-strength gauge (Module 13), a sharply rising DXY often signals tightening global dollar liquidity — since the dollar's global funding role (Module 13, lesson 1) means dollar strength can squeeze borrowers worldwide who owe dollar-denominated debt. A falling DXY, conversely, often accompanies looser, more abundant global liquidity conditions.</p>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="gold-btc">
+      <div class="lesson-kicker"><span class="num">07</span> Confirmation Signals</div>
+      <h2>Gold and Bitcoin: Your Liquidity Confirmation Signals</h2>
+      <p class="dek">Six patterns that confirm whether to be aggressive or defensive with positions.</p>
+      <p>Both gold (Module 14, lesson 3) and, more recently, Bitcoin have been watched by some traders as liquidity barometers — both tend to perform well during periods of abundant, loose liquidity and central bank balance sheet expansion (next lesson), and tend to struggle when liquidity tightens sharply. Used alongside DXY and the funding-stress indicators above, they offer a useful cross-check rather than a standalone signal.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="lesson" id="cb-balance-sheets">
+      <div class="lesson-kicker"><span class="num">08</span> Structural Liquidity</div>
+      <h2>How Central Bank Balance Sheets Shape Global Liquidity</h2>
+      <p class="dek">How a balance sheet creates or destroys liquidity, and where to find the data.</p>
+      <p>This extends Module 05, lesson 5's introduction of QE and QT. When a central bank expands its balance sheet (QE — buying assets like government bonds), it injects new liquidity into the financial system. When it contracts its balance sheet (QT), it withdraws liquidity. Most major central banks publish their balance sheet size and composition on a regular basis, freely available to the public.</p>
+    </section>
+
+    <!-- 9 -->
+    <section class="lesson" id="balance-sheet-fx">
+      <div class="lesson-kicker"><span class="num">09</span> Application</div>
+      <h2>How Central Bank Balance Sheets Changes Impact Forex</h2>
+      <p class="dek">Why traders must understand balance sheet expansion and contraction to trade currency pairs.</p>
+      <p>Comparing the relative pace of balance sheet expansion or contraction between two central banks adds a further layer to the policy divergence framework from Module 05. A central bank expanding its balance sheet aggressively while another contracts can pressure the former's currency, independent of (and sometimes ahead of) any change in headline interest rates.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="130" fill="#FFFFFF"/>
+          <polyline points="40,100 150,90 260,70 370,40 480,20" fill="none" stroke="#B23A2E" stroke-width="2"/>
+          <text x="480" y="10" font-family="JetBrains Mono" font-size="10" fill="#B23A2E">Bank A balance sheet expanding (QE)</text>
+          <polyline points="40,40 150,50 260,65 370,90 480,105" fill="none" stroke="#1E7B4D" stroke-width="2"/>
+          <text x="480" y="118" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">Bank B balance sheet contracting (QT)</text>
+        </svg>
+        <figcaption>Fig. 3 — Diverging balance sheet trajectories can pressure a currency independently of the policy rate itself.</figcaption>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="lesson" id="m2">
+      <div class="lesson-kicker"><span class="num">10</span> Long-Term View</div>
+      <h2>Global M2 Money Supply: The Long-Term Liquidity Indicator</h2>
+      <p class="dek">A leading liquidity indicator for longer-horizon trading decisions.</p>
+      <p>M2 measures a broad definition of money supply (cash, checking deposits, and easily-convertible near-money assets) across major economies. Tracking aggregated global M2 growth gives a longer-term, slower-moving read on liquidity conditions — complementary to the faster-moving, more tactical indicators covered earlier in this module (SOFR, TGA, balance sheets), useful for forming a longer-horizon view rather than day-to-day positioning.</p>
+    </section>
+
+    <!-- 11 -->
+    <section class="lesson" id="cheat-sheet">
+      <div class="lesson-kicker"><span class="num">11</span> Synthesis</div>
+      <h2>Global Liquidity Cheat Sheet</h2>
+      <p class="dek">Track five key indicators in ten minutes weekly.</p>
+      <table class="ref">
+        <tr><th>Indicator</th><th>What it flags</th><th>Frequency to check</th></tr>
+        <tr><td>SOFR vs IORB spread</td><td>Overnight funding stress</td><td>Weekly, or daily during stress periods</td></tr>
+        <tr><td>SRF usage</td><td>Institutions turning to the Fed's emergency window</td><td>Weekly</td></tr>
+        <tr><td>TGA balance</td><td>Government cash flows draining or releasing liquidity</td><td>Weekly</td></tr>
+        <tr><td>DXY level/trend</td><td>Broad global dollar liquidity conditions</td><td>Daily glance, weekly trend check</td></tr>
+        <tr><td>Gold &amp; Bitcoin trend</td><td>Confirmation of loose vs. tight liquidity regime</td><td>Weekly</td></tr>
+      </table>
+      <div class="callout"><strong>The habit that matters:</strong> none of these tools need daily obsessive monitoring — a brief weekly check across all five is usually enough to notice meaningful regime shifts before they're widely reported in the news.</div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Global Liquidity</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. What does a SOFR spike notably above IORB typically signal?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Routine, healthy market conditions</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Stress in short-term dollar funding markets</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) An interest rate cut has just occurred</label>
+        <div class="reveal"><strong>Answer: B.</strong> SOFR trading notably above IORB indicates funding stress in overnight dollar lending markets.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. What happens to market liquidity when the Treasury General Account (TGA) balance rises?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) Liquidity is effectively drained from the private financial system into the government's account</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Liquidity is automatically released into markets</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) The TGA has no relationship to market liquidity</label>
+        <div class="reveal"><strong>Answer: A.</strong> A rising TGA balance pulls cash out of the private financial system, tightening liquidity.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why is stocks and bonds falling together considered a more serious signal than a typical equity selloff?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) It suggests a broad liquidity event where investors are selling everything, including normally safe assets, often to raise cash</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Stocks and bonds always move together under normal conditions</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) It has no particular significance</label>
+        <div class="reveal"><strong>Answer: A.</strong> Since stocks and bonds typically show some negative correlation, both falling together can indicate broader market dysfunction.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. Why might gold and Bitcoin be watched as liquidity confirmation signals?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) Both have historically tended to perform well during periods of abundant liquidity and struggle when liquidity tightens</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) They have no relationship to liquidity conditions</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) They are required by law to track central bank balance sheets exactly</label>
+        <div class="reveal"><strong>Answer: A.</strong> Both assets have shown a tendency to track broader liquidity conditions, making them a useful cross-check alongside other indicators.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. How can diverging central bank balance sheet trajectories affect a currency, independent of headline rate decisions?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) A central bank expanding its balance sheet aggressively while another contracts can pressure the former's currency even without a change in policy rates</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) Balance sheet size has no impact on currency values</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Only interest rates can ever affect a currency's value</label>
+        <div class="reveal"><strong>Answer: A.</strong> Balance sheet expansion or contraction adds liquidity-driven pressure on a currency that can move independently of, and sometimes ahead of, rate decisions.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 17 — BEGINNER'S GUIDE TO GLOBAL LIQUIDITY · NEXT MODULE: NARRATIVE ANALYSIS
+    </footer>
+  </main>
+</div>
+</body>
+</html>

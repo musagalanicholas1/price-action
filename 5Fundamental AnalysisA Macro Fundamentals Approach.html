@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fundamental Analysis: A Macro Fundamentals Approach — Module 05</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:21px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:13.5px; padding:6px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:48px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:30px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:20px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:8px 10px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 05</div>
+    <p class="toc-title">Fundamental Analysis:<br>A Macro Approach</p>
+    <ol>
+      <li><a href="#what-is-fa">What Is Fundamental Analysis?</a></li>
+      <li><a href="#econ-cycle">The Economic Cycle</a></li>
+      <li><a href="#growth">Economic Growth</a></li>
+      <li><a href="#inflation">Inflation</a></li>
+      <li><a href="#monetary-policy">What Central Banks Actually Do</a></li>
+      <li><a href="#hawkish-dovish">Hawkish vs. Dovish</a></li>
+      <li><a href="#interest-rates">Interest Rates</a></li>
+      <li><a href="#central-banks">The Nine Central Banks</a></li>
+      <li><a href="#personalities">Central Bank Personalities</a></li>
+      <li><a href="#expectations">Trading Decisions Using Expectations</a></li>
+      <li><a href="#fiscal-policy">Fiscal Policy</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 05 of the Trading Curriculum</div>
+      <h1>Fundamental Analysis: A Macro Fundamentals Approach</h1>
+      <p class="lede">Most traders watch the charts. The ones who understand WHY currencies move watch the economies behind them. This module teaches macro fundamentals — growth, inflation, central banks, monetary policy, and fiscal policy — and how they all drive currency price action.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,40 Q75,10 150,40 T300,40 T450,40 T600,40" fill="none" stroke="#A8772E" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="150" cy="40" r="4" fill="#1E7B4D"/><circle cx="300" cy="40" r="4" fill="#B23A2E"/><circle cx="450" cy="40" r="4" fill="#1E7B4D"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-fa">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Is Fundamental Analysis? And Why It's Really Macro</h2>
+      <p class="dek">How it differs from stock market fundamentals, and why economic indicators, central banks, and geopolitics matter.</p>
+
+      <p>In equity markets, fundamental analysis usually means analyzing a single company: its earnings, debt, management, and competitive position. In forex, there's no single "company" behind a currency — there's an entire economy. Fundamental analysis in forex is therefore really <strong>macroeconomic analysis</strong>: studying growth, inflation, employment, trade flows, central bank policy, and government finances for an entire country (or currency bloc, in the case of the euro), and comparing that picture against another country's.</p>
+
+      <p>Every currency pair is a relative bet. EUR/USD isn't a statement about the euro in isolation — it's a statement about the eurozone economy <em>relative to</em> the U.S. economy. This relative framing is the single most important mental habit this module will build.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="180" fill="#FFFFFF"/>
+          <circle cx="220" cy="90" r="70" fill="#E3EFEE" stroke="#1F5F5B"/>
+          <text x="220" y="85" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#1F5F5B">EUROZONE</text>
+          <text x="220" y="105" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">growth, inflation, ECB policy</text>
+          <circle cx="540" cy="90" r="70" fill="#F1E6D2" stroke="#A8772E"/>
+          <text x="540" y="85" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#A8772E">UNITED STATES</text>
+          <text x="540" y="105" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">growth, inflation, Fed policy</text>
+          <line x1="290" y1="90" x2="470" y2="90" stroke="#1C2024" stroke-width="2" marker-end="url(#arrf)" marker-start="url(#arrf)"/>
+          <text x="380" y="75" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#1C2024">EUR/USD</text>
+          <defs><marker id="arrf" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1C2024"/></marker></defs>
+        </svg>
+        <figcaption>Fig. 1 — Every currency pair is a relative comparison between two macro stories, not an isolated read on one.</figcaption>
+      </div>
+
+      <div class="callout"><strong>The practical question fundamental analysis always answers:</strong> is the economic story behind Currency A getting relatively stronger or weaker compared to the story behind Currency B?</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="econ-cycle">
+      <div class="lesson-kicker"><span class="num">02</span> Foundations</div>
+      <h2>The Economic Cycle: Where Every Fundamental Analysis Starts</h2>
+      <p class="dek">The map that makes every economic data point, central bank decision, and news event make sense.</p>
+
+      <p>Economies move through recurring phases of expansion and contraction known as the business cycle. Before interpreting any individual data release, you need a working sense of where the broader economy currently sits in this cycle — the same data point means something very different depending on the phase.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="260" fill="#FFFFFF"/>
+          <path d="M30,180 Q150,40 270,180 T510,180 T750,180" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <line x1="30" y1="180" x2="750" y2="180" stroke="#E1DDD3" stroke-dasharray="3 2"/>
+          <text x="120" y="70" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">EXPANSION</text>
+          <text x="240" y="35" font-family="JetBrains Mono" font-size="11" fill="#A8772E">PEAK</text>
+          <text x="330" y="150" font-family="JetBrains Mono" font-size="11" fill="#B23A2E">CONTRACTION</text>
+          <text x="480" y="200" font-family="JetBrains Mono" font-size="11" fill="#A8772E">TROUGH</text>
+          <text x="560" y="70" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">RECOVERY</text>
+        </svg>
+        <figcaption>Fig. 2 — The four phases of the economic cycle: expansion, peak, contraction (recession), and trough/recovery.</figcaption>
+      </div>
+
+      <table class="ref">
+        <tr><th>Phase</th><th>Typical signs</th><th>Usual central bank posture</th></tr>
+        <tr><td>Expansion</td><td>Rising GDP, falling unemployment, rising consumer spending</td><td>Gradually less accommodative; watching for overheating</td></tr>
+        <tr><td>Peak</td><td>Growth at its strongest, inflation pressures building</td><td>Often hiking rates or signaling the end of easing</td></tr>
+        <tr><td>Contraction</td><td>Falling GDP, rising unemployment, weaker spending</td><td>Cutting rates, providing stimulus</td></tr>
+        <tr><td>Trough / recovery</td><td>Growth bottoms out and begins to turn higher</td><td>Holding rates low, supporting the early recovery</td></tr>
+      </table>
+
+      <p>Knowing the phase tells you what kind of data surprises to expect and how a central bank is likely to react to them — which is the foundation for the next two lessons on growth and inflation.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="growth">
+      <div class="lesson-kicker"><span class="num">03</span> The Two Pillars</div>
+      <h2>Economic Growth: The Force That Shapes Central Bank Thinking</h2>
+      <p class="dek">How to read growth before the headline numbers arrive, and why growth differentials drive the biggest currency trends.</p>
+
+      <p>Central banks watch two things above all else before setting policy: growth and inflation (covered next). Growth, typically measured by Gross Domestic Product (GDP), tells policymakers whether the economy needs support or restraint.</p>
+
+      <h3>Reading Growth Before the Headline GDP Print</h3>
+      <p>GDP itself is reported with a significant lag and is often revised. Traders watch faster, more frequent proxies to estimate growth before the official number arrives:</p>
+      <ul>
+        <li><strong>Purchasing Managers' Index (PMI)</strong> — a monthly survey of manufacturing and services activity; readings above 50 signal expansion, below 50 signal contraction.</li>
+        <li><strong>Retail sales</strong> — a direct read on consumer spending, the largest component of GDP in most developed economies.</li>
+        <li><strong>Industrial production</strong> — manufacturing output, more relevant in economies with a larger industrial base.</li>
+        <li><strong>Employment data</strong> — covered in more depth in Module 06, but a leading proxy for income and spending capacity.</li>
+      </ul>
+
+      <h3>Why Growth Differentials Matter More Than Growth Levels</h3>
+      <p>A currency doesn't need to belong to a booming economy to strengthen — it needs to belong to an economy growing <em>faster than its counterpart</em>. A country growing at a modest 1.5% looks weak in isolation, but if its trading partner is growing at 0.5%, the growth differential still favors the stronger currency.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="200" fill="#FFFFFF"/>
+          <line x1="40" y1="160" x2="740" y2="160" stroke="#E1DDD3"/>
+          <rect x="100" y="100" width="60" height="60" fill="#1E7B4D"/><text x="130" y="180" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">1.5% GDP</text>
+          <rect x="280" y="140" width="60" height="20" fill="#A8772E"/><text x="310" y="180" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#A8772E">0.5% GDP</text>
+          <text x="450" y="60" font-family="Inter" font-size="13" fill="#4A5159">Even a modest 1.5% economy</text>
+          <text x="450" y="80" font-family="Inter" font-size="13" fill="#4A5159">outpaces a 0.5% one — that</text>
+          <text x="450" y="100" font-family="Inter" font-size="13" fill="#4A5159">growth differential, not the</text>
+          <text x="450" y="120" font-family="Inter" font-size="13" fill="#4A5159">absolute number, drives the trend.</text>
+        </svg>
+        <figcaption>Fig. 3 — Relative growth, not absolute growth, is what currency markets ultimately price.</figcaption>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="inflation">
+      <div class="lesson-kicker"><span class="num">04</span> The Two Pillars</div>
+      <h2>Inflation: The Force That Moves Central Banks</h2>
+      <p class="dek">How CPI, PCE, and PPI measure it, why central banks target 2%, and how inflation regimes shape currency values.</p>
+
+      <p>Inflation measures how fast prices are rising across the economy. Most major central banks target roughly 2% annual inflation — low enough to preserve purchasing power and price stability, high enough to avoid the dangers of deflation.</p>
+
+      <h3>The Three Main Inflation Gauges</h3>
+      <table class="ref">
+        <tr><th>Measure</th><th>What it tracks</th><th>Used most by</th></tr>
+        <tr><td>CPI (Consumer Price Index)</td><td>A fixed basket of consumer goods and services</td><td>Most central banks and headline media reporting</td></tr>
+        <tr><td>PCE (Personal Consumption Expenditures)</td><td>A broader, basket-adjusting measure of consumer spending</td><td>The U.S. Federal Reserve's preferred gauge</td></tr>
+        <tr><td>PPI (Producer Price Index)</td><td>Prices received by producers/wholesalers — often leads CPI</td><td>Used as an early warning signal for future consumer inflation</td></tr>
+      </table>
+
+      <h3>Inflation Regimes</h3>
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="20" y="60" width="160" height="60" rx="6" fill="#E3F2E9" stroke="#1E7B4D"/><text x="100" y="95" fill="#1E7B4D">GOLDILOCKS</text>
+            <rect x="200" y="60" width="160" height="60" rx="6" fill="#F1E6D2" stroke="#A8772E"/><text x="280" y="95" fill="#A8772E">REFLATION</text>
+            <rect x="380" y="60" width="160" height="60" rx="6" fill="#FBEAE7" stroke="#B23A2E"/><text x="460" y="95" fill="#B23A2E">OVERHEATING</text>
+            <rect x="560" y="60" width="180" height="60" rx="6" fill="#FBEAE7" stroke="#B23A2E"/><text x="650" y="95" fill="#B23A2E">STAGFLATION</text>
+          </g>
+          <text x="100" y="150" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">Moderate growth,</text>
+          <text x="100" y="168" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">inflation near target</text>
+          <text x="280" y="150" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">Growth picking up,</text>
+          <text x="280" y="168" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">inflation rising from low base</text>
+          <text x="460" y="150" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">Strong growth,</text>
+          <text x="460" y="168" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">inflation running hot</text>
+          <text x="650" y="150" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">Weak growth,</text>
+          <text x="650" y="168" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">high inflation — the hardest mix</text>
+        </svg>
+        <figcaption>Fig. 4 — Four inflation regimes. Stagflation is the most difficult for a central bank, since fighting inflation with higher rates risks worsening already-weak growth.</figcaption>
+      </div>
+
+      <div class="warn"><strong>Why this matters for currencies:</strong> a central bank fighting overheating inflation typically hikes rates (often currency-supportive in the near term), while one facing stagflation faces an unusually difficult, currency-ambiguous policy trade-off.</div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="monetary-policy">
+      <div class="lesson-kicker"><span class="num">05</span> The Toolkit</div>
+      <h2>What Central Banks Actually Do: A Guide to Monetary Policy</h2>
+      <p class="dek">The full toolkit beyond interest rates, how policy transmits through the economy, and why divergence is one of FX's most powerful setups.</p>
+
+      <h3>The Monetary Policy Toolkit</h3>
+      <table class="ref">
+        <tr><th>Tool</th><th>What it does</th></tr>
+        <tr><td>Policy interest rate</td><td>The benchmark rate that influences borrowing costs throughout the economy</td></tr>
+        <tr><td>Quantitative easing (QE)</td><td>Large-scale asset purchases (usually government bonds) to inject liquidity and lower long-term yields</td></tr>
+        <tr><td>Quantitative tightening (QT)</td><td>Reducing the central bank's balance sheet, removing liquidity</td></tr>
+        <tr><td>Forward guidance</td><td>Public communication about the likely future path of policy, used to shape expectations directly</td></tr>
+        <tr><td>Reserve requirements</td><td>Rules on how much capital banks must hold, affecting how freely they can lend</td></tr>
+      </table>
+
+      <h3>How Policy Transmits Through the Economy</h3>
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="10.5" fill="#1C2024" text-anchor="middle">
+            <rect x="10" y="50" width="130" height="40" rx="6" fill="#E3EFEE" stroke="#1F5F5B"/><text x="75" y="74">POLICY RATE CHANGE</text>
+            <rect x="170" y="50" width="130" height="40" rx="6" fill="#FCFBF9" stroke="#A8772E"/><text x="235" y="74">BORROWING COSTS</text>
+            <rect x="330" y="50" width="130" height="40" rx="6" fill="#FCFBF9" stroke="#A8772E"/><text x="395" y="74">SPENDING/INVESTMENT</text>
+            <rect x="490" y="50" width="130" height="40" rx="6" fill="#E3F2E9" stroke="#1E7B4D"/><text x="555" y="74">GROWTH &amp; INFLATION</text>
+            <rect x="650" y="50" width="100" height="40" rx="6" fill="#F1E6D2" stroke="#A8772E"/><text x="700" y="74">FX RATE</text>
+          </g>
+          <g stroke="#1C2024" stroke-width="1.5" fill="none" marker-end="url(#arrm)">
+            <line x1="140" y1="70" x2="168" y2="70"/><line x1="300" y1="70" x2="328" y2="70"/><line x1="460" y1="70" x2="488" y2="70"/><line x1="620" y1="70" x2="648" y2="70"/>
+          </g>
+          <defs><marker id="arrm" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1C2024"/></marker></defs>
+        </svg>
+        <figcaption>Fig. 5 — The transmission chain: a rate decision works through several real-economy steps before it shows up fully in growth, inflation, and ultimately the exchange rate.</figcaption>
+      </div>
+
+      <h3>Monetary Policy Divergence</h3>
+      <p>When two central banks are moving in opposite directions — one hiking while another cuts, or one signaling more tightening while another signals an end to its cycle — the resulting interest rate differential tends to produce some of the cleanest, most sustained trends in all of forex. This concept, "divergence," reappears constantly throughout the rest of this module and the curriculum.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="hawkish-dovish">
+      <div class="lesson-kicker"><span class="num">06</span> Reading Language</div>
+      <h2>Hawkish vs. Dovish: How to Read Central Bank Language</h2>
+      <p class="dek">A single speech can move a currency more than the rate decision itself.</p>
+
+      <p><strong>Hawkish</strong> language signals a central bank leaning toward tighter policy — higher rates, less stimulus, more concern about inflation than growth. <strong>Dovish</strong> language signals the opposite — a willingness to cut rates or maintain stimulus, more concern about growth or employment than inflation.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="130" fill="#FFFFFF"/>
+          <line x1="40" y1="65" x2="720" y2="65" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="40" cy="65" r="6" fill="#1F5F5B"/><text x="40" y="45" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1F5F5B">VERY DOVISH</text>
+          <circle cx="380" cy="65" r="6" fill="#A8772E"/><text x="380" y="45" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#A8772E">NEUTRAL</text>
+          <circle cx="720" cy="65" r="6" fill="#B23A2E"/><text x="720" y="45" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B23A2E">VERY HAWKISH</text>
+          <text x="40" y="95" text-anchor="middle" font-family="Inter" font-size="10" fill="#4A5159">"more cuts ahead"</text>
+          <text x="380" y="95" text-anchor="middle" font-family="Inter" font-size="10" fill="#4A5159">"data dependent"</text>
+          <text x="720" y="95" text-anchor="middle" font-family="Inter" font-size="10" fill="#4A5159">"more hikes needed"</text>
+        </svg>
+        <figcaption>Fig. 6 — The hawkish-dovish spectrum. Most central bank communication is read relative to this scale, not in absolute terms.</figcaption>
+      </div>
+
+      <h3>Reading the Shift, Not Just the Stance</h3>
+      <p>What moves currencies most isn't whether a central bank is "hawkish" or "dovish" in absolute terms — it's whether they're <em>more</em> hawkish or dovish than the market expected. A central bank seen as dovish that turns out to be only mildly dovish can still strengthen its currency, because the surprise was a hawkish one relative to expectations. This concept (market expectations) gets its own full treatment in lesson 10.</p>
+
+      <table class="ref">
+        <tr><th>Hawkish phrases (illustrative)</th><th>Dovish phrases (illustrative)</th></tr>
+        <tr><td>"Inflation remains too high"</td><td>"Growth risks have increased"</td></tr>
+        <tr><td>"Further tightening may be needed"</td><td>"We have room to be patient"</td></tr>
+        <tr><td>"The labor market remains tight"</td><td>"We see softening in employment data"</td></tr>
+      </table>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="interest-rates">
+      <div class="lesson-kicker"><span class="num">07</span> The Core Driver</div>
+      <h2>Interest Rates: The Force That Moves Currencies</h2>
+      <p class="dek">Rate differentials, real vs. nominal rates, and the bond market's role as a real-time forecast.</p>
+
+      <p>Higher interest rates tend to attract foreign capital seeking better returns on deposits and bonds denominated in that currency — increasing demand for the currency itself. This is the single most consistently cited driver of medium-term currency trends.</p>
+
+      <h3>Nominal vs. Real Interest Rates</h3>
+      <p>The nominal rate is the rate you see quoted. The <strong>real rate</strong> subtracts inflation: <code>Real Rate ≈ Nominal Rate − Inflation</code>. A country offering a 5% nominal rate with 6% inflation has a <em>negative</em> real rate — savers are actually losing purchasing power. Currency markets generally care more about real rates than nominal ones, since real rates reflect the true return being offered.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="180" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <text x="150" y="30" fill="#4A5159">COUNTRY A</text>
+            <rect x="80" y="40" width="140" height="40" fill="#E3F2E9" stroke="#1E7B4D"/><text x="150" y="64" fill="#1E7B4D">Nominal: 5%</text>
+            <rect x="80" y="90" width="140" height="40" fill="#FBEAE7" stroke="#B23A2E"/><text x="150" y="114" fill="#B23A2E">Inflation: 6%</text>
+            <text x="150" y="150" fill="#1C2024">Real rate: −1%</text>
+
+            <text x="560" y="30" fill="#4A5159">COUNTRY B</text>
+            <rect x="490" y="40" width="140" height="40" fill="#E3F2E9" stroke="#1E7B4D"/><text x="560" y="64" fill="#1E7B4D">Nominal: 4%</text>
+            <rect x="490" y="90" width="140" height="40" fill="#FBEAE7" stroke="#B23A2E"/><text x="560" y="114" fill="#B23A2E">Inflation: 2%</text>
+            <text x="560" y="150" fill="#1C2024">Real rate: +2%</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 7 — Country B's lower nominal rate actually offers a higher real return — and would typically be the more currency-supportive setup of the two.</figcaption>
+      </div>
+
+      <h3>The Bond Market as a Real-Time Forecast</h3>
+      <p>Government bond yields move continuously and reflect the market's evolving expectations for future interest rates — often before a central bank actually acts. Rising yields in one country relative to another, ahead of any formal rate decision, are frequently an early signal that a rate differential (and the FX move that tends to follow it) is already forming.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="lesson" id="central-banks">
+      <div class="lesson-kicker"><span class="num">08</span> The Institutions</div>
+      <h2>Central Banks: The Institutions Behind Every Currency Move</h2>
+      <p class="dek">The Fed, ECB, BoJ, BoE, BoC, RBA, RBNZ, SNB, and PBOC — mandates, signaling, and credibility.</p>
+
+      <p>Nine central banks dominate the major forex pairs. Each has a distinct mandate, decision calendar, and communication style — but all of them are ultimately trying to balance the same growth/inflation tension covered earlier in this module.</p>
+
+      <table class="ref">
+        <tr><th>Central bank</th><th>Currency</th><th>Primary mandate</th></tr>
+        <tr><td>Federal Reserve (Fed)</td><td>USD</td><td>Dual mandate: maximum employment and price stability</td></tr>
+        <tr><td>European Central Bank (ECB)</td><td>EUR</td><td>Price stability (~2% inflation) across the eurozone</td></tr>
+        <tr><td>Bank of Japan (BoJ)</td><td>JPY</td><td>Price stability, with a long history of fighting deflation</td></tr>
+        <tr><td>Bank of England (BoE)</td><td>GBP</td><td>Inflation targeting (2%), with financial stability oversight</td></tr>
+        <tr><td>Bank of Canada (BoC)</td><td>CAD</td><td>Inflation targeting (2%), closely tied to commodity cycles</td></tr>
+        <tr><td>Reserve Bank of Australia (RBA)</td><td>AUD</td><td>Inflation targeting alongside full employment and economic welfare</td></tr>
+        <tr><td>Reserve Bank of New Zealand (RBNZ)</td><td>NZD</td><td>Inflation targeting, was the first central bank globally to formally adopt it</td></tr>
+        <tr><td>Swiss National Bank (SNB)</td><td>CHF</td><td>Price stability, with a history of direct FX market intervention</td></tr>
+        <tr><td>People's Bank of China (PBOC)</td><td>CNY</td><td>Multiple objectives including growth, employment, and a managed exchange rate</td></tr>
+      </table>
+
+      <div class="callout"><strong>Credibility is priced in directly.</strong> A central bank with a long track record of following through on its stated commitments gets believed faster by markets — its forward guidance moves currencies more efficiently than one with a history of reversing course unexpectedly.</div>
+    </section>
+
+    <!-- 9 -->
+    <section class="lesson" id="personalities">
+      <div class="lesson-kicker"><span class="num">09</span> Behavioral Patterns</div>
+      <h2>Central Banks Have Personalities: Decode Their Behavior</h2>
+      <p class="dek">Four traits that make each institution predictable.</p>
+
+      <div class="grid-cards">
+        <div class="card"><span class="tag">Trait 1</span><h4>First-mover tendency</h4><p>Some central banks (historically the Fed) tend to move first in a global cycle; others tend to wait and follow.</p></div>
+        <div class="card"><span class="tag">Trait 2</span><h4>Communication style</h4><p>Some are highly transparent with detailed forward guidance (RBNZ, Fed); others are more deliberately ambiguous (ECB at times, BoJ historically).</p></div>
+        <div class="card"><span class="tag">Trait 3</span><h4>Intervention willingness</h4><p>The SNB and BoJ have both directly intervened in FX markets when they judged their currency's level a problem; others (the Fed) almost never do.</p></div>
+        <div class="card"><span class="tag">Trait 4</span><h4>Inflation-success definition</h4><p>Some banks treat the inflation target as a hard ceiling to avoid exceeding; others (the Fed's average-inflation-targeting framework) treat it as an average to manage over time.</p></div>
+      </div>
+
+      <p>Learning each bank's personality lets you anticipate how they're likely to react to the same data surprise differently — a hot inflation print might trigger swift hawkish language from one institution and a measured "we'll watch the data" response from another, purely based on institutional character.</p>
+    </section>
+
+    <!-- 10 -->
+    <section class="lesson" id="expectations">
+      <div class="lesson-kicker"><span class="num">10</span> Application</div>
+      <h2>How to Trade Central Bank Decisions Using Market Expectations</h2>
+      <p class="dek">Getting the rate decision right isn't enough if the market already expected it.</p>
+
+      <p>"Priced in" means the market has already adjusted asset prices to reflect the outcome it expects — so when that expected outcome actually arrives, there's little reason for the price to move further on the news alone. What actually moves the market is the <em>surprise</em>: the gap between what was priced in and what was delivered.</p>
+
+      <h3>The Four Scenarios</h3>
+      <table class="ref">
+        <tr><th>Scenario</th><th>Typical currency reaction</th></tr>
+        <tr><td>Hawkish decision, hawkish surprise (more than priced in)</td><td>Currency strengthens, often sharply</td></tr>
+        <tr><td>Hawkish decision, dovish surprise (less than priced in)</td><td>Currency can weaken despite the "hawkish" headline, since it undershot expectations</td></tr>
+        <tr><td>Dovish decision, dovish surprise (more than priced in)</td><td>Currency weakens, often sharply</td></tr>
+        <tr><td>Dovish decision, hawkish surprise (less than priced in)</td><td>Currency can strengthen despite the "dovish" headline</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <text x="20" y="25" font-family="Inter" font-size="13" fill="#4A5159">Market-implied probability (via rate futures pricing) before the decision:</text>
+          <rect x="20" y="50" width="500" height="30" fill="#FCFBF9" stroke="#E1DDD3"/>
+          <rect x="20" y="50" width="370" height="30" fill="#1E7B4D"/>
+          <text x="200" y="70" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#fff">74% chance of a hold</text>
+          <text x="455" y="70" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1C2024">26% cut</text>
+          <text x="20" y="110" font-family="Inter" font-size="13" fill="#4A5159">If the bank actually cuts: a genuine surprise relative to the 74% priced-in hold — typically a larger currency reaction than the headline "rate cut" alone would suggest.</text>
+        </svg>
+        <figcaption>Fig. 8 — Market-implied probabilities, often derived from interest rate futures, are the benchmark every actual decision gets measured against.</figcaption>
+      </div>
+
+      <p>On decision day, for any of the nine major central banks, the practical checklist is the same: know the market-implied probability beforehand, watch the actual decision and accompanying statement language, and react to the gap between the two — not the headline in isolation.</p>
+    </section>
+
+    <!-- 11 -->
+    <section class="lesson" id="fiscal-policy">
+      <div class="lesson-kicker"><span class="num">11</span> Beyond the Central Bank</div>
+      <h2>Beyond the Central Bank: How Fiscal Policy Also Moves Currencies</h2>
+      <p class="dek">Governments are steering the economy with a different set of controls than the central bank.</p>
+
+      <p><strong>Fiscal policy</strong> refers to government decisions on spending and taxation — distinct from the monetary policy levers covered earlier in this module, which belong to the central bank. Large fiscal stimulus (spending increases or tax cuts) can boost growth and, in some conditions, inflation; fiscal tightening (austerity) does the reverse.</p>
+
+      <h3>Why Debt Levels Matter</h3>
+      <p>Persistently large government deficits, financed by rising debt, can eventually raise concerns about a country's fiscal sustainability — pushing up the yields a government must offer to borrow, and in extreme cases damaging confidence in the currency itself.</p>
+
+      <h3>When Fiscal and Monetary Policy Conflict</h3>
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="60" y="40" width="280" height="80" fill="#E3EFEE" stroke="#1F5F5B"/><text x="200" y="70" fill="#1F5F5B">MONETARY: TIGHTENING</text><text x="200" y="92" fill="#1F5F5B" font-size="10">(central bank fighting inflation)</text>
+            <rect x="420" y="40" width="280" height="80" fill="#F1E6D2" stroke="#A8772E"/><text x="560" y="70" fill="#A8772E">FISCAL: EXPANSIONARY</text><text x="560" y="92" fill="#A8772E" font-size="10">(government spending heavily)</text>
+          </g>
+          <text x="380" y="80" text-anchor="middle" font-family="Inter" font-size="20" fill="#B23A2E">⇄</text>
+        </svg>
+        <figcaption>Fig. 9 — A central bank trying to cool the economy while the government simultaneously stimulates it — a recurring real-world tension with ambiguous net currency implications.</figcaption>
+      </div>
+
+      <p>When monetary and fiscal policy point in opposite directions, the net effect on a currency becomes genuinely harder to call, and usually depends on which force the market judges to be more dominant at that moment in the cycle.</p>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Fundamental Analysis — A Macro Fundamentals Approach</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Why is fundamental analysis in forex described as fundamentally "macro" rather than company-style analysis?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Because there's no single company behind a currency — you're analyzing an entire economy relative to another</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Because forex doesn't actually have fundamentals</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Because central banks replace the need for any economic analysis</label>
+        <div class="reveal"><strong>Answer: A.</strong> Currency pairs are relative bets between two economies, which is why forex fundamental analysis is really macroeconomic and comparative by nature.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Why does a country growing at a modest 1.5% sometimes still see currency strength?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) Absolute growth levels are all that matter</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) If its trading partner is growing even slower, the growth differential still favors the stronger currency</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Growth has no relationship to currency strength</label>
+        <div class="reveal"><strong>Answer: B.</strong> Currency markets price relative growth differentials, not absolute growth levels in isolation.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. A country offers a 5% nominal interest rate but has 6% inflation. What is its real rate, and why does that matter more than the nominal figure?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) +11%, because rates and inflation add together</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) −1%, because the real rate reflects the true return after accounting for inflation</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) 5%, because inflation doesn't affect real returns</label>
+        <div class="reveal"><strong>Answer: B.</strong> Real rate ≈ nominal rate − inflation. A negative real rate means savers are losing purchasing power despite a seemingly attractive nominal yield.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. A central bank cuts rates (a "dovish" decision), but the market had priced in an even larger cut. What's the likely currency reaction?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) The currency weakens sharply because any cut is automatically bearish</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) The currency can actually strengthen, because the outcome was a hawkish surprise relative to expectations</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) There is no reaction since the decision was already announced</label>
+        <div class="reveal"><strong>Answer: B.</strong> What moves currencies is the surprise relative to what was priced in — a smaller-than-expected cut is a hawkish surprise, even though the headline is technically a rate cut.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Which inflation regime is generally considered the most difficult for a central bank to manage?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) Goldilocks — moderate growth with inflation near target</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) Stagflation — weak growth combined with high inflation</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Reflation — growth picking up from a low base</label>
+        <div class="reveal"><strong>Answer: B.</strong> Stagflation is hardest because fighting inflation with higher rates risks further weakening already-fragile growth — there's no easy lever to pull.</div>
+      </div>
+
+      <div class="quiz-q" id="q6">
+        <p class="q">6. Why might a central bank's forward guidance move markets faster if the institution has high credibility?</p>
+        <label onclick="document.getElementById('q6').classList.add('show')">A) Credibility has no impact on how markets respond to guidance</label>
+        <label onclick="document.getElementById('q6').classList.add('show')">B) Markets believe and price in guidance more quickly from an institution with a track record of following through</label>
+        <label onclick="document.getElementById('q6').classList.add('show')">C) Credible central banks are legally required to act on their guidance</label>
+        <div class="reveal"><strong>Answer: B.</strong> A track record of following through on stated commitments means the market trusts (and prices in) the guidance more readily and quickly.</div>
+      </div>
+
+      <div class="quiz-q" id="q7">
+        <p class="q">7. What happens to a currency's outlook when monetary policy is tightening while fiscal policy is simultaneously expansionary?</p>
+        <label onclick="document.getElementById('q7').classList.add('show')">A) The net effect becomes ambiguous and depends on which force the market judges as more dominant</label>
+        <label onclick="document.getElementById('q7').classList.add('show')">B) Monetary policy always overrides fiscal policy completely</label>
+        <label onclick="document.getElementById('q7').classList.add('show')">C) Fiscal policy has no bearing on currency values</label>
+        <div class="reveal"><strong>Answer: A.</strong> When the two forces point in opposite directions, the net currency impact becomes genuinely harder to call and depends on market judgment about which force dominates.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 05 — FUNDAMENTAL ANALYSIS: A MACRO FUNDAMENTALS APPROACH · NEXT MODULE: ECONOMIC DATA AND MARKET REACTIONS
+    </footer>
+  </main>
+</div>
+</body>
+</html>

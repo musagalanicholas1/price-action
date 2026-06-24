@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support and Resistance Levels — Grade 1</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:50px; line-height:1.05; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Grade 1</div>
+    <p class="toc-title">Support and<br>Resistance Levels</p>
+    <ol>
+      <li><a href="#what-is-sr">What Is Support and Resistance?</a></li>
+      <li><a href="#trend-lines">Trend Lines</a></li>
+      <li><a href="#trend-channels">Trend Channels</a></li>
+      <li><a href="#trading-the-lines">How to Trade Support and Resistance</a></li>
+      <li><a href="#psych-levels">Psychological Levels</a></li>
+      <li><a href="#summary">Summary</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Grade 1 · Technical Analysis Basics</div>
+      <h1>Support and Resistance Levels</h1>
+      <p class="lede">To start your education on technical analysis, let's begin with the basics: support and resistance — the foundation every other charting tool in this curriculum builds on top of.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="20" x2="600" y2="20" stroke="#A8772E" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <line x1="0" y1="48" x2="600" y2="48" stroke="#A8772E" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <polyline points="0,34 60,22 120,46 180,24 240,44 300,22 360,46 420,24 480,44 540,22 600,34" fill="none" stroke="#1C2024" stroke-width="1.5" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-sr">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Is Support and Resistance?</h2>
+      <p class="dek">The most basic concept in price action analysis, and how to start plotting it.</p>
+
+      <p><strong>Support</strong> is a price level where buying pressure has historically been strong enough to stop a decline and push price back up — think of it as a floor. <strong>Resistance</strong> is the opposite: a level where selling pressure has historically been strong enough to stop a rally and push price back down — a ceiling.</p>
+
+      <p>These levels exist because price isn't moved by some abstract force — it's moved by real participants placing real orders. At a support level, enough buyers have shown up before that traders expect them to show up again. At a resistance level, enough sellers have shown up before that traders expect the same. The level becomes somewhat self-reinforcing: because many traders are watching it, many traders act on it, which helps the level continue to "work."</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 240" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="240" fill="#FFFFFF"/>
+          <line x1="30" y1="60" x2="730" y2="60" stroke="#B23A2E" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="600" y="50" font-family="JetBrains Mono" font-size="11" fill="#B23A2E">RESISTANCE — the ceiling</text>
+          <line x1="30" y1="190" x2="730" y2="190" stroke="#1E7B4D" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="600" y="210" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">SUPPORT — the floor</text>
+          <polyline points="40,150 90,100 140,65 190,110 240,160 290,185 340,150 390,95 440,65 490,115 540,165 590,188 640,155 690,100" fill="none" stroke="#1C2024" stroke-width="2"/>
+        </svg>
+        <figcaption>Fig. 1 — Price repeatedly approaches the same ceiling and floor, reacting at both.</figcaption>
+      </div>
+
+      <h3>How to Start Plotting Levels</h3>
+      <ol>
+        <li>Look for price areas where the market has reversed direction more than once.</li>
+        <li>Mark these as horizontal zones rather than single exact lines — price rarely reverses at the identical price twice.</li>
+        <li>Note how many times each level has been tested — more tests generally means more traders are watching it, though as later lessons in this curriculum explore, a level tested too many times can also start to weaken.</li>
+      </ol>
+
+      <div class="callout"><strong>The role-reversal principle:</strong> once resistance is convincingly broken, it often becomes new support — and once support is broken, it often becomes new resistance. The market's memory of a level doesn't disappear just because price has moved beyond it.</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="trend-lines">
+      <div class="lesson-kicker"><span class="num">02</span> Charting Tools</div>
+      <h2>Trend Lines</h2>
+      <p class="dek">The most basic — but powerful — charting tool in the toolbox.</p>
+
+      <p>A trend line is simply a straight line connecting a series of swing highs or swing lows, drawn to capture the angle of the prevailing trend. In an uptrend, you connect a series of rising swing lows; in a downtrend, you connect a series of falling swing highs. The line itself becomes a dynamic, moving version of support or resistance — sloped rather than horizontal.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <polyline points="40,180 110,140 180,160 250,110 320,135 390,75 460,100 530,45" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <line x1="110" y1="140" x2="530" y2="40" stroke="#1E7B4D" stroke-width="2" stroke-dasharray="5 3"/>
+          <circle cx="110" cy="140" r="4" fill="#1E7B4D"/>
+          <circle cx="250" cy="110" r="4" fill="#1E7B4D"/>
+          <circle cx="390" cy="75" r="4" fill="#1E7B4D"/>
+          <text x="120" y="125" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">rising swing lows</text>
+          <text x="540" y="38" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">uptrend line</text>
+        </svg>
+        <figcaption>Fig. 2 — An uptrend line connects a series of rising swing lows, projecting forward as dynamic support.</figcaption>
+      </div>
+
+      <h3>Drawing a Valid Trend Line</h3>
+      <ul>
+        <li>You need at least two touch points to draw a line, but a third touch is what actually starts to validate it as meaningful.</li>
+        <li>The line should touch the swing points themselves as closely as possible — forcing a line to fit by ignoring where price actually turned defeats its purpose.</li>
+        <li>A trend line that gets touched more times, over a longer period, with cleaner reactions each time, is generally considered more significant.</li>
+      </ul>
+
+      <div class="warn"><strong>What a broken trend line means:</strong> a decisive close through a trend line is one of the earliest signals that the trend's angle of ascent or descent may be changing — though, as with horizontal support/resistance, it doesn't automatically mean a full reversal is underway.</div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="trend-channels">
+      <div class="lesson-kicker"><span class="num">03</span> Charting Tools</div>
+      <h2>Trend Channels</h2>
+      <p class="dek">Taking trend lines a step further to see opportunities within a trend.</p>
+
+      <p>A trend channel adds a second, parallel line on the opposite side of price from your original trend line — connecting the swing highs in an uptrend (above price) or the swing lows in a downtrend (below price). Together, the two lines form a sloped "tube" that price tends to oscillate within.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <polyline points="40,180 110,140 180,160 250,110 320,135 390,75 460,100 530,45" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <line x1="110" y1="140" x2="530" y2="40" stroke="#1E7B4D" stroke-width="2" stroke-dasharray="5 3"/>
+          <line x1="180" y1="100" x2="600" y2="0" stroke="#A8772E" stroke-width="2" stroke-dasharray="5 3"/>
+          <text x="540" y="38" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">lower channel line (support)</text>
+          <text x="540" y="0" font-family="JetBrains Mono" font-size="10" fill="#A8772E">upper channel line (resistance)</text>
+        </svg>
+        <figcaption>Fig. 3 — A trend channel: the original trend line plus a parallel line drawn through the opposite swing points.</figcaption>
+      </div>
+
+      <h3>Trading Opportunities a Channel Reveals</h3>
+      <table class="ref">
+        <tr><th>Location in channel</th><th>Typical interpretation</th></tr>
+        <tr><td>Bounce off the lower line (uptrend)</td><td>Potential continuation entry, buying near support</td></tr>
+        <tr><td>Approach to the upper line (uptrend)</td><td>Potential area to take profit or watch for resistance</td></tr>
+        <tr><td>A break beyond either channel line</td><td>A signal the trend's pace may be accelerating or stalling</td></tr>
+      </table>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="trading-the-lines">
+      <div class="lesson-kicker"><span class="num">04</span> Application</div>
+      <h2>How to Trade Support and Resistance</h2>
+      <p class="dek">Two simple ideas: the Bounce and the Break.</p>
+
+      <h3>The Bounce</h3>
+      <p>Trading the bounce means entering in the direction of the reversal once price reaches a support or resistance level and shows signs of rejecting it — buying near support expecting a move back up, or selling near resistance expecting a move back down.</p>
+
+      <h3>The Break</h3>
+      <p>Trading the break means entering in the direction of the move once price decisively closes beyond a level — buying once resistance breaks (expecting it to act as new support going forward), or selling once support breaks (expecting it to act as new resistance).</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="200" fill="#FFFFFF"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">THE BOUNCE</text>
+          <line x1="30" y1="100" x2="340" y2="100" stroke="#A8772E" stroke-dasharray="3 2"/>
+          <polyline points="40,60 90,80 140,98 190,75 240,50" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="140" cy="98" r="5" fill="#1E7B4D"/>
+          <text x="100" y="130" font-family="Inter" font-size="10" fill="#1E7B4D">Entry on the rejection back off the level</text>
+
+          <text x="420" y="20" font-family="JetBrains Mono" font-size="11" fill="#B23A2E">THE BREAK</text>
+          <line x1="430" y1="100" x2="740" y2="100" stroke="#A8772E" stroke-dasharray="3 2"/>
+          <polyline points="440,90 490,95 540,80 590,60 640,35" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="590" cy="60" r="5" fill="#B23A2E"/>
+          <text x="480" y="130" font-family="Inter" font-size="10" fill="#B23A2E">Entry once the level is decisively broken</text>
+        </svg>
+        <figcaption>Fig. 4 — The two foundational ways to trade any support or resistance level.</figcaption>
+      </div>
+
+      <div class="callout"><strong>Both ideas reappear constantly in this curriculum:</strong> the bounce is the seed of the "Zone Reversal" setup and the break is the seed of the "Break-and-Retest" setup covered in much greater depth in Modules 01 and 02.</div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="psych-levels">
+      <div class="lesson-kicker"><span class="num">05</span> A Special Case</div>
+      <h2>Psychological Levels</h2>
+      <p class="dek">"Invisible lines" that act as support or resistance simply because so many traders are watching them.</p>
+
+      <p>Psychological levels are round numbers — 1.1000, 1.5000, 100.00 — that tend to attract attention and resting orders purely because humans naturally gravitate toward round figures, independent of any specific chart history at that exact price. Because so many traders place orders near these levels (take-profits, stop-losses, and fresh entries alike), the levels can behave like genuine support or resistance even without a prior structural reason.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <line x1="30" y1="70" x2="730" y2="70" stroke="#A8772E" stroke-width="2" stroke-dasharray="4 3"/>
+          <text x="600" y="60" font-family="JetBrains Mono" font-size="12" fill="#A8772E">1.5000 — a round number</text>
+          <polyline points="40,40 100,55 160,70 220,90 280,68 340,45 400,72 460,95" fill="none" stroke="#1C2024" stroke-width="2"/>
+        </svg>
+        <figcaption>Fig. 5 — A round number acting as a magnet for orders, and a level price reacts to, with no prior chart history required.</figcaption>
+      </div>
+
+      <p>This is the same concept introduced briefly in Module 02, lesson 2 of the broader curriculum (round numbers as key levels) — here at the foundational level, the takeaway is simply: don't dismiss a level just because nothing "special" happened there before. Sometimes the number itself is the reason.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="summary">
+      <div class="lesson-kicker"><span class="num">06</span> Synthesis</div>
+      <h2>Summary: Trading Support and Resistance</h2>
+      <p class="dek">A quick recap, and how to spot potential opportunities with these zones.</p>
+
+      <ol>
+        <li><strong>Support and resistance</strong> are price floors and ceilings created by real buying and selling pressure, not abstract lines.</li>
+        <li><strong>Trend lines</strong> connect swing points to capture a sloped, dynamic version of support or resistance.</li>
+        <li><strong>Trend channels</strong> add a second parallel line, framing the trend's full range of typical movement.</li>
+        <li><strong>The Bounce and the Break</strong> are the two foundational ways to trade any level — fading the rejection, or following the breakout.</li>
+        <li><strong>Psychological levels</strong> show that a level doesn't need prior chart history to matter — sometimes a round number is enough.</li>
+      </ol>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="120" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="10" fill="#1C2024" text-anchor="middle">
+            <rect x="10" y="40" width="135" height="40" rx="6" fill="#E3EFEE" stroke="#1F5F5B"/><text x="78" y="64">S/R BASICS</text>
+            <rect x="155" y="40" width="135" height="40" rx="6" fill="#F1E6D2" stroke="#A8772E"/><text x="222" y="64">TREND LINES</text>
+            <rect x="300" y="40" width="135" height="40" rx="6" fill="#FBEAE7" stroke="#B23A2E"/><text x="367" y="64">CHANNELS</text>
+            <rect x="445" y="40" width="135" height="40" rx="6" fill="#FCFBF9" stroke="#E1DDD3"/><text x="512" y="64">BOUNCE/BREAK</text>
+            <rect x="590" y="40" width="160" height="40" rx="6" fill="#E3F2E9" stroke="#1E7B4D"/><text x="670" y="64">PSYCH LEVELS</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 6 — The full progression of this grade, left to right.</figcaption>
+      </div>
+
+      <p>Everything in this grade is the seed of the more advanced price action framework in Module 01 of the main curriculum (Price Action Trading) — supply/demand zones are a more refined version of support/resistance, and the Big Three setups formalize the Bounce and the Break into precise, rules-based entries.</p>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Support and Resistance Levels</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Why do support and resistance levels tend to "work" as self-reinforcing zones?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Because many traders watch and act on the same widely-recognized levels, reinforcing the reaction</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Because regulators set fixed prices for every currency pair</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Support and resistance levels have no real explanation</label>
+        <div class="reveal"><strong>Answer: A.</strong> Widely-watched levels attract orders from many participants, which itself helps reinforce the reaction at that price.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. What happens, according to the role-reversal principle, once resistance is convincingly broken?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) It often becomes new support going forward</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) It permanently disappears from the chart</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) It has no further relevance once broken</label>
+        <div class="reveal"><strong>Answer: A.</strong> Broken resistance frequently flips into new support, and vice versa for broken support.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. What is the key difference between a trend line and a trend channel?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) A channel adds a second, parallel line on the opposite side of price, framing the trend's full typical range</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) They are exactly the same tool with different names</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) A trend channel can only be drawn on a horizontal market</label>
+        <div class="reveal"><strong>Answer: A.</strong> The channel extends the single trend line into a full "tube" by adding a parallel line through the opposite swing points.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. What is the core difference between trading "the Bounce" and trading "the Break"?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) The Bounce trades the rejection off a level; the Break trades the continuation once a level is decisively broken</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Both approaches require the exact same entry trigger</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) The Break only applies to resistance, never to support</label>
+        <div class="reveal"><strong>Answer: A.</strong> The Bounce fades a level's rejection, while the Break follows price once it closes decisively beyond the level.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Why can a round number like 1.5000 act as support or resistance even without any prior chart history there?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) Round numbers naturally attract trader attention and resting orders, creating a reaction independent of past structure</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) Round numbers are fixed by exchanges as official trading boundaries</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Psychological levels have no actual effect on price</label>
+        <div class="reveal"><strong>Answer: A.</strong> Psychological levels work because of human attention and order clustering around round figures, not because of prior price history at that exact level.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      GRADE 1 — SUPPORT AND RESISTANCE LEVELS
+    </footer>
+  </main>
+</div>
+</body>
+</html>

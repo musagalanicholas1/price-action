@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Country Profiles — Module 16</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:6px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:50px; line-height:1.05; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:50px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:30px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16px; margin:0 0 24px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:19px; margin:26px 0 10px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:26px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:16px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:16px 0; font-size:14px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:8px 10px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; width:170px;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:16px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:16px;}
+  .card p{font-size:13.5px; margin:0; color:var(--ink-soft);}
+  .flag-strip{display:flex; gap:10px; align-items:center; margin-bottom:8px;}
+  .flag-chip{font-family:var(--mono); font-size:11px; background:var(--gold-soft); color:var(--gold); padding:4px 10px; border-radius:20px; letter-spacing:.04em;}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 16</div>
+    <p class="toc-title">Country<br>Profiles</p>
+    <ol>
+      <li><a href="#intro">Why Major Economies Matter</a></li>
+      <li><a href="#usa">United States</a></li>
+      <li><a href="#eurozone">Eurozone</a></li>
+      <li><a href="#uk">United Kingdom</a></li>
+      <li><a href="#japan">Japan</a></li>
+      <li><a href="#canada">Canada</a></li>
+      <li><a href="#australia">Australia</a></li>
+      <li><a href="#nz">New Zealand</a></li>
+      <li><a href="#switzerland">Switzerland</a></li>
+      <li><a href="#china">China</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 16 of the Trading Curriculum</div>
+      <h1>Country Profiles</h1>
+      <p class="lede">Most traders watch just the price. The best ones understand the economies behind it. Learn the fundamentals of the world's nine major currencies and start trading with context, not just candlesticks.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <g font-family="JetBrains Mono" font-size="10" fill="#1C2024">
+          <circle cx="40" cy="32" r="16" fill="#E3EFEE" stroke="#1F5F5B"/><text x="40" y="36" text-anchor="middle">$</text>
+          <circle cx="100" cy="32" r="16" fill="#F1E6D2" stroke="#A8772E"/><text x="100" y="36" text-anchor="middle">€</text>
+          <circle cx="160" cy="32" r="16" fill="#FBEAE7" stroke="#B23A2E"/><text x="160" y="36" text-anchor="middle">£</text>
+          <circle cx="220" cy="32" r="16" fill="#E3F2E9" stroke="#1E7B4D"/><text x="220" y="36" text-anchor="middle">¥</text>
+          <circle cx="280" cy="32" r="16" fill="#E3EFEE" stroke="#1F5F5B"/><text x="280" y="36" text-anchor="middle">C$</text>
+          <circle cx="340" cy="32" r="16" fill="#F1E6D2" stroke="#A8772E"/><text x="340" y="36" text-anchor="middle">A$</text>
+          <circle cx="400" cy="32" r="16" fill="#FBEAE7" stroke="#B23A2E"/><text x="400" y="36" text-anchor="middle">N$</text>
+          <circle cx="460" cy="32" r="16" fill="#E3F2E9" stroke="#1E7B4D"/><text x="460" y="36" text-anchor="middle">Fr</text>
+          <circle cx="520" cy="32" r="16" fill="#E3EFEE" stroke="#1F5F5B"/><text x="520" y="36" text-anchor="middle">¥CN</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- INTRO -->
+    <section class="lesson" id="intro">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>The Forex Trader's Guide to Major Economies</h2>
+      <p class="dek">How central bank policy, GDP, trade flows, and economic data move currency pairs.</p>
+      <p>Every currency profile in this module follows the same structure, applying frameworks built across the entire curriculum: each country's central bank and its policy stance (Module 05), the data releases that matter most for that specific economy (Module 06), its structural trade relationships (Modules 14–15), and the practical implications for trading its currency pairs.</p>
+      <div class="callout"><strong>How to use this module:</strong> rather than memorizing every detail, focus on what makes each economy structurally distinct from the others — that's what actually helps you anticipate how each currency is likely to react to a shared global event differently.</div>
+    </section>
+
+    <!-- USA -->
+    <section class="lesson" id="usa">
+      <div class="flag-strip"><span class="flag-chip">USD</span><span class="flag-chip">Fed</span></div>
+      <h2>United States of America</h2>
+      <p class="dek">Fed policy, USD trading tactics, key indicators, and what moves the dollar.</p>
+      <table class="ref">
+        <tr><th>Central bank</th><td>Federal Reserve — dual mandate of maximum employment and price stability</td></tr>
+        <tr><th>Key data to watch</th><td>Nonfarm Payrolls, CPI/PCE, FOMC decisions, ISM PMI</td></tr>
+        <tr><th>Structural role</th><td>World's primary reserve currency (Module 13); deepest, most liquid bond market</td></tr>
+        <tr><th>Trading note</th><td>Nearly every major pair includes USD — Fed policy divergence (Module 05) is usually the dominant driver of trend</td></tr>
+      </table>
+    </section>
+
+    <!-- EUROZONE -->
+    <section class="lesson" id="eurozone">
+      <div class="flag-strip"><span class="flag-chip">EUR</span><span class="flag-chip">ECB</span></div>
+      <h2>Eurozone</h2>
+      <p class="dek">ECB policy, EUR/USD trading tactics, key indicators, and what moves the euro.</p>
+      <table class="ref">
+        <tr><th>Central bank</th><td>European Central Bank — price stability target near 2% across a 20-country currency bloc</td></tr>
+        <tr><th>Key data to watch</th><td>Eurozone CPI, German PMI/IFO, ECB rate decisions</td></tr>
+        <tr><th>Structural role</th><td>EUR/USD is the most heavily traded pair globally; EUR dominates the DXY basket (Module 13)</td></tr>
+        <tr><th>Trading note</th><td>A multi-country bloc means internal divergence (e.g. German vs. peripheral economy data) can complicate the policy picture</td></tr>
+      </table>
+    </section>
+
+    <!-- UK -->
+    <section class="lesson" id="uk">
+      <div class="flag-strip"><span class="flag-chip">GBP</span><span class="flag-chip">BoE</span></div>
+      <h2>United Kingdom</h2>
+      <p class="dek">Bank of England policy, GBP/USD trading tactics, key indicators, and what moves the pound.</p>
+      <table class="ref">
+        <tr><th>Central bank</th><td>Bank of England — 2% inflation target with financial stability oversight</td></tr>
+        <tr><th>Key data to watch</th><td>UK CPI, employment data, BoE rate decisions and minutes</td></tr>
+        <tr><th>Structural role</th><td>London remains one of the world's largest FX trading hubs by volume</td></tr>
+        <tr><th>Trading note</th><td>GBP can show outsized reactions to UK-specific political and fiscal developments alongside standard monetary policy drivers</td></tr>
+      </table>
+    </section>
+
+    <!-- JAPAN -->
+    <section class="lesson" id="japan">
+      <div class="flag-strip"><span class="flag-chip">JPY</span><span class="flag-chip">BoJ</span></div>
+      <h2>Japan</h2>
+      <p class="dek">Bank of Japan policy, USD/JPY trading tactics, key indicators, and what moves the yen.</p>
+      <table class="ref">
+        <tr><th>Central bank</th><td>Bank of Japan — price stability, with a long history of ultra-accommodative policy fighting deflation</td></tr>
+        <tr><th>Key data to watch</th><td>Japan CPI, BoJ policy statements, wage growth data</td></tr>
+        <tr><th>Structural role</th><td>JPY's historically low rates made it a primary carry trade funding currency (Module 10)</td></tr>
+        <tr><th>Trading note</th><td>USD/JPY is exceptionally sensitive to rate differentials and carry trade flows — see the August 2024 unwind (Module 10, lesson 6)</td></tr>
+      </table>
+    </section>
+
+    <!-- CANADA -->
+    <section class="lesson" id="canada">
+      <div class="flag-strip"><span class="flag-chip">CAD</span><span class="flag-chip">BoC</span></div>
+      <h2>Canada</h2>
+      <p class="dek">Bank of Canada policy, USD/CAD trading tactics, key indicators, and what moves the Loonie.</p>
+      <table class="ref">
+        <tr><th>Central bank</th><td>Bank of Canada — 2% inflation target</td></tr>
+        <tr><th>Key data to watch</th><td>Canadian CPI, employment data, BoC rate decisions, oil prices</td></tr>
+        <tr><th>Structural role</th><td>Major oil exporter — USD/CAD shows a structural inverse relationship with oil prices (Module 14, lesson 5)</td></tr>
+        <tr><th>Trading note</th><td>Heavy trade linkage to the U.S. economy means U.S. data can move CAD almost as much as Canadian-specific releases</td></tr>
+      </table>
+    </section>
+
+    <!-- AUSTRALIA -->
+    <section class="lesson" id="australia">
+      <div class="flag-strip"><span class="flag-chip">AUD</span><span class="flag-chip">RBA</span></div>
+      <h2>Australia</h2>
+      <p class="dek">Reserve Bank of Australia policy, AUD/USD trading tactics, key indicators, and what moves the Aussie.</p>
+      <table class="ref">
+        <tr><th>Central bank</th><td>Reserve Bank of Australia — inflation targeting alongside full employment and economic welfare</td></tr>
+        <tr><th>Key data to watch</th><td>Australian CPI and employment data, RBA decisions, Chinese economic data</td></tr>
+        <tr><th>Structural role</th><td>Major exporter of gold, iron ore, and other commodities (Module 14, lessons 3–4, 7); classic "beta currency" (Module 14 bonus)</td></tr>
+        <tr><th>Trading note</th><td>China's economic health (its largest trading partner) often matters as much for AUD as domestic Australian data</td></tr>
+      </table>
+    </section>
+
+    <!-- NEW ZEALAND -->
+    <section class="lesson" id="nz">
+      <div class="flag-strip"><span class="flag-chip">NZD</span><span class="flag-chip">RBNZ</span></div>
+      <h2>New Zealand</h2>
+      <p class="dek">Reserve Bank of New Zealand policy, NZD/USD trading tactics, key indicators, and what moves the Kiwi.</p>
+      <table class="ref">
+        <tr><th>Central bank</th><td>Reserve Bank of New Zealand — the first central bank globally to formally adopt inflation targeting</td></tr>
+        <tr><th>Key data to watch</th><td>New Zealand CPI and employment data, dairy/agricultural export prices, RBNZ decisions</td></tr>
+        <tr><th>Structural role</th><td>Smaller, agricultural-export-driven economy; another classic high-beta currency</td></tr>
+        <tr><th>Trading note</th><td>Lower liquidity than the majors means NZD pairs can show sharper moves on the same relative news surprise</td></tr>
+      </table>
+    </section>
+
+    <!-- SWITZERLAND -->
+    <section class="lesson" id="switzerland">
+      <div class="flag-strip"><span class="flag-chip">CHF</span><span class="flag-chip">SNB</span></div>
+      <h2>Switzerland</h2>
+      <p class="dek">Swiss National Bank policy, USD/CHF trading tactics, key indicators, and what moves the Swiss franc.</p>
+      <table class="ref">
+        <tr><th>Central bank</th><td>Swiss National Bank — price stability, with a notable history of direct FX intervention (Module 07, lesson 3)</td></tr>
+        <tr><th>Key data to watch</th><td>Swiss CPI, SNB policy statements, global risk sentiment shifts</td></tr>
+        <tr><th>Structural role</th><td>Traditional safe haven (Module 07) due to political neutrality and a current account surplus</td></tr>
+        <tr><th>Trading note</th><td>CHF often moves as much on global risk sentiment as on domestic Swiss data — watch geopolitical headlines closely</td></tr>
+      </table>
+    </section>
+
+    <!-- CHINA -->
+    <section class="lesson" id="china">
+      <div class="flag-strip"><span class="flag-chip">CNY/CNH</span><span class="flag-chip">PBOC</span></div>
+      <h2>China</h2>
+      <p class="dek">People's Bank of China policy, the managed exchange rate, CNY/CNH trading tactics, and what Chinese data means for your trades.</p>
+      <table class="ref">
+        <tr><th>Central bank</th><td>People's Bank of China — multiple objectives including growth, employment, and exchange rate management</td></tr>
+        <tr><th>Key data to watch</th><td>China GDP, PMI, trade balance, PBOC daily fixing rate</td></tr>
+        <tr><th>Structural role</th><td>The yuan trades in two forms: CNY (onshore, more tightly managed) and CNH (offshore, more freely traded)</td></tr>
+        <tr><th>Trading note</th><td>Chinese data ripples broadly into commodity currencies (AUD, NZD, CAD) given China's role as a top global commodities consumer (Module 14)</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="130" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="40" y="40" width="320" height="50" fill="#E3EFEE" stroke="#1F5F5B"/><text x="200" y="62" fill="#1F5F5B">CNY — onshore</text><text x="200" y="80" fill="#1F5F5B" font-size="10">tightly managed, daily fixing band</text>
+            <rect x="400" y="40" width="320" height="50" fill="#F1E6D2" stroke="#A8772E"/><text x="560" y="62" fill="#A8772E">CNH — offshore</text><text x="560" y="80" fill="#A8772E" font-size="10">more freely traded, used by most retail platforms</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 1 — China's dual exchange rate system: a managed onshore rate and a more market-driven offshore rate.</figcaption>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Country Profiles</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Which central bank has the dual mandate of maximum employment and price stability?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) The European Central Bank</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) The Federal Reserve</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) The Bank of Japan</label>
+        <div class="reveal"><strong>Answer: B.</strong> The Federal Reserve operates under a dual mandate covering both employment and price stability.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Why has JPY historically served as a primary carry trade funding currency?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) Japan's history of ultra-low or near-zero Bank of Japan interest rates</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Japan has the highest interest rates among major economies</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) JPY has no relationship to interest rate policy</label>
+        <div class="reveal"><strong>Answer: A.</strong> The BoJ's long-standing ultra-accommodative policy made JPY one of the cheapest currencies to borrow in, hence its frequent use as a funding currency.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why does Chinese economic data often move AUD, NZD, and CAD as well as CNY itself?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) China is a top global consumer of commodities, linking its growth outlook to commodity-exporting economies</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Chinese data has no relevance outside of China</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Those currencies are pegged directly to the yuan</label>
+        <div class="reveal"><strong>Answer: A.</strong> As a major commodities consumer, China's growth outlook directly affects the export-driven economies of Australia, New Zealand, and Canada.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. What distinguishes CNH from CNY?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) CNH is the offshore yuan, traded more freely than the tightly managed onshore CNY</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) They are two completely unrelated currencies</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) CNY is only used for cryptocurrency trading</label>
+        <div class="reveal"><strong>Answer: A.</strong> China operates a dual exchange rate system, with the offshore CNH trading more freely than the more tightly managed onshore CNY.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Why does CHF often move on global risk sentiment headlines as much as on domestic Swiss data?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) Switzerland's traditional safe-haven status means CHF reacts to broader geopolitical and risk-off developments, not just local data</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) Switzerland never publishes economic data</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) CHF is pegged to a fixed rate against the euro</label>
+        <div class="reveal"><strong>Answer: A.</strong> CHF's safe-haven role, rooted in political neutrality and a current account surplus, means global risk sentiment is a major independent driver alongside domestic data.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 16 — COUNTRY PROFILES · NEXT MODULE: BEGINNER'S GUIDE TO GLOBAL LIQUIDITY
+    </footer>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The U.S. Dollar Index — Module 13</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:50px; line-height:1.05; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 13</div>
+    <p class="toc-title">The U.S. Dollar<br>Index</p>
+    <ol>
+      <li><a href="#global-role">The Global Role of the USD</a></li>
+      <li><a href="#what-is-usdx">What Is the USDX?</a></li>
+      <li><a href="#how-to-read">How to Read the USDX</a></li>
+      <li><a href="#how-to-use">Using the USDX for Trading</a></li>
+      <li><a href="#twd">Trade Weighted Dollar Index</a></li>
+      <li><a href="#bbdxy">Bloomberg Dollar Spot Index</a></li>
+      <li><a href="#dollar-smile">The Dollar Smile Theory</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 13 of the Trading Curriculum</div>
+      <h1>The U.S. Dollar Index</h1>
+      <p class="lede">Measure the U.S. dollar's strength and understand why it matters across almost every market, from currencies and commodities to stocks and bonds. Learn how to read dollar signals, compare different measures of dollar strength, and apply the Dollar Smile Theory to market behavior.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <text x="20" y="44" font-family="JetBrains Mono" font-size="34" fill="#A8772E" opacity="0.8">$</text>
+        <polyline points="60,40 150,30 240,45 330,20 420,35 510,15 590,28" fill="none" stroke="#1C2024" stroke-width="1.5" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="global-role">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>The Global Role of the U.S. Dollar</h2>
+      <p class="dek">The key aspects of the dollar's global role, and what gives it such enduring appeal.</p>
+
+      <p>The U.S. dollar functions as the world's primary reserve currency, the dominant currency for invoicing international trade (even between two non-U.S. countries), and the most widely held currency in global central bank reserves. This outsized role is why, as Module 09 explained, the dollar sits on one side of the large majority of all FX transactions globally.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="180" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="20" y="30" width="220" height="50" fill="#E3EFEE" stroke="#1F5F5B"/><text x="130" y="60" fill="#1F5F5B">RESERVE CURRENCY</text>
+            <rect x="270" y="30" width="220" height="50" fill="#F1E6D2" stroke="#A8772E"/><text x="380" y="60" fill="#A8772E">TRADE INVOICING</text>
+            <rect x="520" y="30" width="220" height="50" fill="#FBEAE7" stroke="#B23A2E"/><text x="630" y="60" fill="#B23A2E">DEEPEST BOND MARKET</text>
+          </g>
+          <text x="380" y="130" text-anchor="middle" font-family="Inter" font-size="12" fill="#4A5159">Together, these roles give the dollar structural demand independent of</text>
+          <text x="380" y="150" text-anchor="middle" font-family="Inter" font-size="12" fill="#4A5159">any single country's economic performance — a unique position among currencies.</text>
+        </svg>
+        <figcaption>Fig. 1 — Three pillars supporting the dollar's enduring global role.</figcaption>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="what-is-usdx">
+      <div class="lesson-kicker"><span class="num">02</span> The Index</div>
+      <h2>What is the US Dollar Index (USDX)?</h2>
+      <p class="dek">Which currencies are in the basket, and how forex traders use it.</p>
+
+      <p>The U.S. Dollar Index (commonly ticker DXY) measures the dollar's value against a fixed basket of six major currencies, weighted by their historical significance in U.S. trade.</p>
+
+      <table class="ref">
+        <tr><th>Currency</th><th>Approximate weight</th></tr>
+        <tr><td>EUR</td><td>~57.6%</td></tr>
+        <tr><td>JPY</td><td>~13.6%</td></tr>
+        <tr><td>GBP</td><td>~11.9%</td></tr>
+        <tr><td>CAD</td><td>~9.1%</td></tr>
+        <tr><td>SEK</td><td>~4.2%</td></tr>
+        <tr><td>CHF</td><td>~3.6%</td></tr>
+      </table>
+
+      <div class="warn"><strong>A key limitation:</strong> the heavy EUR weighting means the DXY behaves, in practice, substantially like an inverse EUR/USD chart — it's a useful but imperfect proxy for "the dollar" against the entire world, since several major U.S. trading partners (China, Mexico) aren't represented at all.</div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="how-to-read">
+      <div class="lesson-kicker"><span class="num">03</span> Mechanics</div>
+      <h2>How to Read the US Dollar Index</h2>
+      <p class="dek">What its base value of 100 means, and how to interpret readings above and below it.</p>
+
+      <p>The index was set to a base value of 100 in March 1973. A reading above 100 means the dollar has strengthened against the basket since that base period; a reading below 100 means it has weakened. The index itself moves as a weighted geometric average of the basket currencies' moves against the dollar.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <line x1="40" y1="70" x2="720" y2="70" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="380" cy="70" r="6" fill="#A8772E"/><text x="380" y="55" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#A8772E">100 (base, 1973)</text>
+          <text x="150" y="100" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">Below 100 — weaker than base period</text>
+          <text x="600" y="100" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">Above 100 — stronger than base period</text>
+        </svg>
+        <figcaption>Fig. 2 — Reading the DXY relative to its historical base value of 100.</figcaption>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="how-to-use">
+      <div class="lesson-kicker"><span class="num">04</span> Application</div>
+      <h2>How to Use the USDX for Forex Trading</h2>
+      <p class="dek">How it correlates with EUR/USD and other major pairs.</p>
+
+      <p>Because of the index's heavy euro weighting, DXY and EUR/USD typically move in a near-mirror, inversely correlated pattern. Traders often use DXY as a quick proxy check: if DXY is breaking a key level while EUR/USD is approaching the corresponding level on its own chart, that's a form of confluence (Module 01, lesson 7) worth noting.</p>
+
+      <table class="ref">
+        <tr><th>Practical use</th><th>How it helps</th></tr>
+        <tr><td>Quick broad-dollar check</td><td>A single glance at DXY direction substitutes for checking all seven majors individually</td></tr>
+        <tr><td>Divergence spotting</td><td>If DXY is strong but a specific dollar pair lags, that pair's own currency may be unusually strong/weak in its own right</td></tr>
+        <tr><td>Confluence with EUR/USD</td><td>DXY levels often align closely with corresponding EUR/USD levels given the heavy weighting</td></tr>
+      </table>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="twd">
+      <div class="lesson-kicker"><span class="num">05</span> Alternative Measures</div>
+      <h2>Trade Weighted Dollar Index</h2>
+      <p class="dek">How the Federal Reserve built it, and why it differs from the USDX.</p>
+
+      <p>The Federal Reserve publishes its own broad Trade Weighted Dollar Index, built from a wider and periodically updated basket of currencies weighted by actual current U.S. trade flows — including major partners like China and Mexico that the DXY excludes entirely.</p>
+
+      <div class="callout"><strong>Why this matters:</strong> the DXY and the Fed's Trade Weighted Index can tell different stories about "dollar strength" at the same time, since one reflects a fixed, decades-old basket and the other reflects current, broader trade relationships.</div>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="bbdxy">
+      <div class="lesson-kicker"><span class="num">06</span> Alternative Measures</div>
+      <h2>Bloomberg Dollar Spot Index</h2>
+      <p class="dek">How it differs from the DXY, and how to access it for free.</p>
+
+      <p>The Bloomberg Dollar Spot Index (ticker BBDXY) tracks the dollar against a basket of ten currencies, periodically rebalanced based on liquidity and trade significance — a broader and more frequently updated alternative to the DXY's fixed six-currency basket.</p>
+
+      <table class="ref">
+        <tr><th>Index</th><th>Basket size</th><th>Update frequency</th></tr>
+        <tr><td>DXY</td><td>6 currencies</td><td>Fixed weights since inception</td></tr>
+        <tr><td>Fed Trade Weighted Index</td><td>Broader, trade-flow based</td><td>Periodically updated</td></tr>
+        <tr><td>BBDXY</td><td>10 currencies</td><td>Periodically rebalanced</td></tr>
+      </table>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="dollar-smile">
+      <div class="lesson-kicker"><span class="num">07</span> Framework</div>
+      <h2>The Dollar Smile Theory</h2>
+      <p class="dek">Why the dollar strengthens both during crises and economic booms, and weakens in between.</p>
+
+      <p>The Dollar Smile Theory, developed by strategist Stephen Jen, explains a pattern that confuses many beginner traders: the dollar can strengthen in two opposite-seeming environments — a global crisis (safe-haven demand, Module 07) and a strong U.S. economic boom (capital attracted by growth and yield) — while tending to weaken in the calmer middle ground between the two extremes.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <path d="M60,60 Q380,180 700,60" fill="none" stroke="#A8772E" stroke-width="3"/>
+          <text x="60" y="45" font-family="JetBrains Mono" font-size="11" fill="#B23A2E">LEFT: GLOBAL CRISIS</text>
+          <text x="60" y="62" font-family="Inter" font-size="10" fill="#4A5159">safe-haven demand lifts USD</text>
+          <text x="700" y="45" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">RIGHT: U.S. BOOM</text>
+          <text x="700" y="62" text-anchor="end" font-family="Inter" font-size="10" fill="#4A5159">growth &amp; yield attract capital</text>
+          <text x="380" y="200" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#A8772E">MIDDLE: calm, synchronized global growth</text>
+          <text x="380" y="216" text-anchor="middle" font-family="Inter" font-size="10" fill="#4A5159">USD typically weakest here — capital seeks higher returns elsewhere</text>
+        </svg>
+        <figcaption>Fig. 3 — The "smile" shape: dollar strength at both extremes, weakness in the calm middle.</figcaption>
+      </div>
+
+      <div class="callout"><strong>Practical use:</strong> before assuming "the dollar should weaken because the U.S. economy looks shaky," check which side of the smile you're actually on — a global crisis scenario can still produce dollar strength via safe-haven flows even alongside weakening U.S. data.</div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: The U.S. Dollar Index</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Why does the DXY behave, in practice, much like an inverse EUR/USD chart?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) The euro carries by far the largest weight in the DXY basket</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) EUR/USD and DXY are calculated using completely unrelated methodologies</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) The DXY doesn't include the euro at all</label>
+        <div class="reveal"><strong>Answer: A.</strong> With the euro weighted at roughly 57.6% of the basket, the DXY's moves are heavily dominated by EUR/USD's inverse behavior.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. What does a DXY reading above 100 indicate?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) The dollar has weakened relative to its 1973 base period</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) The dollar has strengthened relative to its 1973 base period</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) The index has no defined base period</label>
+        <div class="reveal"><strong>Answer: B.</strong> The DXY's base value of 100 was set in March 1973 — readings above that level indicate dollar strength relative to that base.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why might the Fed's Trade Weighted Dollar Index tell a different story than the DXY at the same time?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) It uses a broader, trade-flow-based basket including partners like China and Mexico that the DXY excludes</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) The two indices are calculated using identical baskets</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) The Fed's index has no relationship to actual trade data</label>
+        <div class="reveal"><strong>Answer: A.</strong> The Trade Weighted Index reflects a broader, current set of trade relationships, while the DXY uses a fixed, narrower six-currency basket.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. According to the Dollar Smile Theory, in which two environments does the dollar tend to strengthen?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) Only during periods of synchronized global calm</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) During global crises (safe-haven demand) and during strong U.S. economic booms (growth and yield)</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Only when U.S. interest rates are falling</label>
+        <div class="reveal"><strong>Answer: B.</strong> The Dollar Smile Theory describes dollar strength at both extremes — crisis-driven safe-haven flows and boom-driven capital inflows — with relative weakness in the calmer middle ground.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. What is one practical use of watching the DXY alongside individual dollar pairs?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) It replaces the need to look at any individual currency pair ever again</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) It offers a quick broad-dollar check and can reveal when a specific pair is diverging from the overall dollar trend</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) It has no practical trading application</label>
+        <div class="reveal"><strong>Answer: B.</strong> The DXY is useful as a fast overall-dollar gauge and for spotting when an individual pair is behaving unusually relative to the broader dollar trend.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 13 — THE U.S. DOLLAR INDEX · NEXT MODULE: INTERMARKET ANALYSIS
+    </footer>
+  </main>
+</div>
+</body>
+</html>

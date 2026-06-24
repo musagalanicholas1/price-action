@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Developing Your Own Trading Plan — Module 19</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:50px; line-height:1.05; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 19</div>
+    <p class="toc-title">Developing Your Own<br>Trading Plan</p>
+    <ol>
+      <li><a href="#what-is-plan">What Is a Trading Plan?</a></li>
+      <li><a href="#know-yourself">Know Yourself</a></li>
+      <li><a href="#five-components">The Five Core Components</a></li>
+      <li><a href="#sticking-to-it">Sticking to Your Plan</a></li>
+      <li><a href="#living-doc">A Living Document</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 19 of the Trading Curriculum</div>
+      <h1>Developing Your Own Trading Plan</h1>
+      <p class="lede">Most traders jump straight to strategies and wonder why nothing sticks. This module gives you the foundation they skipped: a complete, personalized trading plan built around who you actually are, how much time you have, and what you can realistically risk.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="30" y="14" width="180" height="36" rx="4" fill="none" stroke="#1F5F5B" stroke-width="2"/>
+        <line x1="45" y1="26" x2="160" y2="26" stroke="#1F5F5B" stroke-width="2"/>
+        <line x1="45" y1="38" x2="130" y2="38" stroke="#1F5F5B" stroke-width="2"/>
+        <circle cx="280" cy="32" r="6" fill="#A8772E"/>
+        <circle cx="320" cy="32" r="6" fill="#A8772E"/>
+        <circle cx="360" cy="32" r="6" fill="#A8772E"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-plan">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Is a Trading Plan and Why Does It Matter?</h2>
+      <p class="dek">The only thing that separates trading from gambling.</p>
+
+      <p>A trading plan is a written document that specifies how you will make trading decisions before you make them — covering which markets you trade, what setups you take, how much you risk, and how you behave under stress. It is distinct from a single strategy: a strategy is one tool inside a plan, while the plan governs everything around that tool, including risk, mindset, and review process.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <text x="20" y="25" font-family="JetBrains Mono" font-size="11" fill="#B23A2E">WITHOUT A PLAN</text>
+          <text x="20" y="50" font-family="Inter" font-size="13" fill="#4A5159">Find strategy → open account → click → hope</text>
+          <text x="20" y="100" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">WITH A PLAN</text>
+          <text x="20" y="125" font-family="Inter" font-size="13" fill="#4A5159">Know yourself → define rules → size risk → execute → review → refine</text>
+        </svg>
+        <figcaption>Fig. 1 — The same market, two very different starting points.</figcaption>
+      </div>
+
+      <div class="callout"><strong>The core distinction:</strong> gambling accepts risk without a structured edge or process for managing it. Trading, properly defined, is the deliberate, planned acceptance of risk in pursuit of a structured, repeatable edge — and a written plan is what makes that distinction real rather than aspirational.</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="know-yourself">
+      <div class="lesson-kicker"><span class="num">02</span> Self-Assessment</div>
+      <h2>Know Yourself: Building Your Trader Profile</h2>
+      <p class="dek">Answer questions about yourself before writing a single trading rule.</p>
+
+      <div class="grid-cards">
+        <div class="card"><span class="tag">Time</span><h4>How much screen time do you actually have?</h4><p>Not aspirationally — realistically, given work, family, and other commitments (directly informs the timeframe choice from Module 04).</p></div>
+        <div class="card"><span class="tag">Capital</span><h4>What capital can you risk without affecting your life?</h4><p>Only true risk capital belongs in a trading account — covered in depth in Module 20.</p></div>
+        <div class="card"><span class="tag">Temperament</span><h4>How do you handle uncertainty and loss?</h4><p>Some traders tolerate frequent small losses calmly; others find that psychologically corrosive even when the math is sound.</p></div>
+        <div class="card"><span class="tag">Goals</span><h4>What are you actually trying to achieve?</h4><p>Supplemental income, full-time replacement, or skill-building — each implies a different realistic pace and risk tolerance.</p></div>
+        <div class="card"><span class="tag">Decision speed</span><h4>Are you a fast or deliberate decision-maker?</h4><p>This maps directly onto the trading-style choice from Module 21 (scalping vs. position trading).</p></div>
+        <div class="card"><span class="tag">Markets</span><h4>Which markets and sessions actually fit your life?</h4><p>Time zone and session overlap (Module 04) matter as much as market choice itself.</p></div>
+      </div>
+
+      <p>The output of this lesson should be a short, written Trader Profile — a paragraph or two honestly describing your time, capital, temperament, and goals — that becomes the foundation the rest of your plan is built on.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="five-components">
+      <div class="lesson-kicker"><span class="num">03</span> The Document</div>
+      <h2>Building Your Trading Plan: The Five Core Components</h2>
+      <p class="dek">What belongs in it, and what beginners typically get wrong.</p>
+
+      <table class="ref">
+        <tr><th>Component</th><th>What it specifies</th><th>Common beginner mistake</th></tr>
+        <tr><td>Market &amp; timeframe selection</td><td>Which instruments and timeframes you trade, based on your Trader Profile</td><td>Trading too many unrelated markets/timeframes at once</td></tr>
+        <tr><td>Setup criteria</td><td>The specific, objective conditions that define a valid trade (Modules 01–04)</td><td>Vague criteria that shift after the fact to justify a trade already taken</td></tr>
+        <tr><td>Risk rules</td><td>Per-trade risk, position sizing method, stop-loss rules (Module 20)</td><td>No fixed risk rule, sizing based on "how confident I feel"</td></tr>
+        <tr><td>Trade management</td><td>How you scale in/out, move stops, and take profit (Module 23)</td><td>No plan at all until already in the trade, deciding reactively</td></tr>
+        <tr><td>Review process</td><td>How and when you assess performance and revise the plan (lesson 5)</td><td>Never reviewing systematically, repeating the same errors indefinitely</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="10" fill="#1C2024" text-anchor="middle">
+            <rect x="10" y="50" width="135" height="40" rx="6" fill="#E3EFEE" stroke="#1F5F5B"/><text x="78" y="74">MARKET/TF</text>
+            <rect x="155" y="50" width="135" height="40" rx="6" fill="#F1E6D2" stroke="#A8772E"/><text x="222" y="74">SETUP RULES</text>
+            <rect x="300" y="50" width="135" height="40" rx="6" fill="#FBEAE7" stroke="#B23A2E"/><text x="367" y="74">RISK RULES</text>
+            <rect x="445" y="50" width="135" height="40" rx="6" fill="#FCFBF9" stroke="#E1DDD3"/><text x="512" y="74">MANAGEMENT</text>
+            <rect x="590" y="50" width="160" height="40" rx="6" fill="#E3F2E9" stroke="#1E7B4D"/><text x="670" y="74">REVIEW PROCESS</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 2 — The five components of a complete written trading plan.</figcaption>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="sticking-to-it">
+      <div class="lesson-kicker"><span class="num">04</span> Discipline</div>
+      <h2>Sticking to Your Trading Plan</h2>
+      <p class="dek">The hard part — building discipline that gives your strategy a real chance to work.</p>
+
+      <ul>
+        <li><strong>Pre-commit before the trade, not during it.</strong> Decisions made calmly before entry are far more reliable than ones made under the emotional pressure of an open position.</li>
+        <li><strong>Use a pre-trade checklist.</strong> A short, written checklist run through before every entry reduces the chance of impulsively skipping a rule.</li>
+        <li><strong>Separate "the plan was wrong" from "I didn't follow the plan."</strong> Most early-stage losses come from the second category, not the first — and they require completely different fixes.</li>
+        <li><strong>Track deviations explicitly</strong> in your trading journal (Module 22) so patterns of rule-breaking become visible rather than invisible.</li>
+      </ul>
+
+      <div class="warn"><strong>A common trap:</strong> after a string of losses on a plan that's actually sound, the temptation is to abandon it entirely rather than examine whether the losses came from a flawed plan or from not following it. Module 21 (Build Your Own Trading System) returns to this distinction with a structured framework.</div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="living-doc">
+      <div class="lesson-kicker"><span class="num">05</span> Evolution</div>
+      <h2>Your Trading Plan Is a Living Document</h2>
+      <p class="dek">What to expect in your first 90 days, and habits that support long-term growth.</p>
+
+      <p>A trading plan should evolve as you accumulate real evidence about what works for you — but that evolution needs to be deliberate and evidence-based, not a reaction to the most recent win or loss.</p>
+
+      <table class="ref">
+        <tr><th>Period</th><th>What to focus on</th></tr>
+        <tr><td>First 30 days</td><td>Executing the plan exactly as written, gathering data — resist the urge to tweak rules this early</td></tr>
+        <tr><td>Days 30–60</td><td>Reviewing journal data (Module 22) for patterns in execution and rule-following</td></tr>
+        <tr><td>Days 60–90</td><td>Making the first deliberate, evidence-based adjustment to one specific component of the plan</td></tr>
+      </table>
+
+      <div class="callout"><strong>One change at a time:</strong> revising multiple components of your plan simultaneously makes it impossible to know which change actually caused any subsequent improvement or decline — a principle revisited in Module 22's journal review framework.</div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Developing Your Own Trading Plan</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. What's the key distinction between a trading plan and a trading strategy?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) They are exactly the same thing</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) A strategy is one tool inside a plan; the plan governs everything around it, including risk and review process</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) A trading plan only applies to long-term investors, never active traders</label>
+        <div class="reveal"><strong>Answer: B.</strong> A plan is the broader framework — including risk rules and review process — within which a specific strategy operates.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Why does building a Trader Profile come before writing specific trading rules?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) Rules chosen without honestly assessing time, capital, temperament, and goals are likely to be a poor fit for the actual trader</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) The Trader Profile has no real bearing on which rules make sense</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) It's only relevant for full-time professional traders</label>
+        <div class="reveal"><strong>Answer: A.</strong> Self-assessment ensures the resulting plan is realistically suited to the trader's actual constraints and personality.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Which of these is one of the five core components of a trading plan?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) Risk rules</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) A list of favorite trading quotes</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) A guess at next week's news headlines</label>
+        <div class="reveal"><strong>Answer: A.</strong> Risk rules — including per-trade risk and position sizing — are one of the five essential components, alongside market/timeframe selection, setup criteria, trade management, and review process.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. Why is it important to distinguish "the plan was wrong" from "I didn't follow the plan"?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) The two situations require completely different fixes, and most early losses fall into the second category</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) They are always the same problem with the same solution</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) This distinction is irrelevant to improving as a trader</label>
+        <div class="reveal"><strong>Answer: A.</strong> Conflating execution failures with strategy failures leads to abandoning sound plans or persisting with flawed ones — recognizing which is which is essential.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Why does the 90-day framework recommend changing only one component of a plan at a time?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) Changing multiple components simultaneously makes it impossible to know which change caused any subsequent result</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) Plans should never be changed under any circumstances</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Multiple simultaneous changes always improve performance faster</label>
+        <div class="reveal"><strong>Answer: A.</strong> Isolating one variable at a time preserves the ability to attribute results to a specific change, supporting genuine evidence-based refinement.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 19 — DEVELOPING YOUR OWN TRADING PLAN · NEXT MODULE: WHICH TYPE OF TRADER ARE YOU?
+    </footer>
+  </main>
+</div>
+</body>
+</html>

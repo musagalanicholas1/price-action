@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Economic Data and Market Reactions — Module 06</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:50px; line-height:1.05; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 06</div>
+    <p class="toc-title">Economic Data and<br>Market Reactions</p>
+    <ol>
+      <li><a href="#key-indicators">Key Economic Indicators</a></li>
+      <li><a href="#expectations">Market Expectations</a></li>
+      <li><a href="#nowcasting">Nowcasting</a></li>
+      <li><a href="#sources">Where to Find News &amp; Data</a></li>
+      <li><a href="#data-to-price">From Data to Price Action</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 06 of the Trading Curriculum</div>
+      <h1>Economic Data and Market Reactions</h1>
+      <p class="lede">Dozens of economic reports hit the calendar every week, but only a handful actually move markets. Learn which releases carry the most weight, how to read a report against expectations rather than the headline number, and what typically happens to currency prices when major data lands.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="40" width="10" height="20" fill="#E1DDD3"/>
+        <rect x="20" y="35" width="10" height="25" fill="#E1DDD3"/>
+        <rect x="40" y="42" width="10" height="18" fill="#E1DDD3"/>
+        <rect x="60" y="10" width="10" height="50" fill="#1E7B4D"/>
+        <rect x="80" y="38" width="10" height="22" fill="#E1DDD3"/>
+        <rect x="100" y="40" width="10" height="20" fill="#E1DDD3"/>
+        <text x="65" y="6" font-family="JetBrains Mono" font-size="9" fill="#1E7B4D">NFP</text>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="key-indicators">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>Key Economic Indicators: The Data That Moves Currencies</h2>
+      <p class="dek">Most reports are noise. Learn which ones actually move markets, and the leading vs. lagging framework.</p>
+
+      <p>An economic calendar lists dozens of releases a week — yet only a handful reliably move major currency pairs. Building a mental shortlist of high-impact releases, and understanding why they outrank the rest, is the first practical skill in trading the news.</p>
+
+      <h3>Leading vs. Lagging Indicators</h3>
+      <table class="ref">
+        <tr><th>Type</th><th>What it means</th><th>Examples</th></tr>
+        <tr><td>Leading</td><td>Tends to change before the broader economy does — useful for anticipating direction</td><td>PMI, consumer confidence, building permits, yield curve shape</td></tr>
+        <tr><td>Lagging</td><td>Confirms a trend that's already underway</td><td>GDP, unemployment rate, CPI (to a degree)</td></tr>
+      </table>
+
+      <h3>The Shortlist Worth Watching Closely</h3>
+      <div class="grid-cards">
+        <div class="card"><span class="tag">Highest impact</span><h4>Employment reports</h4><p>Nonfarm Payrolls (U.S.) and equivalents elsewhere — a direct read on labor market health and a leading proxy for spending capacity.</p></div>
+        <div class="card"><span class="tag">Highest impact</span><h4>Inflation (CPI/PCE)</h4><p>The data central banks watch most closely when deciding policy direction.</p></div>
+        <div class="card"><span class="tag">Highest impact</span><h4>Central bank rate decisions</h4><p>Not technically "data," but the highest-impact scheduled event on any calendar.</p></div>
+        <div class="card"><span class="tag">Moderate impact</span><h4>GDP</h4><p>Lagging but still closely watched, especially the first ("advance") estimate.</p></div>
+        <div class="card"><span class="tag">Moderate impact</span><h4>Retail sales</h4><p>A timely read on consumer spending, the largest GDP component in most developed economies.</p></div>
+        <div class="card"><span class="tag">Moderate impact</span><h4>PMI surveys</h4><p>Fast, forward-looking, and watched closely as an early signal between GDP releases.</p></div>
+      </div>
+
+      <div class="callout"><strong>Why the rankings shift over time:</strong> whichever data point is most directly relevant to the market's current dominant concern (inflation during an inflation scare, employment during a growth scare) temporarily moves up the ranking — covered further in lesson 4 of Module 11 (Understanding and Trading the News).</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="expectations">
+      <div class="lesson-kicker"><span class="num">02</span> The Core Concept</div>
+      <h2>Market Expectations: Why Good News Can Tank a Currency</h2>
+      <p class="dek">Currencies move on the deviation from expectations, not the headline number.</p>
+
+      <p>This is the single most important idea in this module, and it builds directly on lesson 10 of Module 05. Before any release, economists publish a consensus forecast. The market positions itself around that consensus in advance. When the actual number arrives, the price reaction is driven almost entirely by how the actual number compares to that consensus — not by whether the number is "good" or "bad" in some absolute sense.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <text x="20" y="25" font-family="Inter" font-size="13" fill="#4A5159">Consensus forecast: +200K jobs. Actual print: +280K jobs (a strong, "good" number).</text>
+          <rect x="40" y="60" width="300" height="40" fill="#E3F2E9" stroke="#1E7B4D"/><text x="190" y="85" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#1E7B4D">+280K vs +200K expected → beat</text>
+          <text x="40" y="130" font-family="Inter" font-size="13" fill="#4A5159">Naive read: "good jobs data → buy the dollar."</text>
+          <text x="40" y="155" font-family="Inter" font-size="13" fill="#4A5159">Actual outcome: if the beat raises fears of a more hawkish Fed than priced in,</text>
+          <text x="40" y="178" font-family="Inter" font-size="13" fill="#4A5159">it can support the dollar — but if the market had already priced in an even</text>
+          <text x="40" y="201" font-family="Inter" font-size="13" fill="#4A5159">bigger beat, the same "good" headline can actually see the dollar fall.</text>
+        </svg>
+        <figcaption>Fig. 1 — A "good" headline number doesn't tell you the direction of the reaction on its own — the size and direction of the surprise relative to consensus does.</figcaption>
+      </div>
+
+      <h3>Where to Find Consensus Forecasts</h3>
+      <p>Economic calendars (covered in lesson 4) display the consensus forecast alongside the previous reading for every scheduled release, making the comparison straightforward to track in real time as the actual number prints.</p>
+
+      <div class="warn"><strong>Common beginner mistake:</strong> reacting to whether a number is "good" or "bad" in plain English, rather than comparing it to consensus. This single habit explains a large share of confused, losing reactions to news releases.</div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="nowcasting">
+      <div class="lesson-kicker"><span class="num">03</span> Forward-Looking Tools</div>
+      <h2>Nowcasting: How to Read the Economy Before the Official Data Drops</h2>
+      <p class="dek">Official GDP tells you where the economy was. Nowcasting tools tell you where it is right now.</p>
+
+      <p>GDP is reported with a significant lag — often a month or more after the quarter it describes has ended, and subject to later revision. Nowcasting models solve this by continuously updating a real-time estimate of current-quarter GDP growth as new data arrives throughout the quarter, rather than waiting for the official release.</p>
+
+      <table class="ref">
+        <tr><th>Tool</th><th>Publisher</th><th>What it does</th></tr>
+        <tr><td>GDPNow</td><td>Federal Reserve Bank of Atlanta</td><td>Updates a running U.S. GDP growth estimate as new data is released throughout the quarter</td></tr>
+        <tr><td>NY Fed Nowcast</td><td>Federal Reserve Bank of New York</td><td>A similar real-time GDP tracking model with its own underlying methodology</td></tr>
+        <tr><td>St. Louis Fed Nowcast</td><td>Federal Reserve Bank of St. Louis</td><td>Another independent real-time GDP estimate, useful for cross-checking the other two</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="180" fill="#FFFFFF"/>
+          <line x1="40" y1="100" x2="700" y2="100" stroke="#E1DDD3"/>
+          <polyline points="40,90 120,70 200,95 280,60 360,80 440,50 520,65" fill="none" stroke="#1F5F5B" stroke-width="2" stroke-dasharray="4 2"/>
+          <text x="40" y="50" font-family="JetBrains Mono" font-size="10" fill="#1F5F5B">Nowcast estimate — updates continuously through the quarter</text>
+          <circle cx="600" cy="55" r="5" fill="#A8772E"/>
+          <text x="610" y="58" font-family="JetBrains Mono" font-size="10" fill="#A8772E">official GDP print — arrives weeks later</text>
+        </svg>
+        <figcaption>Fig. 2 — A nowcast updates in near real-time; the official GDP figure only confirms what the nowcast had already been signaling.</figcaption>
+      </div>
+
+      <p>Traders use nowcasts to get ahead of the official release — if GDPNow has been drifting steadily lower for weeks, an eventual weak GDP print is less of a surprise and less likely to move the market sharply, since it was already partly priced in.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="sources">
+      <div class="lesson-kicker"><span class="num">04</span> Practical Setup</div>
+      <h2>Where to Find Forex News and Market Data</h2>
+      <p class="dek">Building a pre-session routine that puts the right sources to use.</p>
+
+      <table class="ref">
+        <tr><th>Resource type</th><th>What it provides</th></tr>
+        <tr><td>Economic calendars</td><td>Scheduled release times, consensus forecasts, prior readings, and actual results as they print</td></tr>
+        <tr><td>Central bank websites</td><td>Official statements, meeting minutes, speech transcripts, and policy statements directly from the source</td></tr>
+        <tr><td>Official statistics agencies</td><td>Raw underlying data and full report detail beyond the summarized headline figure</td></tr>
+        <tr><td>Nowcasting dashboards</td><td>Real-time growth estimates, as covered in the previous lesson</td></tr>
+        <tr><td>Financial news wires</td><td>Real-time reporting and context around unscheduled (off-calendar) developments</td></tr>
+      </table>
+
+      <h3>A Simple Pre-Session Routine</h3>
+      <ol>
+        <li>Check the economic calendar for the day/week ahead — note release times and consensus forecasts for anything relevant to the pairs you trade.</li>
+        <li>Scan for any central bank speakers scheduled, since unscheduled hawkish/dovish remarks can move markets as much as data releases.</li>
+        <li>Glance at relevant nowcasting dashboards if a GDP-adjacent release is approaching.</li>
+        <li>Note the time zone conversion for each release relative to your own — a surprisingly common and costly mistake is misjudging release timing.</li>
+      </ol>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="data-to-price">
+      <div class="lesson-kicker"><span class="num">05</span> Mechanics</div>
+      <h2>From Data to Price Action: What Happens When Big News Hits</h2>
+      <p class="dek">From the initial algorithmic spike to the secondary analytical move, and the traps that catch unprepared traders.</p>
+
+      <p>Major data releases tend to unfold in two distinct phases, each with a different character.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="11" fill="#1F5F5B">PHASE 1 — ALGORITHMIC SPIKE (seconds)</text>
+          <polyline points="30,150 60,148 90,40 120,55" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <text x="20" y="180" font-family="Inter" font-size="11" fill="#4A5159">Headline number parsed by automated systems —</text>
+          <text x="20" y="198" font-family="Inter" font-size="11" fill="#4A5159">fast, often volatile, spreads widen sharply.</text>
+
+          <text x="400" y="20" font-family="JetBrains Mono" font-size="11" fill="#A8772E">PHASE 2 — ANALYTICAL MOVE (minutes to hours)</text>
+          <polyline points="400,55 440,70 480,50 520,75 560,55 600,40 640,60 680,35" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <text x="400" y="180" font-family="Inter" font-size="11" fill="#4A5159">Traders digest report details, revisions, and</text>
+          <text x="400" y="198" font-family="Inter" font-size="11" fill="#4A5159">context — often a more durable directional move.</text>
+        </svg>
+        <figcaption>Fig. 3 — The two-speed reaction: an immediate algorithmic spike, followed by a slower, more deliberate analytical move once the full report is digested.</figcaption>
+      </div>
+
+      <h3>Common Traps in the First Phase</h3>
+      <ul>
+        <li><strong>Spread widening.</strong> Brokers often widen spreads dramatically in the first seconds after major releases, making market orders far more expensive than they appear.</li>
+        <li><strong>Slippage.</strong> Stop-losses and market orders can fill well beyond their intended price during the initial spike.</li>
+        <li><strong>Whipsaws.</strong> An initial knee-jerk reaction in one direction can fully reverse once the broader report (not just the headline figure) gets digested in phase two.</li>
+      </ul>
+
+      <div class="callout"><strong>A practical takeaway:</strong> many experienced traders deliberately avoid entering new positions in the first minute or two after a major release, waiting instead for phase two — the calmer, more analytically-driven move — to begin. This idea is expanded into a full entry framework in Module 11.</div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Economic Data and Market Reactions</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. What's the key difference between a leading and a lagging economic indicator?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Leading indicators tend to change before the broader economy does; lagging indicators confirm a trend already underway</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Lagging indicators are always more important to traders</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) There is no meaningful difference between the two</label>
+        <div class="reveal"><strong>Answer: A.</strong> Leading indicators (like PMI) anticipate changes; lagging indicators (like the unemployment rate) confirm trends that have already begun.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. A jobs report beats consensus forecasts, yet the currency falls. What's the most likely explanation?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) The market is reacting irrationally with no real explanation</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) The beat was smaller than what the market had already priced in, making it a disappointment relative to expectations</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Good economic data always weakens a currency</label>
+        <div class="reveal"><strong>Answer: B.</strong> Currency reactions are driven by the size and direction of the surprise relative to consensus, not by whether the headline number sounds "good."</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. What problem do nowcasting tools like GDPNow solve?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) They predict central bank decisions directly</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) They provide a continuously updated, real-time estimate of current GDP growth instead of waiting for the lagged official release</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) They replace the need for any economic calendar</label>
+        <div class="reveal"><strong>Answer: B.</strong> Nowcasting models update GDP estimates as new data arrives throughout the quarter, getting ahead of the lagged and later-revised official GDP print.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. Why do many experienced traders avoid entering new positions in the first minute or two after a major data release?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) Trading is not allowed during that window</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Widened spreads, slippage, and whipsaws during the initial algorithmic spike make that window unusually risky</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Prices never move during that window</label>
+        <div class="reveal"><strong>Answer: B.</strong> The first phase after a release is dominated by automated reactions, wide spreads, and potential reversals once the full report is digested — a high-risk window many traders deliberately sit out.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Where would a trader find the consensus forecast for an upcoming data release?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) On an economic calendar, alongside the previous reading and scheduled release time</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) Consensus forecasts are not published anywhere publicly</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Only central banks have access to consensus forecasts</label>
+        <div class="reveal"><strong>Answer: A.</strong> Economic calendars list the consensus forecast and prior reading for each scheduled release, making it easy to compare against the actual number as it prints.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 06 — ECONOMIC DATA AND MARKET REACTIONS · NEXT MODULE: COUNTRY RISK, GEOPOLITICS, AND MARKET INTERVENTIONS
+    </footer>
+  </main>
+</div>
+</body>
+</html>

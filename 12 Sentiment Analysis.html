@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentiment Analysis — Module 12</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:1px;}
+  .toc a{display:flex; gap:8px; align-items:baseline; color:var(--ink-soft); font-size:13px; padding:5px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:10.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  .toc .bonus-link::before{content:"★"; color:var(--gold);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:50px; line-height:1.05; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:50px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:30px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16px; margin:0 0 24px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:20px; margin:30px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:26px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:16px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:18px 0; font-size:14px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:8px 10px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:22px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:16px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:16px;}
+  .card p{font-size:13.5px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 12</div>
+    <p class="toc-title">Sentiment<br>Analysis</p>
+    <ol>
+      <li><a href="#what-is-sentiment">What Is Market Sentiment?</a></li>
+      <li><a href="#contrarian">The Contrarian Principle</a></li>
+      <li><a href="#cot-report">The COT Report</a></li>
+      <li><a href="#cot-extreme">Spotting Extreme Positioning</a></li>
+      <li><a href="#cot-action">COT in Action</a></li>
+      <li><a href="#retail-sentiment">Retail Sentiment as a Warning</a></li>
+      <li><a href="#read-retail">Reading Retail Sentiment Free</a></li>
+      <li><a href="#fear-greed">Fear &amp; Greed Index</a></li>
+      <li><a href="#vix">The VIX</a></li>
+      <li><a href="#move-index">The MOVE Index</a></li>
+      <li><a href="#cvix">The CVIX</a></li>
+      <li><a href="#risk-on-off">Risk-On / Risk-Off</a></li>
+      <li><a href="#confluence-framework">The Sentiment Confluence Framework</a></li>
+      <li><a href="#review">Review</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+      <li><a href="#bonus-roro" class="bonus-link">Risk-On/Off Meter</a></li>
+      <li><a href="#bonus-movers" class="bonus-link">Today's Market Movers</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 12 of the Trading Curriculum</div>
+      <h1>Sentiment Analysis</h1>
+      <p class="lede">Most retail traders rely entirely on technical analysis, walking straight into traps set by institutions that know exactly where their stops are. This module teaches you to read market sentiment across three layers: institutional positioning, retail crowd behavior, and the broader risk environment.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="32" r="20" fill="#1E7B4D" opacity="0.8"/>
+        <circle cx="300" cy="32" r="20" fill="#A8772E" opacity="0.8"/>
+        <circle cx="500" cy="32" r="20" fill="#B23A2E" opacity="0.8"/>
+        <text x="100" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#fff">INST</text>
+        <text x="300" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#fff">RETAIL</text>
+        <text x="500" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#fff">RISK</text>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-sentiment">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Is Market Sentiment?</h2>
+      <p class="dek">A fourth analytical framework, alongside price action, fundamentals, and intermarket analysis.</p>
+      <p>Market sentiment is the collective mood and positioning of market participants — whether they're broadly optimistic (risk-on, bullish) or fearful (risk-off, bearish) at a given moment, and how that mood is reflected in their actual trading positions. Unlike price action (what's happening) or fundamentals (why it should happen), sentiment analysis asks: who is positioned which way, and what does that imply about what's likely to happen next?</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="contrarian">
+      <div class="lesson-kicker"><span class="num">02</span> Core Principle</div>
+      <h2>The Contrarian Principle: Why the Crowd Is Usually Wrong</h2>
+      <p class="dek">Three behavioral tendencies put the crowd on the wrong side of the market at the worst possible moment.</p>
+      <ul>
+        <li><strong>Recency bias.</strong> Retail crowds tend to extrapolate the recent trend, piling in heaviest only after a move is already mature.</li>
+        <li><strong>Herding.</strong> Individual conviction weakens as people simply follow what everyone else appears to be doing.</li>
+        <li><strong>Capital constraints.</strong> Retail traders are more likely to be forced out (via margin calls or panic) exactly during the sharp moves that mark genuine turning points — precisely when institutions, with deeper capital, are positioned to take the other side.</li>
+      </ul>
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <polyline points="40,130 150,110 260,90 370,60 480,40 590,30" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <text x="500" y="20" font-family="Inter" font-size="11" fill="#B23A2E">Retail piles in heaviest here — near the top</text>
+          <circle cx="590" cy="30" r="6" fill="#B23A2E"/>
+          <polyline points="590,30 650,80 700,130" fill="none" stroke="#1C2024" stroke-width="2" stroke-dasharray="4 2"/>
+        </svg>
+        <figcaption>Fig. 1 — A classic pattern: maximum crowd conviction often coincides with a move that's already nearly over.</figcaption>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="cot-report">
+      <div class="lesson-kicker"><span class="num">03</span> Institutional Positioning</div>
+      <h2>The COT Report: What It Is, Where to Find It, and How to Read It</h2>
+      <p class="dek">Trader categories, Legacy vs. TFF reports, and tracking institutional sentiment.</p>
+      <p>The Commitments of Traders (COT) report is published weekly by the U.S. Commodity Futures Trading Commission, showing aggregated futures positioning broken down by trader category — most importantly for FX traders, <strong>Commercial</strong> participants (hedgers, often large corporations) and <strong>Non-Commercial</strong> participants (speculators, including large funds).</p>
+      <table class="ref">
+        <tr><th>Report type</th><th>What it offers</th></tr>
+        <tr><td>Legacy report</td><td>The traditional, simpler Commercial/Non-Commercial breakdown</td></tr>
+        <tr><td>TFF (Traders in Financial Futures)</td><td>A more granular breakdown including asset managers, leveraged funds, and dealers</td></tr>
+      </table>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="cot-extreme">
+      <div class="lesson-kicker"><span class="num">04</span> Application</div>
+      <h2>Trading with the COT Report: Spotting Extreme Positioning</h2>
+      <p class="dek">Reading extreme Non-Commercial positioning as a macro reversal signal.</p>
+      <p>When speculative (Non-Commercial) positioning reaches a historical extreme — heavily net-long or net-short relative to its own recent history — it suggests most of the available speculative capital is already committed to one side. That leaves fewer new participants left to push the move further, and a growing pool of positions vulnerable to unwinding if sentiment shifts.</p>
+      <div class="callout"><strong>Normalizing the data:</strong> raw position counts aren't comparable across time as market size changes — traders typically normalize positioning using a rolling percentile or z-score so that "extreme" means relative to recent history, not an arbitrary absolute number.</div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="cot-action">
+      <div class="lesson-kicker"><span class="num">05</span> Practical Setup</div>
+      <h2>COT in Action: Setup, Divergences, and Confirmation</h2>
+      <p class="dek">Setting up COT indicators, spotting divergences, and reading open interest.</p>
+      <p>Most charting platforms offer COT overlay indicators that plot positioning directly beneath a price chart. A useful pattern to watch for is divergence: price continuing to make new highs while Non-Commercial net-long positioning fails to make a corresponding new high — a sign the rally's speculative backing may be thinning even as price pushes on.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <polyline points="40,80 150,60 260,70 370,30 480,15" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="10" fill="#1C2024">PRICE: new highs</text>
+          <polyline points="40,140 150,120 260,135 370,128 480,132" fill="none" stroke="#B23A2E" stroke-width="2" stroke-dasharray="3 2"/>
+          <text x="20" y="155" font-family="JetBrains Mono" font-size="10" fill="#B23A2E">NON-COMMERCIAL NET LONGS: flat to falling — divergence</text>
+        </svg>
+        <figcaption>Fig. 2 — Price rising while speculative positioning fails to confirm — a classic COT divergence warning.</figcaption>
+      </div>
+      <p>Open interest (total outstanding contracts) adds further context: rising open interest alongside a trend suggests fresh participation supporting the move; falling open interest during a trend can suggest the move is being driven by short-covering or position unwinding rather than genuine new conviction.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="retail-sentiment">
+      <div class="lesson-kicker"><span class="num">06</span> Retail Layer</div>
+      <h2>Retail Sentiment: How Crowd Positioning Becomes a Warning Sign</h2>
+      <p class="dek">Less a "follow the crowd" signal, more a "run from the crowd" signal.</p>
+      <p>Many brokers publish aggregated data on their own retail clients' positioning. Consistent with the contrarian principle (lesson 2), this data tends to work best read backwards: when 70–80% or more of retail traders are positioned on one side of a pair, history suggests treating that as a caution flag rather than a reason to join them.</p>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="read-retail">
+      <div class="lesson-kicker"><span class="num">07</span> Practical Setup</div>
+      <h2>How to Read Retail Sentiment: No Account Required</h2>
+      <p class="dek">Three free tools, and how to cross-reference them.</p>
+      <p>Several broker-published retail positioning dashboards are freely available online without needing a trading account with that broker. Because methodology and client bases differ across providers, the more reliable approach is cross-referencing two or three of these sources — broad agreement across providers is a stronger signal than any single one in isolation.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="lesson" id="fear-greed">
+      <div class="lesson-kicker"><span class="num">08</span> Risk Gauges</div>
+      <h2>The Fear &amp; Greed Index: Reading the Market's Emotional Temperature</h2>
+      <p class="dek">Seven components combine into a single read on overall market mood.</p>
+      <p>The CNN Fear & Greed Index combines seven inputs (including stock price momentum, market volatility, safe-haven demand, and junk bond spreads) into a single 0–100 reading, with low readings indicating fear and high readings indicating greed. Extreme readings — deep fear or extreme greed — are often watched as potential contrarian signals for broader risk appetite, which flows directly into currency markets via the risk-on/risk-off dynamic (lesson 12).</p>
+    </section>
+
+    <!-- 9 -->
+    <section class="lesson" id="vix">
+      <div class="lesson-kicker"><span class="num">09</span> Risk Gauges</div>
+      <h2>The VIX: What Wall Street's Fear Gauge Tells Forex Traders</h2>
+      <p class="dek">A quick read on the current risk environment before placing any trade.</p>
+      <p>The VIX measures the market's expectation of future S&P 500 volatility, derived from options pricing. While built from equity options, its signal travels well beyond stocks: elevated VIX readings typically coincide with broad risk-off conditions that also pressure higher-beta currencies (AUD, NZD) and support traditional safe havens (USD, JPY, CHF).</p>
+      <table class="ref">
+        <tr><th>VIX level (illustrative)</th><th>Typical interpretation</th></tr>
+        <tr><td>Below ~15</td><td>Low volatility, complacent/risk-on conditions</td></tr>
+        <tr><td>15–25</td><td>Normal range</td></tr>
+        <tr><td>Above ~30</td><td>Elevated fear, typically risk-off across markets</td></tr>
+      </table>
+    </section>
+
+    <!-- 10 -->
+    <section class="lesson" id="move-index">
+      <div class="lesson-kicker"><span class="num">10</span> Risk Gauges</div>
+      <h2>The MOVE Index: What the Bond Market's Fear Gauge Tells Forex Traders</h2>
+      <p class="dek">Why bond market volatility matters for FX and risk assets.</p>
+      <p>The MOVE Index is the bond market's equivalent of the VIX, measuring expected volatility in U.S. Treasury yields. Since currency values are deeply tied to interest rate expectations (Module 05, lesson 7), rising bond market volatility often precedes or accompanies FX volatility — making the MOVE Index a useful early-warning companion to the equity-focused VIX.</p>
+    </section>
+
+    <!-- 11 -->
+    <section class="lesson" id="cvix">
+      <div class="lesson-kicker"><span class="num">11</span> Risk Gauges</div>
+      <h2>The CVIX: The FX Market's Own Fear Gauge</h2>
+      <p class="dek">A direct read on fear inside the FX market itself.</p>
+      <p>The CVIX measures implied volatility specifically in major currency pairs, derived from FX options pricing. Unlike the VIX (equities) or MOVE (bonds), it reads volatility expectations directly from the asset class being traded — giving forex traders the most directly relevant of the three fear gauges, best used alongside the other two for a fuller cross-asset risk picture.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="20" y="40" width="220" height="50" fill="#E3EFEE" stroke="#1F5F5B"/><text x="130" y="70" fill="#1F5F5B">VIX — equities</text>
+            <rect x="270" y="40" width="220" height="50" fill="#F1E6D2" stroke="#A8772E"/><text x="380" y="70" fill="#A8772E">MOVE — bonds</text>
+            <rect x="520" y="40" width="220" height="50" fill="#FBEAE7" stroke="#B23A2E"/><text x="630" y="70" fill="#B23A2E">CVIX — currencies</text>
+          </g>
+          <text x="380" y="120" text-anchor="middle" font-family="Inter" font-size="12" fill="#4A5159">Three fear gauges, three asset classes — read together for a fuller risk picture.</text>
+        </svg>
+        <figcaption>Fig. 3 — Each volatility index reads a different corner of the market; agreement across all three is a stronger signal than any one alone.</figcaption>
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section class="lesson" id="risk-on-off">
+      <div class="lesson-kicker"><span class="num">12</span> The Big Picture</div>
+      <h2>Risk-On / Risk-Off: How Global Mood Moves Currencies</h2>
+      <p class="dek">Which currencies benefit when traders feel bold, and which win when they get scared.</p>
+      <table class="ref">
+        <tr><th>Mood</th><th>Currencies that tend to benefit</th><th>Currencies under pressure</th></tr>
+        <tr><td>Risk-on</td><td>AUD, NZD, emerging market currencies, commodity currencies</td><td>USD, JPY, CHF (less in demand as a haven)</td></tr>
+        <tr><td>Risk-off</td><td>USD, JPY, CHF</td><td>AUD, NZD, emerging market currencies</td></tr>
+      </table>
+      <p>This framework, introduced in Module 13 (Intermarket Analysis), recurs constantly — checking the broad risk mood before any trade, using the gauges from lessons 8–11, is a useful habit regardless of which specific pair you're trading.</p>
+    </section>
+
+    <!-- 13 -->
+    <section class="lesson" id="confluence-framework">
+      <div class="lesson-kicker"><span class="num">13</span> Synthesis</div>
+      <h2>Putting It All Together: The Sentiment Confluence Framework</h2>
+      <p class="dek">Layering three levels of sentiment for a higher-conviction read.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="200" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="20" y="20" width="220" height="50" fill="#E3EFEE" stroke="#1F5F5B"/><text x="130" y="50" fill="#1F5F5B">LAYER 1: COT / institutional</text>
+            <rect x="270" y="80" width="220" height="50" fill="#F1E6D2" stroke="#A8772E"/><text x="380" y="110" fill="#A8772E">LAYER 2: retail positioning</text>
+            <rect x="520" y="140" width="220" height="50" fill="#FBEAE7" stroke="#B23A2E"/><text x="630" y="170" fill="#B23A2E">LAYER 3: risk gauges (VIX/MOVE/CVIX)</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 4 — Three independent sentiment layers. Agreement across all three is a stronger signal than any single layer alone.</figcaption>
+      </div>
+      <p>A practical process: check institutional positioning extremes (COT), check retail crowd positioning, and check the broader risk environment (VIX/MOVE/CVIX, risk-on/risk-off) — then weigh a trade idea more heavily when multiple layers agree, echoing the confluence principle from Module 01.</p>
+    </section>
+
+    <!-- 14 -->
+    <section class="lesson" id="review">
+      <div class="lesson-kicker"><span class="num">14</span> Review</div>
+      <h2>What You've Learned: Sentiment Analysis Review</h2>
+      <p class="dek">From the contrarian principle to the three-layer confluence framework.</p>
+      <ol>
+        <li>The crowd tends to be wrong at extremes due to recency bias, herding, and capital constraints.</li>
+        <li>The COT report reveals institutional/speculative positioning extremes and divergences.</li>
+        <li>Retail sentiment data works best as a contrarian warning, not a signal to follow.</li>
+        <li>The Fear & Greed Index, VIX, MOVE, and CVIX each measure risk appetite from a different angle.</li>
+        <li>Risk-on/risk-off mood drives systematic flows into and out of specific currencies.</li>
+        <li>Combining all three layers gives a higher-conviction sentiment read than any single tool alone.</li>
+      </ol>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Market Sentiment Analysis</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Which behavioral tendency causes retail crowds to pile into a trend heaviest only after it's already mature?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Recency bias</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Institutional credibility</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Catalyst decay</label>
+        <div class="reveal"><strong>Answer: A.</strong> Recency bias causes traders to extrapolate the recent trend, often committing heaviest right as the move is nearing exhaustion.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. In the COT report, what does extreme Non-Commercial net-long positioning, relative to its own recent history, suggest?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) The trend is guaranteed to continue indefinitely</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Most available speculative capital may already be committed, leaving fewer new buyers and more unwind risk</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Commercial hedgers have stopped trading entirely</label>
+        <div class="reveal"><strong>Answer: B.</strong> Extreme positioning suggests the speculative trade is crowded, raising the risk of unwinding if sentiment shifts.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. When 75% of retail traders are positioned long on a pair, how does the contrarian principle suggest reading that?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) As a strong signal to also go long, following the crowd</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) As a caution flag, since extreme one-sided retail positioning has historically preceded reversals</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) As irrelevant noise with no informational value</label>
+        <div class="reveal"><strong>Answer: B.</strong> Retail sentiment extremes tend to work best as a "run from the crowd" warning rather than a signal to join it.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. What distinguishes the CVIX from the VIX and MOVE Index?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) It measures volatility expectations directly within the FX market itself, rather than equities or bonds</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) It is identical to the VIX in every respect</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) It only applies to cryptocurrency markets</label>
+        <div class="reveal"><strong>Answer: A.</strong> The CVIX reads implied volatility from FX options directly, making it the most FX-relevant of the three fear gauges.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. During a risk-off shift in global sentiment, which currencies typically benefit most?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) AUD and NZD</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) USD, JPY, and CHF</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Emerging market currencies broadly</label>
+        <div class="reveal"><strong>Answer: B.</strong> USD, JPY, and CHF are traditional safe havens that tend to benefit when global risk appetite deteriorates.</div>
+      </div>
+
+      <div class="quiz-q" id="q6">
+        <p class="q">6. Why does the sentiment confluence framework recommend checking institutional, retail, and risk-gauge layers together?</p>
+        <label onclick="document.getElementById('q6').classList.add('show')">A) Because any single layer is always sufficient on its own</label>
+        <label onclick="document.getElementById('q6').classList.add('show')">B) Agreement across multiple independent sentiment layers provides a higher-conviction read than any one alone</label>
+        <label onclick="document.getElementById('q6').classList.add('show')">C) Because the layers always contradict each other and should be averaged</label>
+        <div class="reveal"><strong>Answer: B.</strong> Combining independent sentiment layers mirrors the confluence principle from Module 01 — agreement across sources raises conviction.</div>
+      </div>
+    </section>
+
+    <!-- BONUS 1 -->
+    <section class="lesson" id="bonus-roro">
+      <div class="lesson-kicker"><span class="num">★</span> Bonus Lesson</div>
+      <h2>A Risk-On / Risk-Off Meter: Your Pre-Trade Risk Environment Check</h2>
+      <p class="dek">A quick pre-trade risk environment check, in dashboard form.</p>
+      <p>Several free online dashboards aggregate multiple risk-on/risk-off signals (equity performance, safe-haven currency moves, volatility readings) into a single, simplified meter or gauge. These tools are a fast way to apply the risk-on/risk-off framework from lesson 12 without manually checking each underlying input individually — useful as a quick glance before placing a trade, though it's worth understanding the components feeding into it rather than treating the single output number as a black box.</p>
+    </section>
+
+    <!-- BONUS 2 -->
+    <section class="lesson" id="bonus-movers">
+      <div class="lesson-kicker"><span class="num">★</span> Bonus Lesson</div>
+      <h2>What's Actually Moving Today? Tracking the Day's Market Movers</h2>
+      <p class="dek">Instantly see which currency pairs are leading or lagging today.</p>
+      <p>Several market data tools display a ranked view of which currencies and pairs are showing the strongest and weakest relative performance over the current session or day. Checking a tool like this before trading helps confirm whether the pair you're considering is actually aligned with the day's dominant flow, or quietly swimming against it — a useful, fast cross-check alongside the sentiment layers covered throughout this module.</p>
+    </section>
+
+    <footer class="endcap">
+      MODULE 12 — SENTIMENT ANALYSIS · NEXT MODULE: THE U.S. DOLLAR INDEX
+    </footer>
+  </main>
+</div>
+</body>
+</html>

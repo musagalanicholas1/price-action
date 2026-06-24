@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personality Quizzes — Module 23</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:48px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson p{margin:0 0 16px 0;}
+  .quiz-card{border:1px solid var(--line); border-radius:10px; padding:20px 22px; margin-bottom:16px; background:var(--panel);}
+  .quiz-card p.q{font-weight:600; margin:0 0 12px 0; font-size:15.5px;}
+  .quiz-card label{display:flex; gap:10px; align-items:baseline; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:14.5px;}
+  .quiz-card label:hover{background:var(--gold-soft);}
+  .quiz-card input[type="radio"]{margin-top:2px; accent-color:var(--teal);}
+  .result-btn{
+    font-family:var(--mono); font-size:13px; text-transform:uppercase; letter-spacing:.05em;
+    background:var(--ink); color:var(--bg); border:none; padding:12px 22px; border-radius:6px; cursor:pointer; margin-top:10px;
+  }
+  .result-btn:hover{background:var(--teal);}
+  .result-box{
+    margin-top:22px; padding:22px 24px; border-radius:8px; background:var(--gold-soft); border-left:4px solid var(--gold); display:none;
+  }
+  .result-box.show{display:block;}
+  .result-box h4{margin:0 0 8px 0; font-family:var(--serif); font-size:20px; color:#5a3f10;}
+  .result-box p{margin:0; font-size:14.5px; color:var(--ink-soft);}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 23</div>
+    <p class="toc-title">Personality<br>Quizzes</p>
+    <ol>
+      <li><a href="#quiz-style">Which Trading Style Fits You?</a></li>
+      <li><a href="#quiz-currency">Which Currencies Should You Trade?</a></li>
+      <li><a href="#quiz-risk">Your Attitude Towards Risk</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 23 of the Trading Curriculum</div>
+      <h1>Personality Quizzes</h1>
+      <p class="lede">Knowing yourself is an important part of your journey as a trader. Take these quizzes to discover the trading style that suits you best, your preferred markets, and your comfort with risk. There are no wrong answers here — just honest ones.</p>
+    </div>
+
+    <!-- QUIZ 1: TRADING STYLE -->
+    <section class="lesson" id="quiz-style">
+      <div class="lesson-kicker"><span class="num">01</span> Self-Assessment</div>
+      <h2>Quiz: Which Trading Style Is Best For You?</h2>
+      <p class="dek">Are you a scalper, day trader, swing trader, or position trader? (Revisit Module 20 for the full profiles.)</p>
+
+      <form id="styleQuiz">
+        <div class="quiz-card">
+          <p class="q">1. How much uninterrupted screen time can you realistically commit each day?</p>
+          <label><input type="radio" name="s1" value="scalper"> Several continuous hours, fully focused</label>
+          <label><input type="radio" name="s1" value="day"> A few focused hours during one session</label>
+          <label><input type="radio" name="s1" value="swing"> A few short check-ins spread through the day</label>
+          <label><input type="radio" name="s1" value="position"> Just a few minutes, every few days</label>
+        </div>
+        <div class="quiz-card">
+          <p class="q">2. How do you feel about holding a position overnight?</p>
+          <label><input type="radio" name="s2" value="scalper"> Never — I want everything closed within minutes</label>
+          <label><input type="radio" name="s2" value="day"> Never — I close out by end of day</label>
+          <label><input type="radio" name="s2" value="swing"> Comfortable holding a few nights</label>
+          <label><input type="radio" name="s2" value="position"> Comfortable holding for weeks or months</label>
+        </div>
+        <div class="quiz-card">
+          <p class="q">3. How do frequent, fast decisions make you feel?</p>
+          <label><input type="radio" name="s3" value="scalper"> Energized — I think best under quick pressure</label>
+          <label><input type="radio" name="s3" value="day"> Fine, as long as I have a few minutes to think</label>
+          <label><input type="radio" name="s3" value="swing"> I prefer time to deliberate before deciding</label>
+          <label><input type="radio" name="s3" value="position"> I strongly prefer slow, considered decisions</label>
+        </div>
+        <div class="quiz-card">
+          <p class="q">4. How important is it to you that trading costs (spread/commission) stay a small share of each trade?</p>
+          <label><input type="radio" name="s4" value="position"> Not very — my targets are large relative to costs</label>
+          <label><input type="radio" name="s4" value="swing"> Somewhat important</label>
+          <label><input type="radio" name="s4" value="day"> Important — I trade fairly often</label>
+          <label><input type="radio" name="s4" value="scalper"> Extremely important — it can make or break my edge</label>
+        </div>
+        <div class="quiz-card">
+          <p class="q">5. What pace of life do you want trading to fit into?</p>
+          <label><input type="radio" name="s5" value="scalper"> Intense and immersive, in short bursts</label>
+          <label><input type="radio" name="s5" value="day"> A structured daily routine</label>
+          <label><input type="radio" name="s5" value="swing"> Woven into a busy week, checked periodically</label>
+          <label><input type="radio" name="s5" value="position"> Light-touch, big-picture thinking</label>
+        </div>
+        <button type="button" class="result-btn" onclick="scoreStyle()">See My Result</button>
+        <div id="styleResult" class="result-box"></div>
+      </form>
+    </section>
+
+    <!-- QUIZ 2: CURRENCIES -->
+    <section class="lesson" id="quiz-currency">
+      <div class="lesson-kicker"><span class="num">02</span> Self-Assessment</div>
+      <h2>Quiz: Which Currencies Should You Trade?</h2>
+      <p class="dek">Finding a currency pair you're genuinely comfortable trading matters as much as your trading style.</p>
+
+      <form id="currencyQuiz">
+        <div class="quiz-card">
+          <p class="q">1. What draws you to the markets most?</p>
+          <label><input type="radio" name="c1" value="majors"> Deep liquidity and tight, predictable spreads</label>
+          <label><input type="radio" name="c1" value="commodity"> Commodities like oil, gold, and metals</label>
+          <label><input type="radio" name="c1" value="carry"> Interest rate differentials and yield</label>
+          <label><input type="radio" name="c1" value="haven"> Global macro and geopolitical events</label>
+        </div>
+        <div class="quiz-card">
+          <p class="q">2. How do you feel about sharper, less predictable price swings?</p>
+          <label><input type="radio" name="c2" value="majors"> I prefer calmer, more orderly price action</label>
+          <label><input type="radio" name="c2" value="commodity"> I'm comfortable with moderate swings tied to commodity news</label>
+          <label><input type="radio" name="c2" value="carry"> I'm fine with it as long as I'm earning yield along the way</label>
+          <label><input type="radio" name="c2" value="haven"> I actively look for high-volatility, event-driven moves</label>
+        </div>
+        <div class="quiz-card">
+          <p class="q">3. Which type of analysis do you enjoy most (Modules 01–18)?</p>
+          <label><input type="radio" name="c3" value="majors"> Price action and multi-timeframe technicals</label>
+          <label><input type="radio" name="c3" value="commodity"> Intermarket analysis — oil, gold, equities</label>
+          <label><input type="radio" name="c3" value="carry"> Central bank policy and rate differentials</label>
+          <label><input type="radio" name="c3" value="haven"> Geopolitics, risk sentiment, and safe-haven flows</label>
+        </div>
+        <div class="quiz-card">
+          <p class="q">4. How do you want to hold positions, generally?</p>
+          <label><input type="radio" name="c4" value="majors"> Short-term, frequent, technically-driven trades</label>
+          <label><input type="radio" name="c4" value="commodity"> Medium-term trades aligned with commodity cycles</label>
+          <label><input type="radio" name="c4" value="carry"> Longer-term holds, collecting swap income over time</label>
+          <label><input type="radio" name="c4" value="haven"> Opportunistic, around major news and shocks</label>
+        </div>
+        <button type="button" class="result-btn" onclick="scoreCurrency()">See My Result</button>
+        <div id="currencyResult" class="result-box"></div>
+      </form>
+    </section>
+
+    <!-- QUIZ 3: RISK ATTITUDE -->
+    <section class="lesson" id="quiz-risk">
+      <div class="lesson-kicker"><span class="num">03</span> Self-Assessment</div>
+      <h2>Quiz: What Is Your Attitude Towards Risk?</h2>
+      <p class="dek">Each trader has their own risk comfort level — knowing yours shapes every rule in Module 24's risk management framework.</p>
+
+      <form id="riskQuiz">
+        <div class="quiz-card">
+          <p class="q">1. A trade you sized normally moves against you by your planned stop distance. How do you feel?</p>
+          <label><input type="radio" name="r1" value="conservative"> Uncomfortable, even though it was within plan</label>
+          <label><input type="radio" name="r1" value="moderate"> Mildly annoyed, but I accept it as part of trading</label>
+          <label><input type="radio" name="r1" value="aggressive"> Unbothered — I expect this regularly</label>
+        </div>
+        <div class="quiz-card">
+          <p class="q">2. How would you describe your ideal risk per trade?</p>
+          <label><input type="radio" name="r2" value="conservative"> As small as reasonably possible</label>
+          <label><input type="radio" name="r2" value="moderate"> A modest, standard percentage of my account</label>
+          <label><input type="radio" name="r2" value="aggressive"> Large enough to meaningfully grow my account fast</label>
+        </div>
+        <div class="quiz-card">
+          <p class="q">3. After three losing trades in a row, what's your instinct?</p>
+          <label><input type="radio" name="r3" value="conservative"> Stop trading for the day and reassess everything</label>
+          <label><input type="radio" name="r3" value="moderate"> Continue calmly, following my plan unchanged</label>
+          <label><input type="radio" name="r3" value="aggressive"> Increase size to recover the loss faster</label>
+        </div>
+        <div class="quiz-card">
+          <p class="q">4. How do you feel about using leverage?</p>
+          <label><input type="radio" name="r4" value="conservative"> I'd rather avoid it or use very little</label>
+          <label><input type="radio" name="r4" value="moderate"> Comfortable with modest, controlled leverage</label>
+          <label><input type="radio" name="r4" value="aggressive"> I want to use as much as my broker allows</label>
+        </div>
+        <button type="button" class="result-btn" onclick="scoreRisk()">See My Result</button>
+        <div id="riskResult" class="result-box"></div>
+      </form>
+    </section>
+
+    <footer class="endcap">
+      MODULE 23 — PERSONALITY QUIZZES · NEXT MODULE: RISK MANAGEMENT
+    </footer>
+  </main>
+</div>
+
+<script>
+function tally(names){
+  const counts = {};
+  names.forEach(n=>{
+    const sel = document.querySelector('input[name="'+n+'"]:checked');
+    if(sel){ counts[sel.value] = (counts[sel.value]||0)+1; }
+  });
+  let best=null, bestCount=-1;
+  for(const k in counts){ if(counts[k]>bestCount){best=k;bestCount=counts[k];} }
+  return {counts, best, total: names.length, answered: Object.values(counts).reduce((a,b)=>a+b,0)};
+}
+
+function showResult(boxId, title, text){
+  const box = document.getElementById(boxId);
+  box.innerHTML = '<h4>'+title+'</h4><p>'+text+'</p>';
+  box.classList.add('show');
+}
+
+function scoreStyle(){
+  const r = tally(['s1','s2','s3','s4','s5']);
+  if(r.answered < r.total){ showResult('styleResult','Almost there','Answer all five questions to see your result.'); return; }
+  const map = {
+    scalper: ['Scalper','You lean toward scalping: intense focus, fast decisions, and a high tolerance for trading frequently. Revisit Module 20, lesson 3 for what this actually demands before committing — it is the least forgiving style for beginners.'],
+    day: ['Day Trader','You lean toward day trading: a structured daily session, fast but not split-second decisions, and a preference for closing everything by day\'s end. See Module 20, lesson 2 for the full profile.'],
+    swing: ['Swing Trader','You lean toward swing trading: a few check-ins a day, comfort holding overnight, and a preference for deliberate decision-making. See Module 20, lesson 4 for the full profile.'],
+    position: ['Position Trader','You lean toward position trading: big-picture thinking, light screen time, and patience to hold for weeks or months. See Module 20, lesson 5 for the full profile.']
+  };
+  const [title, text] = map[r.best];
+  showResult('styleResult', title, text);
+}
+
+function scoreCurrency(){
+  const r = tally(['c1','c2','c3','c4']);
+  if(r.answered < r.total){ showResult('currencyResult','Almost there','Answer all four questions to see your result.'); return; }
+  const map = {
+    majors: ['The Majors','You\'re drawn to the deep liquidity and technical clarity of major pairs like EUR/USD and GBP/USD — a strong fit with the price action and multi-timeframe frameworks from Modules 01–04.'],
+    commodity: ['Commodity Currencies','You\'re drawn to commodity-linked currencies like AUD, CAD, and NZD — revisit Module 14\'s lessons on gold, oil, and copper to deepen this edge.'],
+    carry: ['Carry-Trade Currencies','You\'re drawn to the rate-differential, income-generating side of FX — Module 10 (Carry Trade) is your natural next deep dive.'],
+    haven: ['Safe-Haven & Event-Driven Pairs','You\'re drawn to geopolitics, risk sentiment, and high-volatility moves — Modules 07 and 12 (Country Risk/Geopolitics and Sentiment Analysis) are especially relevant to you.']
+  };
+  const [title, text] = map[r.best];
+  showResult('currencyResult', title, text);
+}
+
+function scoreRisk(){
+  const r = tally(['r1','r2','r3','r4']);
+  if(r.answered < r.total){ showResult('riskResult','Almost there','Answer all four questions to see your result.'); return; }
+  const map = {
+    conservative: ['Conservative','You have a low risk tolerance — comfortable with small, steady risk and quick to pull back after losses. Module 24 will help you set a per-trade risk percentage that matches this comfort level rather than fighting it.'],
+    moderate: ['Moderate','You have a balanced risk tolerance — accepting of normal variance without chasing losses or shying away from reasonable risk. This is a healthy foundation for the risk management framework in Module 24.'],
+    aggressive: ['Aggressive','You\'re drawn to higher risk and faster potential growth — which also means the discipline covered in Module 24 and Module 25 (leverage) deserves extra attention, since this temperament is the one most prone to account-ending mistakes if left unchecked.']
+  };
+  const [title, text] = map[r.best];
+  showResult('riskResult', title, text);
+}
+</script>
+</body>
+</html>

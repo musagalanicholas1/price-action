@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Risk Management — Module 24</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:50px; line-height:1.05; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 24</div>
+    <p class="toc-title">Risk<br>Management</p>
+    <ol>
+      <li><a href="#what-is-rm">What Is Risk Management?</a></li>
+      <li><a href="#drawdown-math">The Math of Losing</a></li>
+      <li><a href="#risk-per-trade">How Much to Risk Per Trade</a></li>
+      <li><a href="#risk-budgeting">Risk Budgeting &amp; Circuit Breakers</a></li>
+      <li><a href="#position-sizing">Position Sizing</a></li>
+      <li><a href="#rr-expectancy">Reward-to-Risk &amp; Expectancy</a></li>
+      <li><a href="#personal-plan">Your Personal Risk Plan</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 24 of the Trading Curriculum</div>
+      <h1>Risk Management</h1>
+      <p class="lede">Most traders lose money not because they can't read charts, but because they never learned how to protect what they have. The traders who last are not the ones who win the most. They are the ones who know how to lose safely.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="44" width="40" height="14" fill="#1E7B4D" opacity="0.8"/>
+        <rect x="80" y="38" width="40" height="20" fill="#1E7B4D" opacity="0.8"/>
+        <rect x="140" y="10" width="40" height="48" fill="#B23A2E" opacity="0.8"/>
+        <rect x="200" y="40" width="40" height="18" fill="#1E7B4D" opacity="0.8"/>
+        <rect x="260" y="42" width="40" height="16" fill="#1E7B4D" opacity="0.8"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-rm">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Is Risk Management (and Why Most Traders Ignore It)</h2>
+      <p class="dek">Winning more trades than you lose still isn't enough to save you.</p>
+
+      <p>Risk management is the set of rules governing how much you can lose on any single trade, idea, day, or period — designed so that being wrong, which happens to every trader regularly, never threatens your ability to keep trading. Most beginners skip straight to strategy (entries, indicators, setups) because that's the exciting part. Risk management feels like the boring prerequisite — right up until an oversized loss erases months of gains in a single trade.</p>
+
+      <div class="callout"><strong>The uncomfortable truth:</strong> a system with a high win rate and no risk discipline can still blow up. A system with a modest win rate and strict risk discipline can survive indefinitely. Survival, not win rate, is the prerequisite for long-term profitability.</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="drawdown-math">
+      <div class="lesson-kicker"><span class="num">02</span> The Core Math</div>
+      <h2>The Math of Losing: How Drawdown Works and Why Your Losses Are Harder to Recover From Than You Think</h2>
+      <p class="dek">The breakeven formula, and your broker's mandatory drawdown rule.</p>
+
+      <p>A loss and the gain required to recover from it are not symmetrical — the deeper the drawdown, the disproportionately larger the recovery gain required, because losses shrink your base capital.</p>
+
+      <table class="ref">
+        <tr><th>Drawdown</th><th>Gain required to recover (on remaining capital)</th></tr>
+        <tr><td>10%</td><td>11.1%</td></tr>
+        <tr><td>20%</td><td>25%</td></tr>
+        <tr><td>30%</td><td>42.9%</td></tr>
+        <tr><td>50%</td><td>100%</td></tr>
+        <tr><td>75%</td><td>300%</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="200" fill="#FFFFFF"/>
+          <path d="M30,40 Q200,130 400,150 Q600,165 740,180" fill="none" stroke="#B23A2E" stroke-width="2"/>
+          <text x="600" y="175" font-family="JetBrains Mono" font-size="10" fill="#B23A2E">required recovery % (curve steepens fast)</text>
+          <text x="40" y="30" font-family="Inter" font-size="12" fill="#4A5159">Recovery requirement grows non-linearly as drawdown deepens — a 50% loss needs a 100% gain just to get back to even.</text>
+        </svg>
+        <figcaption>Fig. 1 — The breakeven curve: recovery requirements accelerate sharply once drawdown gets deep.</figcaption>
+      </div>
+
+      <div class="warn"><strong>Built-in broker mechanics:</strong> leveraged accounts carry a mandatory stop-out level — a point at which the broker automatically closes positions to prevent the account from going negative. This is not a safety net you should rely on; by the time it triggers, the damage to your account is already severe.</div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="risk-per-trade">
+      <div class="lesson-kicker"><span class="num">03</span> The Core Rule</div>
+      <h2>How Much Should You Risk Per Trade?</h2>
+      <p class="dek">Why the old "2% rule" has been updated, and why your broker's leverage offer has little to do with how much you should risk.</p>
+
+      <p>A long-standing rule of thumb suggested risking around 1–2% of account equity per trade. Many experienced traders today favor an even more conservative range — often 0.5–1% — particularly for beginners still validating a system (Module 21), since smaller per-trade risk buys more trades' worth of room to learn before any single string of losses becomes account-threatening.</p>
+
+      <table class="ref">
+        <tr><th>Risk per trade</th><th>Consecutive losses to lose 20% of account</th></tr>
+        <tr><td>0.5%</td><td>~40 trades</td></tr>
+        <tr><td>1%</td><td>~20 trades</td></tr>
+        <tr><td>2%</td><td>~10 trades</td></tr>
+        <tr><td>5%</td><td>~4 trades</td></tr>
+      </table>
+
+      <div class="callout"><strong>Leverage offered ≠ risk taken.</strong> Your broker's maximum leverage (Module 25) determines how large a position you're <em>permitted</em> to open — it says nothing about how much you should actually risk on any single idea. Conflating the two is one of the most common and dangerous beginner mistakes.</div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="risk-budgeting">
+      <div class="lesson-kicker"><span class="num">04</span> Layered Limits</div>
+      <h2>Risk Budgeting: Per-Trade, Per-Idea, Per-Day, and Circuit Breakers</h2>
+      <p class="dek">Limiting risk on individual trades isn't enough to protect your account on its own.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" fill="#1C2024">
+            <rect x="20" y="10" width="720" height="40" rx="6" fill="#E3EFEE" stroke="#1F5F5B"/><text x="40" y="35" fill="#1F5F5B">PER-TRADE LIMIT — e.g. 1% of account on any single trade</text>
+            <rect x="20" y="60" width="720" height="40" rx="6" fill="#F1E6D2" stroke="#A8772E"/><text x="40" y="85" fill="#A8772E">PER-IDEA LIMIT — caps total risk across correlated trades expressing the same view (Module 17)</text>
+            <rect x="20" y="110" width="720" height="40" rx="6" fill="#FBEAE7" stroke="#B23A2E"/><text x="40" y="135" fill="#B23A2E">PER-DAY LIMIT — a maximum total loss that, once hit, ends trading for the day</text>
+            <rect x="20" y="160" width="720" height="40" rx="6" fill="#E3F2E9" stroke="#1E7B4D"/><text x="40" y="185" fill="#1E7B4D">CIRCUIT BREAKER — a weekly/monthly drawdown trigger that pauses trading entirely for review</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 2 — A layered risk budget: each level catches a different failure mode the level above it can't.</figcaption>
+      </div>
+
+      <p>Per-trade limits alone don't prevent a bad day from becoming a bad month if you simply keep re-entering after each loss. The layered structure above ensures that even a string of legitimate, well-executed losing trades has a hard ceiling, at multiple timescales, before the damage compounds further.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="position-sizing">
+      <div class="lesson-kicker"><span class="num">05</span> The Calculation</div>
+      <h2>Position Sizing: How to Calculate Your Trade Size</h2>
+      <p class="dek">The calculation that turns your risk percentage into an actual trade size.</p>
+
+      <p>This lesson previews the full formula developed in depth in Module 26 — the core relationship to understand now:</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 110" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="110" fill="#FFFFFF"/>
+          <text x="380" y="55" text-anchor="middle" font-family="JetBrains Mono" font-size="15" fill="#1C2024">Position Size = (Account × Risk %) ÷ (Stop Distance in Pips × Pip Value)</text>
+        </svg>
+        <figcaption>Fig. 3 — Without this calculation, a fixed stop-loss is just a number on a screen — not an actual risk amount.</figcaption>
+      </div>
+
+      <p>Skipping this calculation and instead trading a "round" or habitual lot size means your actual dollar risk varies randomly from trade to trade, completely disconnected from the risk percentage you intended in lesson 3.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="rr-expectancy">
+      <div class="lesson-kicker"><span class="num">06</span> Measuring Your Edge</div>
+      <h2>Reward-to-Risk Ratio and Expectancy: The Two Numbers That Define Your Edge</h2>
+      <p class="dek">Why your win rate alone tells you almost nothing.</p>
+
+      <p>This extends directly from Module 22, lesson 5. The reward-to-risk ratio (R:R) compares your planned profit target to your planned stop-loss distance — a 2:1 R:R trade aims to win twice what it risks. Combined with win rate, R:R produces expectancy, the single number that tells you whether a system is actually profitable over time.</p>
+
+      <table class="ref">
+        <tr><th>Win rate</th><th>Min. R:R needed to break even</th></tr>
+        <tr><td>30%</td><td>~2.33:1</td></tr>
+        <tr><td>40%</td><td>1.5:1</td></tr>
+        <tr><td>50%</td><td>1:1</td></tr>
+        <tr><td>60%</td><td>~0.67:1</td></tr>
+      </table>
+
+      <div class="callout"><strong>The practical implication:</strong> a lower win rate is entirely sustainable, even desirable, if your reward-to-risk ratio comfortably clears the corresponding breakeven threshold above.</div>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="personal-plan">
+      <div class="lesson-kicker"><span class="num">07</span> Synthesis</div>
+      <h2>Building Your Personal Risk Management Plan</h2>
+      <p class="dek">Combine everything into a single written plan — and write it down, since that's the part most traders skip.</p>
+
+      <ol>
+        <li><strong>Set your per-trade risk percentage</strong> (lesson 3), matched to your risk attitude (Module 23) and system maturity (Module 21).</li>
+        <li><strong>Set your layered risk budget</strong> — per-idea, per-day, and circuit breaker limits (lesson 4).</li>
+        <li><strong>Commit to calculating position size every trade</strong> using the formula from lesson 5, never trading a habitual or "round" size.</li>
+        <li><strong>Set a minimum acceptable reward-to-risk ratio</strong> for any setup, informed by your system's actual win rate (lesson 6).</li>
+        <li><strong>Write it all down</strong> as part of your broader trading plan (Module 19) — an unwritten risk plan is far easier to silently abandon under pressure than a written one.</li>
+      </ol>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Risk Management</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Why isn't a high win rate alone sufficient to guarantee long-term survival as a trader?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) A system with a high win rate and no risk discipline can still suffer a single oversized loss that erases significant gains</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Win rate is the only number that matters in trading</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) High win rates are always accompanied by good risk management automatically</label>
+        <div class="reveal"><strong>Answer: A.</strong> Without disciplined risk management, even a high win-rate system remains vulnerable to a single catastrophic loss.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Why is a 50% drawdown disproportionately harder to recover from than a 20% drawdown?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) Recovery gain requirements grow non-linearly — a 50% loss requires a 100% gain just to break even</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Recovery requirements scale exactly linearly with drawdown size</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Drawdowns have no relationship to the gain needed to recover</label>
+        <div class="reveal"><strong>Answer: A.</strong> Because losses shrink the base capital you're recovering from, the required percentage gain accelerates sharply as drawdown deepens.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why does the amount of leverage your broker offers NOT determine how much you should risk per trade?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) Leverage offered determines what you're permitted to open, but says nothing about the risk percentage you should actually choose</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Higher leverage always means lower risk</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Brokers automatically calculate safe risk levels for you</label>
+        <div class="reveal"><strong>Answer: A.</strong> Conflating available leverage with appropriate risk is one of the most dangerous and common beginner mistakes.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. Why are per-trade risk limits alone insufficient to fully protect an account?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) A trader can still accumulate a damaging total loss across a single bad day or a cluster of correlated trades without a layered budget</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Per-trade limits guarantee an account can never lose money</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Per-trade limits and daily limits serve the exact same function</label>
+        <div class="reveal"><strong>Answer: A.</strong> A layered risk budget (per-trade, per-idea, per-day, and circuit breakers) catches failure modes that a single per-trade limit can't.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. With a 40% win rate, approximately what reward-to-risk ratio is needed just to break even?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) 1.5:1</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) 0.5:1</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) 5:1</label>
+        <div class="reveal"><strong>Answer: A.</strong> At a 40% win rate, a reward-to-risk ratio of roughly 1.5:1 is the breakeven threshold — anything better is genuinely profitable over time.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 24 — RISK MANAGEMENT · NEXT MODULE: TRADING WITH LEVERAGE WITHOUT BLOWING UP
+    </footer>
+  </main>
+</div>
+</body>
+</html>

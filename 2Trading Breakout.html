@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trading Breakouts and Fakeouts — Module 02</title>
+<style>
+  :root{
+    --bg:#FAF9F6;
+    --panel:#FFFFFF;
+    --ink:#1C2024;
+    --ink-soft:#4A5159;
+    --line:#E1DDD3;
+    --gold:#A8772E;
+    --gold-soft:#F1E6D2;
+    --teal:#1F5F5B;
+    --teal-soft:#E3EFEE;
+    --bull:#1E7B4D;
+    --bull-soft:#E3F2E9;
+    --bear:#B23A2E;
+    --bear-soft:#FBEAE7;
+    --mono: 'JetBrains Mono', monospace;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:54px; line-height:1.04; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 02</div>
+    <p class="toc-title">Trading Breakouts<br>and Fakeouts</p>
+    <ol>
+      <li><a href="#what-is-breakout">What Is a Breakout?</a></li>
+      <li><a href="#key-levels">Mapping the Key Levels</a></li>
+      <li><a href="#breakout-candle">Reading the Breakout Candle</a></li>
+      <li><a href="#confirming">Confirming a Breakout</a></li>
+      <li><a href="#fakeouts">Why Breakouts Fail: Fakeouts</a></li>
+      <li><a href="#break-retest">The Break-and-Retest Entry</a></li>
+      <li><a href="#trading-fakeouts">Trading Fakeouts</a></li>
+      <li><a href="#targets">Measuring Targets</a></li>
+      <li><a href="#htf-filter">The Higher Timeframe Filter</a></li>
+      <li><a href="#summary">Summary</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 02 of the Trading Curriculum</div>
+      <h1>Trading Breakouts and Fakeouts</h1>
+      <p class="lede">A breakout can be the start of a major move, or the start of a losing trade. Learn how to tell the difference, how to enter with a higher probability of success, and how to turn fakeouts into opportunities instead of losses.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="0,46 60,46 120,46 180,30 240,12 300,46 360,55 420,40 480,20 540,8 600,2" fill="none" stroke="#A8772E" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6"/>
+        <line x1="0" y1="46" x2="600" y2="46" stroke="#1F5F5B" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
+        <g stroke="#1E7B4D" stroke-width="2"><line x1="180" y1="14" x2="180" y2="40"/><rect x="175" y="18" width="10" height="14" fill="#1E7B4D"/></g>
+        <g stroke="#1E7B4D" stroke-width="2"><line x1="240" y1="4" x2="240" y2="30"/><rect x="235" y="8" width="10" height="14" fill="#1E7B4D"/></g>
+        <g stroke="#B23A2E" stroke-width="2"><line x1="300" y1="30" x2="300" y2="60"/><rect x="295" y="34" width="10" height="20" fill="#B23A2E"/></g>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-breakout">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Is a Breakout?</h2>
+      <p class="dek">The word gets used constantly. Most of the time, it's wrong.</p>
+
+      <p>A breakout is the moment price moves decisively beyond a previously respected level — a level that has held, capped, or contained price at least once before. That's the strict definition, and the word "decisively" is doing most of the work. Price brushing against a level and pulling back an hour later isn't a breakout. Price closing convincingly beyond it, with the kind of force that suggests one side has actually taken control, is.</p>
+
+      <p>In casual trading talk, "breakout" gets applied to almost any move that pokes through a line on a chart. That looseness is exactly why so many breakout trades lose money — traders are reacting to price touching a level, not to a genuine shift in supply and demand at that level.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 240" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="240" fill="#FFFFFF"/>
+          <text x="20" y="22" font-family="JetBrains Mono" font-size="11" fill="#4A5159">A "TOUCH" IS NOT A BREAKOUT</text>
+          <line x1="30" y1="100" x2="360" y2="100" stroke="#A8772E" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <polyline points="40,150 70,140 100,130 130,105 160,135 190,145 220,128 250,103 280,140 310,150" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="130" cy="105" r="3" fill="#B23A2E"/>
+          <circle cx="250" cy="103" r="3" fill="#B23A2E"/>
+          <text x="100" y="190" font-family="Inter" font-size="11" fill="#B23A2E">Wicks pierce the level twice — rejected both times. No breakout.</text>
+
+          <text x="400" y="22" font-family="JetBrains Mono" font-size="11" fill="#4A5159">A REAL BREAKOUT</text>
+          <line x1="410" y1="100" x2="740" y2="100" stroke="#A8772E" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <polyline points="420,150 450,140 480,130 510,108 540,60 570,40 600,30" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <line x1="540" y1="55" x2="540" y2="100" stroke="#1E7B4D" stroke-width="2.5"/><rect x="534" y="58" width="12" height="35" fill="#1E7B4D"/>
+          <text x="450" y="190" font-family="Inter" font-size="11" fill="#1E7B4D">A full-bodied candle closes well beyond the level. Conviction, not a wick.</text>
+        </svg>
+        <figcaption>Fig. 1 — A wick poking through a level is a probe. A candle closing convincingly beyond it is a breakout.</figcaption>
+      </div>
+
+      <h3>The Two Ingredients of a Genuine Breakout</h3>
+      <ul>
+        <li><strong>A level that mattered.</strong> The level being broken must have actually contained price before — meaning real participants had orders resting around it.</li>
+        <li><strong>A decisive close beyond it.</strong> Not a wick, not an intrabar spike — a candle body that closes through the level, ideally with visibly larger range or volume than the candles around it.</li>
+      </ul>
+
+      <div class="callout"><strong>Reframe it this way:</strong> a breakout isn't really about price crossing a line. It's evidence that the balance of power between buyers and sellers at that level has genuinely shifted. The line is just where you happen to be able to see it.</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="key-levels">
+      <div class="lesson-kicker"><span class="num">02</span> Foundations</div>
+      <h2>Where Breakouts Happen: Mapping the Key Levels</h2>
+      <p class="dek">Not all levels are worth watching. Learn to identify, rank, and map the ones that matter before price even gets there.</p>
+
+      <p>If you wait until a breakout is already happening to figure out which level it's breaking, you're reacting instead of preparing. Professional breakout traders map their key levels <em>before</em> the session, so when price arrives, they already know what a breakout there would mean.</p>
+
+      <h3>The Level Types Worth Mapping</h3>
+      <table class="ref">
+        <tr><th>Level type</th><th>Why it matters</th></tr>
+        <tr><td>Range highs / lows</td><td>The most obvious and most-watched levels — clean boundaries everyone can see</td></tr>
+        <tr><td>Prior swing highs / lows</td><td>Structural pivots from earlier price action; breaking one often shifts trend bias</td></tr>
+        <tr><td>Trendlines and channel boundaries</td><td>Dynamic levels that rise or fall with price — a break here signals a shift in trend angle, not just price</td></tr>
+        <tr><td>Supply and demand zone edges</td><td>The far boundary of a zone — breaking through it suggests the zone has been overwhelmed</td></tr>
+        <tr><td>Round numbers</td><td>Psychological levels (1.1000, 100.00, 2000) where resting orders cluster simply because humans like round numbers</td></tr>
+        <tr><td>Prior day/week/session high or low</td><td>Widely watched reference points, especially in futures and intraday FX trading</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <polyline points="30,170 80,150 130,160 180,100 230,110 280,60 330,75 380,130 430,140 480,90 530,100" fill="none" stroke="#1C2024" stroke-width="1.5"/>
+          <line x1="20" y1="100" x2="540" y2="100" stroke="#A8772E" stroke-dasharray="3 2"/><text x="545" y="103" font-family="JetBrains Mono" font-size="10" fill="#A8772E">range high</text>
+          <line x1="20" y1="170" x2="540" y2="170" stroke="#A8772E" stroke-dasharray="3 2"/><text x="545" y="173" font-family="JetBrains Mono" font-size="10" fill="#A8772E">range low</text>
+          <line x1="20" y1="60" x2="540" y2="60" stroke="#1F5F5B" stroke-dasharray="2 4"/><text x="545" y="63" font-family="JetBrains Mono" font-size="10" fill="#1F5F5B">prior swing high</text>
+          <circle cx="230" cy="110" r="3" fill="#1E7B4D"/>
+          <line x1="180" y1="100" x2="430" y2="140" stroke="#B23A2E" stroke-dasharray="5 2"/>
+          <text x="430" y="155" font-family="JetBrains Mono" font-size="10" fill="#B23A2E">descending trendline</text>
+        </svg>
+        <figcaption>Fig. 2 — A pre-mapped chart: range boundaries, a structural swing high, and a trendline, each labeled before price arrives.</figcaption>
+      </div>
+
+      <h3>Ranking Levels by Likely Significance</h3>
+      <ol>
+        <li><strong>Higher timeframe levels outrank lower timeframe ones.</strong> A daily-chart range high matters more than a 15-minute range high.</li>
+        <li><strong>More-tested levels (up to a point) outrank fresh ones</strong> for the purposes of "this would be a meaningful break" — a level tested five times that finally breaks tends to attract more attention than an untested one.</li>
+        <li><strong>Levels with confluence outrank isolated ones</strong> — a range high that also happens to sit at a round number and a prior swing high is a bigger deal than a plain range high alone.</li>
+      </ol>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="breakout-candle">
+      <div class="lesson-kicker"><span class="num">03</span> Reading Price</div>
+      <h2>Reading the Breakout Candle: Conviction vs. Noise</h2>
+      <p class="dek">Two breakout candles can look similar and mean completely different things.</p>
+
+      <p>Once price actually breaks a key level, the candle that does the breaking carries information. Learning to read it is the difference between catching a real move early and getting caught in a trap that reverses within the hour.</p>
+
+      <h3>Signals of Conviction</h3>
+      <ul>
+        <li><strong>Range expansion.</strong> The breakout candle's high-to-low range is noticeably larger than the candles preceding it — a sign that participation suddenly increased.</li>
+        <li><strong>Body dominance.</strong> Most of the candle's range is body, not wick — buyers (or sellers) held control from open to close.</li>
+        <li><strong>Close near the extreme.</strong> A bullish breakout candle that closes near its high (not pulling back into the middle) shows sellers couldn't mount a defense even after the move.</li>
+        <li><strong>Follow-through volume,</strong> where available — a visible spike compared to the recent average.</li>
+      </ul>
+
+      <h3>Signals of Noise</h3>
+      <ul>
+        <li>A small-bodied candle with long wicks on both ends — indecision dressed up as a breakout.</li>
+        <li>A close that barely clears the level, with most of the range below resistance (or above support).</li>
+        <li>A breakout candle that's actually smaller than the average of the last 10 candles — a weak push, not an expansion.</li>
+      </ul>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <line x1="30" y1="120" x2="730" y2="120" stroke="#A8772E" stroke-dasharray="4 3"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">CONVICTION</text>
+          <line x1="120" y1="40" x2="120" y2="125" stroke="#1E7B4D" stroke-width="2.5"/>
+          <rect x="112" y="45" width="16" height="65" fill="#1E7B4D"/>
+          <text x="80" y="150" font-family="Inter" font-size="11" fill="#1E7B4D">Large body, close near the high,</text>
+          <text x="80" y="168" font-family="Inter" font-size="11" fill="#1E7B4D">far above the level.</text>
+
+          <text x="400" y="20" font-family="JetBrains Mono" font-size="11" fill="#B23A2E">NOISE</text>
+          <line x1="500" y1="85" x2="500" y2="150" stroke="#B23A2E" stroke-width="2"/>
+          <rect x="494" y="110" width="12" height="14" fill="#B23A2E"/>
+          <text x="430" y="180" font-family="Inter" font-size="11" fill="#B23A2E">Tiny body, long wicks both sides,</text>
+          <text x="430" y="198" font-family="Inter" font-size="11" fill="#B23A2E">barely clears the level.</text>
+        </svg>
+        <figcaption>Fig. 3 — Same level, same direction of break. Very different odds of follow-through.</figcaption>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="confirming">
+      <div class="lesson-kicker"><span class="num">04</span> Confirmation Tools</div>
+      <h2>Confirming a Breakout: Is It the Real Deal?</h2>
+      <p class="dek">Price action tells you what happened. Confirmation tools tell you whether to believe it.</p>
+
+      <p>Reading the candle itself (lesson 3) is your first opinion. A small set of confirmation tools gives you a second, independent opinion before you commit capital. None of these are required for every trade, but each adds useful information.</p>
+
+      <table class="ref">
+        <tr><th>Tool</th><th>What it confirms</th><th>What it looks like in practice</th></tr>
+        <tr><td>Volume</td><td>Whether real participation backs the move</td><td>A volume spike clearly above the recent average on the breakout candle</td></tr>
+        <tr><td>ATR (Average True Range)</td><td>Whether volatility is genuinely expanding</td><td>The breakout candle's range is meaningfully larger than the current ATR reading</td></tr>
+        <tr><td>Momentum indicators (RSI, MACD)</td><td>Whether momentum is accelerating in the same direction</td><td>RSI pushing into new territory alongside the breakout, MACD line crossing or expanding away from signal</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <polyline points="30,140 80,130 130,135 180,90 230,40 280,55" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <line x1="20" y1="90" x2="280" y2="90" stroke="#A8772E" stroke-dasharray="3 2"/>
+          <text x="290" y="55" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">breakout candle</text>
+          <!-- volume bars below -->
+          <text x="20" y="170" font-family="JetBrains Mono" font-size="10" fill="#4A5159">VOLUME</text>
+          <rect x="30" y="185" width="14" height="10" fill="#E1DDD3"/>
+          <rect x="80" y="180" width="14" height="15" fill="#E1DDD3"/>
+          <rect x="130" y="183" width="14" height="12" fill="#E1DDD3"/>
+          <rect x="180" y="150" width="14" height="45" fill="#1E7B4D"/>
+          <rect x="230" y="130" width="14" height="65" fill="#1E7B4D"/>
+          <text x="350" y="60" font-family="Inter" font-size="12" fill="#4A5159">Price breaks the level right as volume</text>
+          <text x="350" y="80" font-family="Inter" font-size="12" fill="#4A5159">expands sharply — two independent signals</text>
+          <text x="350" y="100" font-family="Inter" font-size="12" fill="#4A5159">agreeing the move is real.</text>
+        </svg>
+        <figcaption>Fig. 4 — Price and volume confirming each other at the same moment.</figcaption>
+      </div>
+
+      <div class="callout"><strong>None of these tools are magic on their own.</strong> Their value is in agreement. A breakout candle with strong conviction (lesson 3), rising volume, expanding ATR, and supportive momentum is a far stronger case than any single one of those facts alone.</div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="fakeouts">
+      <div class="lesson-kicker"><span class="num">05</span> Risk Awareness</div>
+      <h2>Why Breakouts Fail: Understanding Fakeouts</h2>
+      <p class="dek">Most breakout attempts fail. That's not bad luck — it's a predictable pattern with a specific mechanism.</p>
+
+      <p>A fakeout (also called a false breakout or bull/bear trap) happens when price breaks a key level, draws in traders expecting continuation, and then reverses sharply back through the level — trapping everyone who entered on the break.</p>
+
+      <h3>Why Fakeouts Happen</h3>
+      <ul>
+        <li><strong>Stop hunting / liquidity grabs.</strong> Many retail stop-losses and breakout entries cluster just beyond obvious levels. A move that triggers those orders, fills the liquidity, and then reverses is extremely common — especially around well-known round numbers and range boundaries.</li>
+        <li><strong>Lack of real participation.</strong> A break with low volume and a weak candle (lesson 3) has nothing behind it to sustain the move once early momentum fades.</li>
+        <li><strong>Conflicting higher-timeframe context.</strong> A breakout that goes against the dominant higher-timeframe trend has the broader current working against it from the very first candle.</li>
+        <li><strong>News and session timing.</strong> Breakouts that occur during thin liquidity (off-session hours, pre-news positioning) are statistically more prone to snapping back once liquidity normalizes.</li>
+      </ul>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 240" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="240" fill="#FFFFFF"/>
+          <line x1="30" y1="120" x2="730" y2="120" stroke="#A8772E" stroke-dasharray="4 3"/>
+          <text x="600" y="115" font-family="JetBrains Mono" font-size="10" fill="#A8772E">level</text>
+          <polyline points="40,160 100,150 160,158 220,140 280,95 320,80 360,90 420,150 480,190 540,170" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="280" cy="95" r="4" fill="#1E7B4D"/>
+          <text x="250" y="75" font-family="Inter" font-size="11" fill="#1E7B4D">break — traders enter long</text>
+          <circle cx="420" cy="150" r="4" fill="#B23A2E"/>
+          <text x="400" y="210" font-family="Inter" font-size="11" fill="#B23A2E">snap back through the level —</text>
+          <text x="400" y="228" font-family="Inter" font-size="11" fill="#B23A2E">longs trapped and stopped out</text>
+        </svg>
+        <figcaption>Fig. 5 — The classic fakeout shape: a break draws in participants, then reverses and runs the other way.</figcaption>
+      </div>
+
+      <h3>What a Forming Fakeout Often Looks Like</h3>
+      <ul>
+        <li>A break with weak conviction (small body, large wicks) — see lesson 3.</li>
+        <li>No supporting volume or momentum confirmation — see lesson 4.</li>
+        <li>A quick failure to make further progress beyond the level within a few candles.</li>
+        <li>A sharp reversal candle closing back inside the original range shortly after the break.</li>
+      </ul>
+
+      <div class="warn"><strong>Reframe:</strong> most initial breakout attempts are fakeouts. That single fact is the entire justification for the next lesson's approach — waiting for confirmation instead of entering on the first cross.</div>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="break-retest">
+      <div class="lesson-kicker"><span class="num">06</span> Entry Method</div>
+      <h2>The Break-and-Retest: A Higher-Probability Breakout Entry</h2>
+      <p class="dek">Waiting for a retest filters out most traps and gets you in at a better price.</p>
+
+      <p>Since most initial breakouts fail, entering the instant price crosses a level means betting against the more common outcome. The break-and-retest approach solves this by waiting for price to break the level, pull back to it, and then hold — confirming the level has actually flipped roles (old resistance becomes new support, or vice versa) before you commit.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <line x1="30" y1="120" x2="730" y2="120" stroke="#A8772E" stroke-dasharray="4 3"/>
+          <polyline points="40,160 100,150 160,158 220,100 260,70 300,90 340,115 380,108 430,60 480,30" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="220" cy="100" r="4" fill="#1E7B4D"/><text x="200" y="85" font-family="Inter" font-size="10" fill="#1E7B4D">1. break</text>
+          <circle cx="340" cy="115" r="5" fill="#1F5F5B"/><text x="300" y="140" font-family="Inter" font-size="10" fill="#1F5F5B">2. retest &amp; hold</text>
+          <circle cx="430" cy="60" r="4" fill="#1E7B4D"/><text x="440" y="55" font-family="Inter" font-size="10" fill="#1E7B4D">3. entry on resumption</text>
+        </svg>
+        <figcaption>Fig. 6 — Break, retest, hold, enter. Each step filters out a portion of the traders who got caught in step one.</figcaption>
+      </div>
+
+      <h3>What to Wait For</h3>
+      <ol>
+        <li><strong>The initial break</strong> with reasonable conviction (lesson 3) and ideally some confirmation (lesson 4).</li>
+        <li><strong>A pullback to the broken level.</strong> Price doesn't need to touch it exactly — a close approach is normal.</li>
+        <li><strong>A holding candle at the retest.</strong> A rejection wick or a small reversal candle showing the level is being defended in its new role.</li>
+        <li><strong>Entry</strong> on the close of the holding candle, or on a break of its high/low in the breakout direction.</li>
+      </ol>
+
+      <h3>The Tradeoff</h3>
+      <p>Waiting for a retest means you'll occasionally miss breakouts that simply run without ever looking back — there's no method that captures every winning trade. What you gain in exchange is a meaningfully higher win rate on the trades you do take, and a tighter, more logical stop-loss location (just beyond the retested level) than you'd have entering on the initial spike.</p>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="trading-fakeouts">
+      <div class="lesson-kicker"><span class="num">07</span> Entry Method</div>
+      <h2>Trading Fakeouts: When the Trap Becomes the Trade</h2>
+      <p class="dek">Recognize a fakeout while it's forming and trade in the opposite direction with a rules-based framework.</p>
+
+      <p>If most breakouts fail, the failure itself is a tradeable event. Once you can recognize a fakeout forming (lesson 5), you can position for the reversal — entering in the opposite direction of the failed break, often with a very clearly defined risk.</p>
+
+      <h3>A Simple Fakeout-Trading Framework</h3>
+      <ol>
+        <li><strong>Identify the failed break.</strong> Price pushed beyond a key level, showed weak conviction, and is now struggling to hold beyond it.</li>
+        <li><strong>Wait for the close back inside the range/level.</strong> This is your actual trigger — don't anticipate it before it happens.</li>
+        <li><strong>Enter in the direction back into the range,</strong> typically on the close of the reversal candle or a break of its low/high.</li>
+        <li><strong>Place your stop beyond the extreme of the false break</strong> — the point that, if revisited, proves the trap idea wrong.</li>
+        <li><strong>Target the opposite side of the range,</strong> or the next visible structural level.</li>
+      </ol>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <line x1="30" y1="100" x2="730" y2="100" stroke="#A8772E" stroke-dasharray="4 3"/>
+          <polyline points="40,140 100,130 160,135 220,80 250,60 290,75 330,110 380,150 430,170" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="250" cy="60" r="4" fill="#B23A2E"/><text x="220" y="45" font-family="Inter" font-size="10" fill="#B23A2E">false break — weak candle</text>
+          <circle cx="330" cy="110" r="5" fill="#1F5F5B"/><text x="340" y="105" font-family="Inter" font-size="10" fill="#1F5F5B">close back inside → trigger</text>
+          <line x1="430" y1="170" x2="430" y2="190" stroke="#1E7B4D" stroke-width="2"/><text x="440" y="195" font-family="Inter" font-size="10" fill="#1E7B4D">target: opposite range edge</text>
+        </svg>
+        <figcaption>Fig. 7 — Trading the trap: entering against the failed breakout once price confirms back inside the range.</figcaption>
+      </div>
+
+      <div class="warn"><strong>Discipline required:</strong> this is a counter-trend, fast-moving setup. Don't anticipate the failure before it confirms — plenty of weak-looking breaks still go on to succeed. Trade the confirmed close back inside the level, not your guess about what's "probably" a trap.</div>
+    </section>
+
+    <!-- 8 -->
+    <section class="lesson" id="targets">
+      <div class="lesson-kicker"><span class="num">08</span> Trade Management</div>
+      <h2>Measuring Targets: How Far Should a Breakout Go?</h2>
+      <p class="dek">Entering correctly is only half the job.</p>
+
+      <p>Once you're in a breakout trade, you need an exit plan rooted in something other than a guess. Three practical methods, often used together:</p>
+
+      <h3>1. The Measured Move (Range Projection)</h3>
+      <p>Measure the height of the range or pattern that produced the breakout, then project that same distance from the breakout point in the direction of the move. A range that's 80 pips tall projects an 80-pip target once it breaks out.</p>
+
+      <h3>2. The Next Structural Level</h3>
+      <p>Look at the chart for the next meaningful swing high/low, supply/demand zone, or round number in the breakout direction. This is often a more realistic target than a pure measured move, since price tends to react at real structure regardless of pattern math.</p>
+
+      <h3>3. ATR-Based Projection</h3>
+      <p>Use a multiple of the current Average True Range (commonly 1.5x–3x daily ATR) as a volatility-adjusted target, especially useful when there's no clean nearby structure to reference.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <rect x="60" y="60" width="200" height="100" fill="none" stroke="#1F5F5B" stroke-dasharray="3 2"/>
+          <text x="65" y="55" font-family="JetBrains Mono" font-size="10" fill="#1F5F5B">range height = H</text>
+          <line x1="280" y1="160" x2="600" y2="160" stroke="#A8772E" stroke-dasharray="4 3"/>
+          <polyline points="80,140 130,90 180,120 230,75 280,100 330,60 380,30" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <rect x="380" y="30" width="180" height="0" fill="none"/>
+          <line x1="600" y1="160" x2="600" y2="30" stroke="#1E7B4D" stroke-dasharray="2 2"/>
+          <text x="610" y="35" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">target = breakout + H</text>
+        </svg>
+        <figcaption>Fig. 8 — The measured move: the range's own height becomes the projected target distance.</figcaption>
+      </div>
+
+      <div class="callout"><strong>Best practice:</strong> compare all three methods. When a measured move, a structural level, and an ATR projection roughly agree, you have a higher-conviction target. When they diverge widely, lean toward the nearest one and consider scaling out in stages.</div>
+    </section>
+
+    <!-- 9 -->
+    <section class="lesson" id="htf-filter">
+      <div class="lesson-kicker"><span class="num">09</span> Context</div>
+      <h2>Breakout Trading in Context: The Higher Timeframe Filter</h2>
+      <p class="dek">A breakout against the higher timeframe trend fails far more often than one that aligns with it.</p>
+
+      <p>Lesson 8 of Module 01 introduced multi-timeframe analysis. Breakout trading is one of the clearest places where that discipline pays off directly. A two-step filter, applied before any breakout trade:</p>
+
+      <ol>
+        <li><strong>Identify the higher-timeframe trend.</strong> Is the broader structure trending up, down, or ranging?</li>
+        <li><strong>Only take breakouts aligned with that trend</strong> — a bullish breakout inside a higher-timeframe uptrend, or a bearish breakout inside a higher-timeframe downtrend.</li>
+      </ol>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="10" fill="#1F5F5B">HTF: UPTREND</text>
+          <polyline points="20,170 80,150 140,160 200,110 260,90 320,40" fill="none" stroke="#1F5F5B" stroke-width="1.5" stroke-dasharray="4 2"/>
+          <text x="380" y="20" font-family="JetBrains Mono" font-size="10" fill="#4A5159">LTF breakout, same direction as HTF</text>
+          <line x1="380" y1="110" x2="600" y2="110" stroke="#A8772E" stroke-dasharray="3 2"/>
+          <polyline points="390,150 430,140 470,135 510,90 550,60" fill="none" stroke="#1E7B4D" stroke-width="2"/>
+          <text x="380" y="190" font-family="Inter" font-size="11" fill="#1E7B4D">Aligned breakout — has the broader trend behind it</text>
+        </svg>
+        <figcaption>Fig. 9 — A bullish lower-timeframe breakout that agrees with the higher-timeframe uptrend has a structural tailwind the counter-trend version never gets.</figcaption>
+      </div>
+
+      <p>This doesn't mean counter-trend breakouts never work — it means they carry a meaningfully lower base rate of success, and should be treated with extra caution, smaller size, or skipped entirely until you have more experience reading exceptions.</p>
+    </section>
+
+    <!-- 10 -->
+    <section class="lesson" id="summary">
+      <div class="lesson-kicker"><span class="num">10</span> Synthesis</div>
+      <h2>Summary: Trading Breakouts and Fakeouts</h2>
+      <p class="dek">One repeatable decision process you can use starting today.</p>
+
+      <ol>
+        <li><strong>Map your key levels</strong> before price gets there.</li>
+        <li><strong>Read the breakout candle</strong> for conviction versus noise.</li>
+        <li><strong>Check confirmation tools</strong> — volume, ATR, momentum — for a second opinion.</li>
+        <li><strong>Default to the break-and-retest entry</strong> rather than chasing the initial spike.</li>
+        <li><strong>Watch for the fakeout pattern</strong> and be ready to trade the failure if it confirms.</li>
+        <li><strong>Set targets</strong> using the measured move, the next structural level, or ATR — ideally all three in agreement.</li>
+        <li><strong>Filter everything through the higher-timeframe trend</strong> before pulling the trigger.</li>
+      </ol>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="10" fill="#1C2024" text-anchor="middle">
+            <rect x="10" y="50" width="105" height="40" rx="6" fill="#E3EFEE" stroke="#1F5F5B"/><text x="62" y="74">MAP LEVELS</text>
+            <rect x="135" y="50" width="105" height="40" rx="6" fill="#E3EFEE" stroke="#1F5F5B"/><text x="187" y="74">READ CANDLE</text>
+            <rect x="260" y="50" width="105" height="40" rx="6" fill="#FCFBF9" stroke="#A8772E"/><text x="312" y="74">CONFIRM</text>
+            <rect x="385" y="50" width="105" height="40" rx="6" fill="#FCFBF9" stroke="#A8772E"/><text x="437" y="74">RETEST ENTRY</text>
+            <rect x="510" y="50" width="105" height="40" rx="6" fill="#E3F2E9" stroke="#1E7B4D"/><text x="562" y="74">SET TARGET</text>
+            <rect x="635" y="50" width="115" height="40" rx="6" fill="#F1E6D2" stroke="#A8772E"/><text x="692" y="74">HTF FILTER</text>
+          </g>
+          <g stroke="#1C2024" stroke-width="1.5" fill="none" marker-end="url(#arrow2)">
+            <line x1="115" y1="70" x2="133" y2="70"/>
+            <line x1="240" y1="70" x2="258" y2="70"/>
+            <line x1="365" y1="70" x2="383" y2="70"/>
+            <line x1="490" y1="70" x2="508" y2="70"/>
+            <line x1="615" y1="70" x2="633" y2="70"/>
+          </g>
+          <defs><marker id="arrow2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1C2024"/></marker></defs>
+        </svg>
+        <figcaption>Fig. 10 — The full breakout decision pipeline, end to end.</figcaption>
+      </div>
+
+      <p>This module connects directly back into Market Environment (Module 03), where you'll learn to distinguish a healthy pullback from a full reversal — the exact distinction that determines whether a breakout that stalls is a buying opportunity or an early warning.</p>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Trading Breakouts and Fakeouts</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Price wicks above a resistance level twice within an hour, both times closing back below it. Is this a breakout?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Yes, any touch beyond the level counts</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) No — a genuine breakout requires a decisive close beyond the level, not a wick</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Only if it happens a third time</label>
+        <div class="reveal"><strong>Answer: B.</strong> Wicks that get rejected back below the level are probes, not breakouts. A real breakout needs a candle body closing convincingly beyond the level.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Which of these is the strongest sign of conviction in a breakout candle?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) A small body with long wicks on both sides</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) A large-bodied candle that closes near its extreme, with range expansion</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) A candle smaller than the recent average</label>
+        <div class="reveal"><strong>Answer: B.</strong> Range expansion plus a close near the candle's extreme shows one side held control through the whole candle — the clearest sign of conviction.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why does the break-and-retest entry typically produce a higher win rate than entering on the initial breakout?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) Because most initial breakout attempts fail, and waiting for a hold filters those out</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Because retests always offer a bigger reward</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Because retests happen on every single breakout</label>
+        <div class="reveal"><strong>Answer: A.</strong> Since most breakouts are fakeouts, waiting for the level to be retested and held filters out a large share of the failures before you commit capital.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. What is the actual trigger for trading a fakeout, rather than just anticipating one?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) A weak-looking breakout candle, traded immediately</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) A confirmed close back inside the range/level after the failed break</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Any pullback toward the broken level</label>
+        <div class="reveal"><strong>Answer: B.</strong> The trigger is the confirmed close back inside the level — not a guess about which weak-looking breaks will fail before they actually do.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Which target-setting method projects the height of the originating range or pattern forward from the breakout point?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) ATR-based projection</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) The next structural level</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) The measured move</label>
+        <div class="reveal"><strong>Answer: C.</strong> The measured move takes the range's own height and projects that same distance from the breakout point in the direction of the move.</div>
+      </div>
+
+      <div class="quiz-q" id="q6">
+        <p class="q">6. Why does a breakout traded against the higher-timeframe trend carry lower odds of success?</p>
+        <label onclick="document.getElementById('q6').classList.add('show')">A) It doesn't — timeframe has no effect on breakout outcomes</label>
+        <label onclick="document.getElementById('q6').classList.add('show')">B) Counter-trend breakouts lack the structural tailwind that trend-aligned breakouts get from the broader move</label>
+        <label onclick="document.getElementById('q6').classList.add('show')">C) Higher timeframes only matter for fundamental analysis</label>
+        <div class="reveal"><strong>Answer: B.</strong> A breakout aligned with the dominant higher-timeframe trend has the weight of that larger move behind it; a counter-trend breakout is fighting against it from the first candle.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 02 — TRADING BREAKOUTS AND FAKEOUTS · NEXT MODULE: MARKET ENVIRONMENT
+    </footer>
+  </main>
+</div>
+</body>
+</html>

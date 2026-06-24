@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Which Type of Trader Are You? — Module 20</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:21px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:48px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 20</div>
+    <p class="toc-title">Which Type of<br>Trader Are You?</p>
+    <ol>
+      <li><a href="#choosing-style">Choosing a Style That Fits</a></li>
+      <li><a href="#day-trading">What Is Day Trading?</a></li>
+      <li><a href="#scalping">What Is Scalping?</a></li>
+      <li><a href="#swing-trading">What Is Swing Trading?</a></li>
+      <li><a href="#position-trading">What Is Position Trading?</a></li>
+      <li><a href="#which-are-you">What Type of Trader Are You?</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 20 of the Trading Curriculum</div>
+      <h1>Which Type of Trader Are You?</h1>
+      <p class="lede">Learn how to cut through the hype and choose a trading approach that fits your actual life, temperament, and risk tolerance — and identify the approach that best matches how you think, work, and make decisions.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="40" width="60" height="14" rx="3" fill="#B23A2E" opacity="0.7"/>
+        <rect x="160" y="30" width="60" height="24" rx="3" fill="#A8772E" opacity="0.7"/>
+        <rect x="300" y="18" width="60" height="36" rx="3" fill="#1F5F5B" opacity="0.7"/>
+        <rect x="440" y="6" width="60" height="48" rx="3" fill="#1E7B4D" opacity="0.7"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="choosing-style">
+      <div class="lesson-kicker"><span class="num">01</span> Decision Framework</div>
+      <h2>How to Choose a Trading Style That Actually Fits You</h2>
+      <p class="dek">Stop choosing styles that flatter your ego — start choosing styles you can actually execute.</p>
+
+      <p>This module extends the Trader Profile built in Module 19. Each style below differs on five practical dimensions: required schedule, decision-making pace, sensitivity to trading costs, overnight risk exposure, and psychological demands. Evaluating yourself honestly against these five dimensions, before picking a style for its perceived excitement or prestige, is what actually predicts whether you'll stick with it.</p>
+
+      <table class="ref">
+        <tr><th>Dimension</th><th>What to ask yourself</th></tr>
+        <tr><td>Schedule</td><td>How many uninterrupted hours can you realistically commit, and when?</td></tr>
+        <tr><td>Decision pace</td><td>Do you think well quickly under pressure, or do you prefer time to deliberate?</td></tr>
+        <tr><td>Cost sensitivity</td><td>How much do spreads and commissions matter to your strategy's math, given your typical target size?</td></tr>
+        <tr><td>Overnight risk tolerance</td><td>Are you comfortable holding open exposure while you sleep?</td></tr>
+        <tr><td>Psychological fit</td><td>Do frequent small decisions energize or exhaust you?</td></tr>
+      </table>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="day-trading">
+      <div class="lesson-kicker"><span class="num">02</span> Style Profile</div>
+      <h2>What Is Day Trading?</h2>
+      <p class="dek">Closing trades before the day ends removes one kind of risk but does NOT remove stupidity.</p>
+
+      <p>Day trading means opening and closing all positions within the same trading day, avoiding overnight exposure entirely. It demands real-time chart-watching during active hours, fast but not split-second decision-making, and a meaningful daily time commitment — typically several focused hours per session.</p>
+
+      <table class="ref">
+        <tr><th>Trait</th><th>Day trading</th></tr>
+        <tr><td>Typical holding period</td><td>Minutes to hours, closed by end of day</td></tr>
+        <tr><td>Screen time needed</td><td>High — several focused hours per session</td></tr>
+        <tr><td>Overnight risk</td><td>None by design</td></tr>
+        <tr><td>Cost sensitivity</td><td>Moderate to high — more trades than swing/position styles</td></tr>
+      </table>
+
+      <div class="warn"><strong>The myth this lesson corrects:</strong> avoiding overnight risk by closing trades daily does nothing to fix a flawed setup, poor risk management, or a lack of discipline — it removes one specific risk, not the need for skill.</div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="scalping">
+      <div class="lesson-kicker"><span class="num">03</span> Style Profile</div>
+      <h2>What Is Scalping?</h2>
+      <p class="dek">Most beginners should treat scalping as something to understand, NOT something to copy.</p>
+
+      <p>Scalping is an even faster, more intense version of day trading, targeting very small price moves over seconds to minutes, often with many trades per session. Because profit targets are so small, trading costs (spread, commission, slippage) consume a much larger share of each trade's potential profit than in slower styles — meaning execution quality and broker conditions matter enormously.</p>
+
+      <table class="ref">
+        <tr><th>Trait</th><th>Scalping</th></tr>
+        <tr><td>Typical holding period</td><td>Seconds to minutes</td></tr>
+        <tr><td>Screen time needed</td><td>Very high — continuous attention during sessions</td></tr>
+        <tr><td>Cost sensitivity</td><td>Extremely high — costs are a large share of each small target</td></tr>
+        <tr><td>Execution demands</td><td>Fast, low-latency execution and tight spreads are essential</td></tr>
+      </table>
+
+      <div class="warn"><strong>Why this isn't a beginner-friendly starting point:</strong> the combination of high cost sensitivity, intense screen-time demands, and the need for excellent execution infrastructure makes scalping one of the least forgiving styles to learn on while also building basic skills like reading price action and managing risk.</div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="swing-trading">
+      <div class="lesson-kicker"><span class="num">04</span> Style Profile</div>
+      <h2>What Is Swing Trading?</h2>
+      <p class="dek">"Slower" does NOT mean "easy."</p>
+
+      <p>Swing trading holds positions for several days to a few weeks, aiming to capture a larger directional move than intraday styles target. This gives more breathing room than day trading, but introduces overnight and weekend risk — gaps, surprise news, and weekend geopolitical developments can all affect an open position while you're away from the screen.</p>
+
+      <table class="ref">
+        <tr><th>Trait</th><th>Swing trading</th></tr>
+        <tr><td>Typical holding period</td><td>Several days to a few weeks</td></tr>
+        <tr><td>Screen time needed</td><td>Moderate — a few dedicated check-ins daily</td></tr>
+        <tr><td>Overnight/weekend risk</td><td>Present and must be actively managed</td></tr>
+        <tr><td>Cost sensitivity</td><td>Lower — fewer trades, larger targets relative to costs</td></tr>
+      </table>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="position-trading">
+      <div class="lesson-kicker"><span class="num">05</span> Style Profile</div>
+      <h2>What Is Position Trading?</h2>
+      <p class="dek">"Slow" does NOT mean "basically investing with extra swagger."</p>
+
+      <p>Position trading holds trades for weeks to months, built around bigger-picture themes — often blending the macro fundamental frameworks from Modules 05–18 with price action timing from Modules 01–04. Longer holding periods change risk and sizing considerations: wider stops are typically needed to accommodate normal volatility over a longer horizon, which in turn affects appropriate position size (Module 24).</p>
+
+      <table class="ref">
+        <tr><th>Trait</th><th>Position trading</th></tr>
+        <tr><td>Typical holding period</td><td>Weeks to months</td></tr>
+        <tr><td>Screen time needed</td><td>Low — periodic review rather than constant monitoring</td></tr>
+        <tr><td>Stop-loss width</td><td>Wider, to accommodate normal volatility over a longer horizon</td></tr>
+        <tr><td>Analytical mix</td><td>Heavier reliance on fundamentals, lighter reliance on short-term price timing</td></tr>
+      </table>
+
+      <div class="warn"><strong>Why it still demands real skill:</strong> position trading still requires disciplined risk management, a real thesis with a defined invalidation point (Module 08), and the patience to sit through normal volatility without abandoning a sound idea prematurely.</div>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="which-are-you">
+      <div class="lesson-kicker"><span class="num">06</span> Synthesis</div>
+      <h2>What Type of Trader Are You?</h2>
+      <p class="dek">Eliminate what obviously doesn't fit, then identify your best match and backup match.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="20" y="30" width="170" height="50" fill="#FBEAE7" stroke="#B23A2E"/><text x="105" y="60" fill="#B23A2E">SCALPING</text>
+            <rect x="210" y="30" width="170" height="50" fill="#F1E6D2" stroke="#A8772E"/><text x="295" y="60" fill="#A8772E">DAY TRADING</text>
+            <rect x="400" y="30" width="170" height="50" fill="#E3EFEE" stroke="#1F5F5B"/><text x="485" y="60" fill="#1F5F5B">SWING TRADING</text>
+            <rect x="590" y="30" width="150" height="50" fill="#E3F2E9" stroke="#1E7B4D"/><text x="665" y="60" fill="#1E7B4D">POSITION TRADING</text>
+          </g>
+          <line x1="20" y1="100" x2="740" y2="100" stroke="#1C2024" stroke-width="1.5"/>
+          <text x="20" y="120" font-family="Inter" font-size="11" fill="#4A5159">High screen time, fast decisions, high cost sensitivity</text>
+          <text x="500" y="120" font-family="Inter" font-size="11" fill="#4A5159">Low screen time, slower decisions, lower cost sensitivity</text>
+          <text x="20" y="160" font-family="Inter" font-size="12" fill="#4A5159">A practical process: eliminate styles that clearly conflict with your real schedule or temperament first.</text>
+          <text x="20" y="182" font-family="Inter" font-size="12" fill="#4A5159">Among what remains, choose one primary style to commit to, and one backup for different conditions.</text>
+        </svg>
+        <figcaption>Fig. 1 — A spectrum from scalping to position trading, organized by the practical demands each style places on you.</figcaption>
+      </div>
+
+      <p>The goal of this lesson isn't to find the "best" style in the abstract — there isn't one. It's to leave with one clear starting lane that matches your actual Trader Profile from Module 19, rather than several half-considered options that all sound appealing but don't fit your real life.</p>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Trading Styles</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Why is cost sensitivity especially critical for scalping compared to position trading?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Scalping's small profit targets mean spreads and commissions consume a much larger share of potential profit</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Scalpers never pay any trading costs</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Cost sensitivity only matters for position traders</label>
+        <div class="reveal"><strong>Answer: A.</strong> With very small per-trade targets, costs eat a disproportionately large share of scalping's potential profit compared to slower styles with larger targets.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. What risk does day trading specifically avoid by design?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) Overnight and weekend risk, since all positions are closed by end of day</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) All forms of market risk whatsoever</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) The risk of needing a trading plan at all</label>
+        <div class="reveal"><strong>Answer: A.</strong> Closing all trades within the day removes overnight exposure specifically, but doesn't eliminate the need for skill or risk management.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why does position trading typically require wider stop-losses than day trading?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) To accommodate normal volatility over the longer holding period the style requires</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Position traders are simply less skilled at placing stops</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Wider stops have no relationship to holding period</label>
+        <div class="reveal"><strong>Answer: A.</strong> Longer holding periods involve more normal price fluctuation, requiring a wider stop to avoid being prematurely stopped out by routine volatility.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. What is the practical goal of evaluating yourself against the five dimensions in this module (schedule, pace, cost sensitivity, overnight risk, psychological fit)?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) To find the single objectively "best" trading style that works for everyone</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) To choose a style realistically suited to your actual life and temperament, rather than one chosen for excitement or prestige</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) These dimensions have no practical use in choosing a style</label>
+        <div class="reveal"><strong>Answer: B.</strong> There's no universally best style — the goal is finding the one that genuinely fits your real circumstances and personality.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 20 — WHICH TYPE OF TRADER ARE YOU? · NEXT MODULE: BUILD YOUR OWN TRADING SYSTEM
+    </footer>
+  </main>
+</div>
+</body>
+</html>

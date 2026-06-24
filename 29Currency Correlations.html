@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Currency Correlations — Module 29</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:1px;}
+  .toc a{display:flex; gap:8px; align-items:baseline; color:var(--ink-soft); font-size:13px; padding:5px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:10.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:48px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:50px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:30px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16px; margin:0 0 24px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:20px; margin:30px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:26px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:16px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:18px 0; font-size:14px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:8px 10px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:22px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:16px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:16px;}
+  .card p{font-size:13.5px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 29</div>
+    <p class="toc-title">Currency<br>Correlations</p>
+    <ol>
+      <li><a href="#what-is-correlation">What Is Currency Correlation?</a></li>
+      <li><a href="#reading-data">How to Read Correlation Data</a></li>
+      <li><a href="#pairs-together">Pairs That Move Together (and Apart)</a></li>
+      <li><a href="#commodity-drivers">Commodity Currencies' Hidden Drivers</a></li>
+      <li><a href="#cross-asset">Cross-Asset Correlations</a></li>
+      <li><a href="#correlations-change">Correlations Change</a></li>
+      <li><a href="#doubling-risk">Doubling Your Risk?</a></li>
+      <li><a href="#decomposition">Currency Decomposition</a></li>
+      <li><a href="#avoid-bad-trades">Using Correlations to Avoid Bad Trades</a></li>
+      <li><a href="#correlations-break">When Correlations Break</a></li>
+      <li><a href="#calculate-track">Calculate &amp; Track Yourself</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 29 of the Trading Curriculum</div>
+      <h1>Currency Correlations</h1>
+      <p class="lede">Holding multiple currency pairs can feel like spreading your risk. But if those pairs are moving together, the risk may be stacking instead. This module shows you how correlated positions can increase your real exposure, how to measure it, and how to use that knowledge to make better decisions.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="20,40 80,30 140,45 200,20 260,35" fill="none" stroke="#1E7B4D" stroke-width="2"/>
+        <polyline points="20,42 80,32 140,47 200,22 260,37" fill="none" stroke="#A8772E" stroke-width="2" stroke-dasharray="3 2" opacity="0.7"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-correlation">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Is Currency Correlation?</h2>
+      <p class="dek">Measured, and essential for anyone holding more than one open position at a time.</p>
+      <p>Currency correlation measures how closely two pairs move in relation to each other, typically expressed as a coefficient from -1 (perfectly inverse) to +1 (perfectly aligned), with 0 meaning no consistent relationship. Holding multiple positions you believe are "diversified" can actually mean holding the same underlying bet multiple times if those pairs are highly correlated.</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="reading-data">
+      <div class="lesson-kicker"><span class="num">02</span> Reading the Data</div>
+      <h2>How To Read Correlation Data</h2>
+      <p class="dek">Correlation tables, heatmaps, and timeframe-specific readings.</p>
+      <table class="ref">
+        <tr><th>Coefficient range</th><th>Interpretation</th></tr>
+        <tr><td>+0.7 to +1.0</td><td>Strong positive correlation — pairs tend to move together</td></tr>
+        <tr><td>-0.3 to +0.3</td><td>Weak or no consistent relationship</td></tr>
+        <tr><td>-0.7 to -1.0</td><td>Strong negative correlation — pairs tend to move oppositely</td></tr>
+      </table>
+      <p>Correlation readings differ across timeframes — two pairs can show strong correlation on a daily chart but a much weaker relationship intraday, so always check the timeframe a given correlation reading reflects before applying it to your own trading horizon.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="pairs-together">
+      <div class="lesson-kicker"><span class="num">03</span> Structural Relationships</div>
+      <h2>Currency Pairs That Move Together (And Apart)</h2>
+      <p class="dek">Telling a real structural relationship from one that just looks that way on the chart.</p>
+      <table class="ref">
+        <tr><th>Pair relationship</th><th>Typical correlation</th><th>Why</th></tr>
+        <tr><td>EUR/USD &amp; GBP/USD</td><td>Strong positive</td><td>Both are USD-quoted; broad dollar moves affect each similarly</td></tr>
+        <tr><td>EUR/USD &amp; USD/CHF</td><td>Strong negative</td><td>USD sits on opposite sides of the pair structure</td></tr>
+        <tr><td>AUD/USD &amp; NZD/USD</td><td>Strong positive</td><td>Similar commodity-export economic structure (Module 16)</td></tr>
+      </table>
+      <div class="warn"><strong>The genuine-vs-coincidental test:</strong> a real structural relationship (shared base/quote currency, similar economic drivers) tends to persist across time and conditions; a coincidental one tends to break down quickly once examined across a longer history.</div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="commodity-drivers">
+      <div class="lesson-kicker"><span class="num">04</span> Hidden Drivers</div>
+      <h2>Commodity Currencies and Their Hidden Drivers</h2>
+      <p class="dek">Which commodities matter most for AUD, CAD, NZD, and NOK — and when those relationships break down.</p>
+      <p>This extends Module 14 directly: AUD's correlation with gold and iron ore, CAD's and NOK's correlation with oil, and NZD's correlation with dairy and broader agricultural prices are all examples of correlations driven by genuine export structure — but these relationships weaken during periods when a different force (a major risk-off shock, for instance) temporarily dominates price action instead.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="cross-asset">
+      <div class="lesson-kicker"><span class="num">05</span> Beyond FX</div>
+      <h2>Beyond Forex: Cross-Asset Correlations</h2>
+      <p class="dek">How currencies connect to bonds, equities, and gold.</p>
+      <p>The risk-on/risk-off framework (Modules 12 and 14) is itself a cross-asset correlation story: equities, commodity currencies, and bond yields tend to move together during risk-on periods, while safe havens and bonds often diverge from risk assets during risk-off periods. Currency correlation analysis is most complete when it includes these cross-asset relationships, not just currency-to-currency comparisons.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="correlations-change">
+      <div class="lesson-kicker"><span class="num">06</span> Instability</div>
+      <h2>Correlations Change: Why, When, and How Fast</h2>
+      <p class="dek">Spotting a relationship breaking down before it burns you.</p>
+      <p>Correlations are statistical descriptions of recent historical behavior, not physical laws — they shift as the underlying economic drivers shift (a new dominant narrative, Module 18; a change in central bank policy divergence, Module 05) and can change abruptly around major shocks (lesson 10). Treat any correlation reading as a current snapshot, not a permanent fact, and recheck periodically rather than relying on a value learned once.</p>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="doubling-risk">
+      <div class="lesson-kicker"><span class="num">07</span> The Core Risk</div>
+      <h2>Are You Doubling Your Risk Without Knowing It?</h2>
+      <p class="dek">Correlated positions stack risk rather than spread it.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="130" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="40" y="40" width="320" height="50" fill="#FBEAE7" stroke="#B23A2E"/><text x="200" y="62" fill="#B23A2E">Long EUR/USD: 1% risk</text><text x="200" y="80" fill="#B23A2E" font-size="10">+ Long GBP/USD: 1% risk</text>
+            <rect x="400" y="40" width="320" height="50" fill="#F1E6D2" stroke="#A8772E"/><text x="560" y="62" fill="#A8772E">≈ 2% effective risk</text><text x="560" y="80" fill="#A8772E" font-size="10">on what's really one dollar-weakness bet</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 1 — Two "separate" 1% trades on highly correlated pairs can function as one ~2% bet on the same underlying move (echoing Module 09, lesson 3).</figcaption>
+      </div>
+      <p>Before opening a new position, checking its correlation with currently open trades reveals whether you're genuinely diversifying or quietly doubling exposure to a single underlying theme.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="lesson" id="decomposition">
+      <div class="lesson-kicker"><span class="num">08</span> True Exposure</div>
+      <h2>Knowing Your True Exposure With Currency Decomposition</h2>
+      <p class="dek">Seeing what you are REALLY long and short.</p>
+      <p>Currency decomposition breaks each open FX position down into its two individual currency legs and aggregates exposure by currency rather than by pair. A trader long EUR/USD and short EUR/GBP might believe these are two different trades — decomposed, both are actually long EUR, and the combined EUR exposure may be larger than either position alone suggests.</p>
+    </section>
+
+    <!-- 9 -->
+    <section class="lesson" id="avoid-bad-trades">
+      <div class="lesson-kicker"><span class="num">09</span> Application</div>
+      <h2>Using Currency Correlations to Avoid Bad Trades</h2>
+      <p class="dek">Confirming stronger setups, and building genuinely diversified positions.</p>
+      <p>Beyond risk management, correlation also has a confirmation use, echoing Module 09's cross-pair tiebreaker: if a correlated pair isn't confirming the same move, that's worth investigating before entry. And building genuinely diversified exposure (rather than positions that only look diversified) means deliberately selecting trades with low correlation to each other, verified with the data from lesson 2 rather than assumed.</p>
+    </section>
+
+    <!-- 10 -->
+    <section class="lesson" id="correlations-break">
+      <div class="lesson-kicker"><span class="num">10</span> Crisis Behavior</div>
+      <h2>When Correlations Break: Six Events Every Trader Should Know</h2>
+      <p class="dek">In a crisis, pairs that always moved together stop moving together.</p>
+      <div class="grid-cards">
+        <div class="card"><span class="tag">Event</span><h4>Major risk-off shocks</h4><p>Normal correlations often break down as capital flees to safety indiscriminately (Module 07).</p></div>
+        <div class="card"><span class="tag">Event</span><h4>Central bank intervention</h4><p>A single institution's action (Module 07, lesson 3) can override the usual relationship entirely.</p></div>
+        <div class="card"><span class="tag">Event</span><h4>Carry trade unwinds</h4><p>The August 2024 example (Module 10) showed normal relationships break sharply during deleveraging events.</p></div>
+        <div class="card"><span class="tag">Event</span><h4>Major policy divergence shifts</h4><p>A sudden, unexpected change in one central bank's path (Module 05) can break a pair's normal co-movement.</p></div>
+        <div class="card"><span class="tag">Event</span><h4>Geopolitical shocks</h4><p>Country-specific shocks (Module 07) can decouple a currency from its usual peers overnight.</p></div>
+        <div class="card"><span class="tag">Event</span><h4>Commodity supply shocks</h4><p>A sudden oil or metals supply disruption can override the usual correlation patterns from lesson 4.</p></div>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section class="lesson" id="calculate-track">
+      <div class="lesson-kicker"><span class="num">11</span> Practical Tools</div>
+      <h2>How To Calculate and Track Correlations Yourself</h2>
+      <p class="dek">From a one-click calculator to a live dashboard.</p>
+      <p>Several free online correlation calculators and heatmap tools let you check current readings across major pairs without manual computation. For ongoing monitoring, a simple spreadsheet pulling periodic price data and calculating rolling correlation coefficients gives a self-maintained, always-current view rather than relying solely on third-party snapshots.</p>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Currency Correlations</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. What does a correlation coefficient of +0.9 between two pairs indicate?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) The two pairs have historically tended to move strongly in the same direction together</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) The two pairs have no relationship to each other</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) The two pairs always move in exactly opposite directions</label>
+        <div class="reveal"><strong>Answer: A.</strong> A coefficient near +1 indicates strong positive correlation — the pairs tend to move together.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. A trader holds 1% risk long EUR/USD and 1% risk long GBP/USD, both highly correlated pairs. What is their real effective exposure?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) Closer to 2% risk on what's effectively one underlying dollar-weakness bet, not two diversified trades</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Exactly 1%, since each trade is sized independently</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) 0%, since the two trades cancel each other out</label>
+        <div class="reveal"><strong>Answer: A.</strong> Correlated positions stack risk on the same underlying theme rather than diversifying it.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. What does currency decomposition reveal that looking at individual pairs alone might miss?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) The true combined exposure to each individual currency across all open positions</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) The exact time zone a currency is traded in</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Decomposition has no practical trading use</label>
+        <div class="reveal"><strong>Answer: A.</strong> Breaking positions into individual currency legs reveals true aggregated exposure that pair-level analysis alone can hide.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. Why should a correlation reading be treated as a current snapshot rather than a permanent fact?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) Correlations are statistical descriptions of recent behavior that shift as underlying economic drivers and conditions change</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Correlations never change once measured</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Correlation data is purely random and meaningless</label>
+        <div class="reveal"><strong>Answer: A.</strong> Correlations reflect current conditions and can shift meaningfully as drivers change or shocks occur.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Which of these is listed as an event where normal currency correlations tend to break down?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) A major risk-off shock or carry trade unwind</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) A routine, fully-anticipated data release with no surprise</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) A quiet trading session with no news at all</label>
+        <div class="reveal"><strong>Answer: A.</strong> Major shocks like risk-off events and carry trade unwinds are specifically noted as moments when usual correlations can break down sharply.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 29 — CURRENCY CORRELATIONS · NEXT MODULE: PROP TRADING FIRMS 101
+    </footer>
+  </main>
+</div>
+</body>
+</html>

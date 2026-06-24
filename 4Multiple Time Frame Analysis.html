@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multiple Time Frame Analysis — Module 04</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:54px; line-height:1.04; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 04</div>
+    <p class="toc-title">Multiple Time<br>Frame Analysis</p>
+    <ol>
+      <li><a href="#what-is-mtf">What Is MTF Analysis?</a></li>
+      <li><a href="#which-tf">Which Time Frame Should You Trade?</a></li>
+      <li><a href="#never-one">Never Trade Just One Time Frame</a></li>
+      <li><a href="#across-markets">How Time Frames Differ Across Markets</a></li>
+      <li><a href="#top-down">The Top-Down Approach</a></li>
+      <li><a href="#workspace">Your MTF Workspace</a></li>
+      <li><a href="#entries-exits">Better Entries &amp; Exits</a></li>
+      <li><a href="#mistakes">Common MTF Mistakes</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 04 of the Trading Curriculum</div>
+      <h1>Multiple Time Frame Analysis</h1>
+      <p class="lede">Most traders lose money on setups that looked perfect, right up until they didn't. This module teaches the top-down framework that reads the big picture, finds the setup, and times the entry across three coordinated chart levels — applicable to any market, with a workspace and routine that makes it repeatable.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="6" width="600" height="14" fill="none" stroke="#1F5F5B" stroke-dasharray="3 2" opacity="0.5"/>
+        <rect x="40" y="24" width="300" height="14" fill="none" stroke="#A8772E" stroke-dasharray="3 2" opacity="0.6"/>
+        <rect x="80" y="42" width="120" height="14" fill="none" stroke="#1E7B4D" stroke-dasharray="3 2" opacity="0.7"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-mtf">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Is Multiple Time Frame Analysis?</h2>
+      <p class="dek">Checking more than one chart before you trade is the difference between entering with full context and getting blindsided by something one zoom level up.</p>
+
+      <p>Multiple time frame (MTF) analysis is the practice of viewing the same asset across two or more chart timeframes before making a trading decision, with each timeframe assigned a distinct role. It builds directly on the brief introduction in Module 01, lesson 8 — here, the framework gets a full workspace, a routine, and a deeper treatment of why it's not optional.</p>
+
+      <p>Every candle on a higher-timeframe chart is built from dozens or hundreds of candles on a lower timeframe. A single 4-hour candle contains sixteen 15-minute candles' worth of price action compressed into one shape. Trading off only one timeframe means you're seeing either the compressed summary (missing the entry precision) or the granular detail (missing the broader context) — never both at once.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="200" fill="#FFFFFF"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="11" fill="#1F5F5B">ONE 4H CANDLE...</text>
+          <line x1="80" y1="50" x2="80" y2="150" stroke="#1E7B4D" stroke-width="2.5"/>
+          <rect x="72" y="60" width="16" height="80" fill="#1E7B4D"/>
+          <text x="20" y="180" font-family="Inter" font-size="11" fill="#4A5159">...is built from many 15-minute candles:</text>
+          <g stroke="#1C2024" stroke-width="1.5">
+            <line x1="250" y1="120" x2="250" y2="140"/><rect x="246" y="124" width="8" height="12" fill="#1E7B4D"/>
+            <line x1="270" y1="105" x2="270" y2="125"/><rect x="266" y="108" width="8" height="13" fill="#1E7B4D"/>
+            <line x1="290" y1="115" x2="290" y2="135"/><rect x="286" y="118" width="8" height="13" fill="#B23A2E"/>
+            <line x1="310" y1="90" x2="310" y2="118"/><rect x="306" y="93" width="8" height="20" fill="#1E7B4D"/>
+            <line x1="330" y1="78" x2="330" y2="95"/><rect x="326" y="80" width="8" height="12" fill="#1E7B4D"/>
+            <line x1="350" y1="62" x2="350" y2="82"/><rect x="346" y="65" width="8" height="13" fill="#1E7B4D"/>
+            <line x1="370" y1="50" x2="370" y2="68"/><rect x="366" y="52" width="8" height="12" fill="#1E7B4D"/>
+            <line x1="390" y1="58" x2="390" y2="72"/><rect x="386" y="60" width="8" height="9" fill="#B23A2E"/>
+            <line x1="410" y1="45" x2="410" y2="62"/><rect x="406" y="48" width="8" height="11" fill="#1E7B4D"/>
+            <line x1="430" y1="55" x2="430" y2="60"/><rect x="426" y="56" width="8" height="3" fill="#1E7B4D"/>
+          </g>
+          <text x="460" y="100" font-family="Inter" font-size="12" fill="#4A5159">The 4H view shows the destination.</text>
+          <text x="460" y="120" font-family="Inter" font-size="12" fill="#4A5159">The 15M view shows the journey —</text>
+          <text x="460" y="140" font-family="Inter" font-size="12" fill="#4A5159">and the precise entry inside it.</text>
+        </svg>
+        <figcaption>Fig. 1 — One higher-timeframe candle is a compressed summary of dozens of lower-timeframe candles. MTF analysis lets you see both layers.</figcaption>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="which-tf">
+      <div class="lesson-kicker"><span class="num">02</span> Personal Fit</div>
+      <h2>Which Time Frame Should You Trade?</h2>
+      <p class="dek">Match your timeframe stack to your schedule, personality, and lifestyle before you ever look at a chart setup.</p>
+
+      <p>"Which timeframe" is really a question about you, not the market. The right timeframe stack depends on how much screen time you realistically have, how you tolerate overnight risk, and how quickly you make decisions under pressure.</p>
+
+      <table class="ref">
+        <tr><th>Profile</th><th>Typical timeframe stack</th><th>Fits best when you...</th></tr>
+        <tr><td>Scalper / intraday</td><td>15M (HTF) → 5M (MTF) → 1M (LTF)</td><td>Can watch screens continuously for set sessions, decide fast, tolerate frequent small losses</td></tr>
+        <tr><td>Day trader</td><td>4H (HTF) → 1H (MTF) → 15M (LTF)</td><td>Have several focused hours daily, prefer trades resolved within the day</td></tr>
+        <tr><td>Swing trader</td><td>Daily (HTF) → 4H (MTF) → 1H (LTF)</td><td>Check charts a few times a day, are comfortable holding positions overnight</td></tr>
+        <tr><td>Position trader</td><td>Weekly (HTF) → Daily (MTF) → 4H (LTF)</td><td>Have limited daily screen time and think in weeks-to-months themes</td></tr>
+      </table>
+
+      <div class="callout"><strong>The actual decision rule:</strong> pick the stack whose lower timeframe you can realistically monitor given your schedule, then build upward from there. Choosing a scalper's stack while only able to check charts twice a day is a mismatch no amount of skill fixes.</div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="never-one">
+      <div class="lesson-kicker"><span class="num">03</span> Why It Matters</div>
+      <h2>Why You Should Never Trade Just One Time Frame</h2>
+      <p class="dek">One of the most expensive habits in retail trading.</p>
+
+      <p>A single-timeframe trader sees a clean setup and takes it — without knowing that, one zoom level up, price is approaching a major resistance zone that's about to reject the entire move. The setup wasn't wrong on its own chart. It was incomplete.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="200" fill="#FFFFFF"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="10" fill="#4A5159">15M CHART: CLEAN BULLISH SETUP</text>
+          <polyline points="30,150 80,140 130,148 180,110 230,90 280,55" fill="none" stroke="#1E7B4D" stroke-width="2"/>
+          <text x="20" y="180" font-family="Inter" font-size="11" fill="#1E7B4D">Looks great in isolation.</text>
+
+          <text x="420" y="20" font-family="JetBrains Mono" font-size="10" fill="#4A5159">4H CHART: SAME MOMENT, ZOOMED OUT</text>
+          <rect x="420" y="50" width="320" height="20" fill="#FBEAE7" stroke="#B23A2E" stroke-dasharray="2 2"/>
+          <text x="430" y="64" font-family="JetBrains Mono" font-size="9" fill="#B23A2E">major supply zone, just overhead</text>
+          <polyline points="430,150 480,140 530,148 580,110 630,90 680,72" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <text x="420" y="180" font-family="Inter" font-size="11" fill="#B23A2E">Price is running straight into resistance.</text>
+        </svg>
+        <figcaption>Fig. 2 — Same exact moment in time. The 15M chart alone hides the one fact that actually matters most.</figcaption>
+      </div>
+
+      <p>Single-timeframe trading isn't wrong because the lower timeframe lies to you — every candle on it is real. It's incomplete because it only shows you part of the auction. Every other lesson in this module exists to close that gap.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="across-markets">
+      <div class="lesson-kicker"><span class="num">04</span> Market Differences</div>
+      <h2>How Time Frames Differ Across Markets</h2>
+      <p class="dek">Structural differences between forex, stocks, crypto, and commodities change how you apply MTF analysis.</p>
+
+      <table class="ref">
+        <tr><th>Market</th><th>Trading hours</th><th>What this means for MTF analysis</th></tr>
+        <tr><td>Forex</td><td>Near-continuous, 24 hours across global sessions</td><td>No daily open/close gaps to anchor around; session overlaps (London/New York) often define the day's real higher-timeframe range</td></tr>
+        <tr><td>Stocks</td><td>Fixed exchange hours, daily open/close</td><td>Overnight gaps are common and must be accounted for — a higher-timeframe level can be skipped entirely on a gap</td></tr>
+        <tr><td>Crypto</td><td>24/7, every day, no close</td><td>No weekend pause to "reset" structure; higher-timeframe candles (weekly) can move sharply on low weekend volume</td></tr>
+        <tr><td>Commodities</td><td>Mostly continuous with brief daily breaks; futures-based</td><td>Contract rollovers and inventory/seasonal reports can distort lower-timeframe levels independent of underlying trend</td></tr>
+      </table>
+
+      <div class="warn"><strong>Practical implication:</strong> a workspace and rule-set built for forex doesn't transfer unmodified to stocks or crypto. Always check whether the asset you're trading has session gaps, rollovers, or scheduled closes that could break a level on your higher-timeframe chart without warning.</div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="top-down">
+      <div class="lesson-kicker"><span class="num">05</span> Core Framework</div>
+      <h2>The Top-Down Approach: Start Big, Then Zoom In</h2>
+      <p class="dek">The three-tier framework that takes you from big-picture context down to a precise entry.</p>
+
+      <p>The top-down approach assigns a fixed job to each of your three timeframes and works through them strictly in order — never skipping ahead to the lower timeframe before finishing the higher one.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="260" fill="#FFFFFF"/>
+          <rect x="20" y="20" width="220" height="220" fill="#FCFBF9" stroke="#1F5F5B" stroke-width="1.5"/>
+          <text x="30" y="42" font-family="JetBrains Mono" font-size="11" fill="#1F5F5B">STEP 1 — HTF</text>
+          <text x="30" y="60" font-family="Inter" font-size="11" fill="#4A5159">Identify trend, structure, key zones</text>
+          <polyline points="35,200 70,180 105,190 140,150 175,130 210,90" fill="none" stroke="#1E7B4D" stroke-width="2"/>
+
+          <rect x="270" y="20" width="220" height="220" fill="#FCFBF9" stroke="#A8772E" stroke-width="1.5"/>
+          <text x="280" y="42" font-family="JetBrains Mono" font-size="11" fill="#A8772E">STEP 2 — MTF</text>
+          <text x="280" y="60" font-family="Inter" font-size="11" fill="#4A5159">Locate the precise zone of interest</text>
+          <rect x="300" y="140" width="160" height="22" fill="#E3F2E9" stroke="#1E7B4D" stroke-dasharray="2 2"/>
+          <polyline points="290,100 320,130 350,155 390,148 420,165 455,120" fill="none" stroke="#1C2024" stroke-width="2"/>
+
+          <rect x="520" y="20" width="220" height="220" fill="#FCFBF9" stroke="#1E7B4D" stroke-width="1.5"/>
+          <text x="530" y="42" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">STEP 3 — LTF</text>
+          <text x="530" y="60" font-family="Inter" font-size="11" fill="#4A5159">Time the trigger candle precisely</text>
+          <polyline points="535,180 560,185 585,178 605,160 625,165 645,140 665,148 685,110" fill="none" stroke="#1C2024" stroke-width="1.5"/>
+          <line x1="685" y1="95" x2="685" y2="125" stroke="#1E7B4D" stroke-width="2"/><rect x="681" y="100" width="8" height="12" fill="#1E7B4D"/>
+        </svg>
+        <figcaption>Fig. 3 — The three steps, in strict order. Skipping step 1 or 2 is how a "good-looking" LTF entry ends up trading straight into a wall.</figcaption>
+      </div>
+
+      <h3>Why Bottom-Up Is the Expensive Habit</h3>
+      <p>Starting with the lower timeframe (because it's where the exciting-looking patterns appear) and then "checking" the higher timeframe afterward reverses the entire logic of the framework. By the time you've already spotted an entry you like, you're emotionally anchored to taking it — which makes you far more likely to rationalize away a contradicting higher-timeframe signal instead of respecting it.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="workspace">
+      <div class="lesson-kicker"><span class="num">06</span> Practical Setup</div>
+      <h2>Setting Up Your Multi-Time Frame Workspace</h2>
+      <p class="dek">Build a three-chart workspace so top-down analysis becomes routine, not a scramble.</p>
+
+      <h3>A Simple Three-Chart Layout</h3>
+      <ol>
+        <li><strong>Open three chart windows or tabs</strong> for the same instrument, set to your chosen HTF, MTF, and LTF.</li>
+        <li><strong>Mark your key structural levels</strong> (swing points, supply/demand zones, trendlines) on the HTF chart first — these levels should also appear, faintly, on your MTF and LTF charts if your platform supports level syncing across timeframes.</li>
+        <li><strong>Keep indicators consistent</strong> across all three charts (the same moving averages, the same ATR settings) so you're comparing like with like.</li>
+        <li><strong>Save the layout as a template</strong> so opening a new instrument doesn't mean rebuilding the workspace from scratch.</li>
+      </ol>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="200" fill="#FFFFFF"/>
+          <rect x="15" y="15" width="230" height="170" fill="#FCFBF9" stroke="#E1DDD3"/>
+          <text x="25" y="32" font-family="JetBrains Mono" font-size="10" fill="#1F5F5B">DAILY</text>
+          <rect x="255" y="15" width="230" height="170" fill="#FCFBF9" stroke="#E1DDD3"/>
+          <text x="265" y="32" font-family="JetBrains Mono" font-size="10" fill="#A8772E">4-HOUR</text>
+          <rect x="495" y="15" width="250" height="170" fill="#FCFBF9" stroke="#E1DDD3"/>
+          <text x="505" y="32" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">1-HOUR</text>
+        </svg>
+        <figcaption>Fig. 4 — A saved three-panel template: open the same layout for every instrument you analyze.</figcaption>
+      </div>
+
+      <div class="callout"><strong>Routine over memory:</strong> the workspace exists so you don't have to remember to check three timeframes — the layout itself enforces the habit every time you open it.</div>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="entries-exits">
+      <div class="lesson-kicker"><span class="num">07</span> Application</div>
+      <h2>Finding Better Entries and Exits With MTF Analysis</h2>
+      <p class="dek">Find precise entries, logical stops, and clear profit targets — not just the right direction.</p>
+
+      <table class="ref">
+        <tr><th>Decision</th><th>Which timeframe leads</th><th>How it's used</th></tr>
+        <tr><td>Trade direction / bias</td><td>HTF</td><td>Only consider setups aligned with the HTF trend or at a major HTF reversal zone</td></tr>
+        <tr><td>Entry zone</td><td>MTF</td><td>Identify the specific supply/demand zone or structural level price is approaching</td></tr>
+        <tr><td>Entry trigger</td><td>LTF</td><td>Wait for a confirming candle (rejection, break-and-retest) inside the MTF zone</td></tr>
+        <tr><td>Stop-loss placement</td><td>LTF / MTF</td><td>Place just beyond the LTF trigger structure, inside the wider MTF zone</td></tr>
+        <tr><td>Profit target</td><td>HTF / MTF</td><td>Aim for the next meaningful HTF or MTF structural level, not an arbitrary distance</td></tr>
+      </table>
+
+      <p>This division is what makes MTF analysis practically valuable rather than just theoretically interesting: it gives every part of your trade plan — direction, entry, stop, and target — a specific timeframe responsible for it, instead of trying to extract all four decisions from a single chart.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="lesson" id="mistakes">
+      <div class="lesson-kicker"><span class="num">08</span> Pitfalls</div>
+      <h2>Common MTF Mistakes (and How to Avoid Them)</h2>
+      <p class="dek">Ten mistakes worth recognizing before they cost you real money.</p>
+
+      <div class="grid-cards">
+        <div class="card"><span class="tag">01</span><h4>Starting bottom-up</h4><p>Spotting an LTF setup first, then "checking" higher timeframes only to confirm a decision you've already made.</p></div>
+        <div class="card"><span class="tag">02</span><h4>Too many timeframes</h4><p>Stacking five or six charts dilutes focus instead of adding clarity. Three is usually the practical ceiling.</p></div>
+        <div class="card"><span class="tag">03</span><h4>Mismatched ratios</h4><p>Using timeframes too close together (e.g. 1H and 30M) provides little extra context versus genuinely separated tiers (4H/1H/15M).</p></div>
+        <div class="card"><span class="tag">04</span><h4>Ignoring HTF conflict</h4><p>Taking an LTF setup that directly contradicts a clear HTF trend or level "because it looks too good to pass up."</p></div>
+        <div class="card"><span class="tag">05</span><h4>Re-checking too often</h4><p>Refreshing the HTF chart every few minutes — its job is to set context occasionally, not to be monitored continuously.</p></div>
+        <div class="card"><span class="tag">06</span><h4>Moving the goalposts</h4><p>Redefining what counts as a "key level" mid-analysis to make a trade idea fit, instead of letting the chart decide.</p></div>
+        <div class="card"><span class="tag">07</span><h4>No saved workspace</h4><p>Rebuilding your chart layout from scratch each session, increasing the odds of skipping a step under time pressure.</p></div>
+        <div class="card"><span class="tag">08</span><h4>Mismatched lifestyle</h4><p>Choosing a stack that demands more screen time than you actually have, then forcing decisions when you can't properly watch the LTF.</p></div>
+        <div class="card"><span class="tag">09</span><h4>Forgetting market-specific quirks</h4><p>Applying a forex-style stack unmodified to gapping stocks or rollover-prone futures contracts.</p></div>
+        <div class="card"><span class="tag">10</span><h4>Treating MTF as a guarantee</h4><p>Assuming alignment across three timeframes removes risk entirely, rather than simply improving the odds.</p></div>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Multiple Time Frame Analysis</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Why is a single higher-timeframe candle described as a "compressed summary"?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) It's built from many lower-timeframe candles' worth of price action condensed into one shape</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Higher-timeframe candles use different price data entirely</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) It has no relationship to lower-timeframe candles</label>
+        <div class="reveal"><strong>Answer: A.</strong> Each higher-timeframe candle is literally built from dozens or hundreds of lower-timeframe candles — seeing only the HTF chart hides the journey inside it.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. What should primarily determine which timeframe stack a trader chooses?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) Whichever stack produces the most signals per day</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Their realistic schedule, decision-making speed, and tolerance for overnight risk</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Whatever stack is most commonly discussed online</label>
+        <div class="reveal"><strong>Answer: B.</strong> The right timeframe stack is a personal-fit decision based on screen time, pace, and risk tolerance — not a universal "best" answer.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. In the top-down approach, what is the correct order of operations?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) LTF entry first, then check HTF afterward</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) HTF trend/structure, then MTF zone, then LTF trigger — in that strict order</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Any order, as long as all three are eventually checked</label>
+        <div class="reveal"><strong>Answer: B.</strong> The top-down approach deliberately starts with the highest timeframe to set context, then narrows down — reversing the order invites bias toward a setup you've already emotionally committed to.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. Why can't a forex-style MTF workspace be transferred unmodified to gapping stocks or rollover-prone futures?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) Because those markets don't have timeframes</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Because session gaps and contract rollovers can break levels on the chart independent of the underlying trend</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Because stocks and futures move too slowly for MTF analysis to matter</label>
+        <div class="reveal"><strong>Answer: B.</strong> Structural quirks like overnight gaps and rollovers can distort levels in ways forex's near-continuous trading doesn't experience.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. In the entries-and-exits framework, which timeframe is primarily responsible for setting profit targets?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) The lower timeframe only</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) The higher and middle timeframes, aimed at the next meaningful structural level</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Targets shouldn't be tied to any timeframe</label>
+        <div class="reveal"><strong>Answer: B.</strong> Profit targets are best aimed at the next meaningful HTF or MTF structural level, rather than an arbitrary distance picked on the LTF chart.</div>
+      </div>
+
+      <div class="quiz-q" id="q6">
+        <p class="q">6. What's the practical issue with stacking five or six timeframes instead of three?</p>
+        <label onclick="document.getElementById('q6').classList.add('show')">A) It dilutes focus rather than adding meaningful additional clarity</label>
+        <label onclick="document.getElementById('q6').classList.add('show')">B) It's against platform rules on most charting software</label>
+        <label onclick="document.getElementById('q6').classList.add('show')">C) There's no downside to adding more timeframes</label>
+        <div class="reveal"><strong>Answer: A.</strong> Three well-separated timeframes, each with a clear job, is usually more useful than many overlapping ones that blur together without adding real new information.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 04 — MULTIPLE TIME FRAME ANALYSIS · NEXT MODULE: FUNDAMENTAL ANALYSIS — A MACRO FUNDAMENTALS APPROACH
+    </footer>
+  </main>
+</div>
+</body>
+</html>

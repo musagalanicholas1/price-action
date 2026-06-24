@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Understanding and Trading the News — Module 11</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:21px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:1px;}
+  .toc a{display:flex; gap:8px; align-items:baseline; color:var(--ink-soft); font-size:13px; padding:5px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:10.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  .toc .bonus-link::before{content:"★"; color:var(--gold);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:48px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:50px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:30px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16px; margin:0 0 24px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:20px; margin:30px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:26px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:16px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:18px 0; font-size:14px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:8px 10px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:22px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:16px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:16px;}
+  .card p{font-size:13.5px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 11</div>
+    <p class="toc-title">Understanding and<br>Trading the News</p>
+    <ol>
+      <li><a href="#why-news">Why News Moves the Market</a></li>
+      <li><a href="#two-speed">The Two-Speed Market</a></li>
+      <li><a href="#news-literacy">News Literacy</a></li>
+      <li><a href="#which-releases">Which Releases Matter</a></li>
+      <li><a href="#priced-in">What's Already Priced In?</a></li>
+      <li><a href="#cb-comm">Central Bank Communication</a></li>
+      <li><a href="#off-calendar">Off-Calendar Risk</a></li>
+      <li><a href="#dangers">The Dangers of Trading News</a></li>
+      <li><a href="#pre-positioning">Pre-Positioning</a></li>
+      <li><a href="#post-spike">The Post-Release Entry</a></li>
+      <li><a href="#straddle">The Straddle Trap</a></li>
+      <li><a href="#catalyst-decay">Catalyst Decay</a></li>
+      <li><a href="#reassess">Reassessing the Environment</a></li>
+      <li><a href="#revision">The Revision Problem</a></li>
+      <li><a href="#toolkit">Your News Trading Toolkit</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+      <li><a href="#fed-cheatsheet" class="bonus-link">Fed Cheat Sheet</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 11 of the Trading Curriculum</div>
+      <h1>Understanding and Trading the News</h1>
+      <p class="lede">Most retail traders either chase the spike and get destroyed in the spread, or close their platform when the calendar goes red. Learn how economic data actually moves FX, which releases matter and why, and how to build a process for trading around news without blowing your account in the first 60 seconds.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="0,40 80,38 100,10 120,50 180,42 240,40 300,40" fill="none" stroke="#B23A2E" stroke-width="2" opacity="0.7"/>
+        <polyline points="300,40 360,35 420,28 480,22 540,18 600,12" fill="none" stroke="#1E7B4D" stroke-width="2" opacity="0.8"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="why-news">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>Why News Moves the Forex Market</h2>
+      <p class="dek">Understanding the mechanism matters a lot more than reacting to it quickly.</p>
+      <p>Economic releases move currencies because they update the macro picture this entire curriculum has been building since Module 05: growth, inflation, and the central bank reaction function that follows from both. A release isn't important because it's "news" in a generic sense — it's important to the extent it changes the market's read on future central bank policy.</p>
+      <div class="callout"><strong>The chain to remember:</strong> data → updated growth/inflation read → updated rate expectations → currency reaction. Skipping straight from "data" to "currency reaction" without that middle step is how most news-trading confusion starts.</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="two-speed">
+      <div class="lesson-kicker"><span class="num">02</span> Foundations</div>
+      <h2>The Two-Speed Market: Where You Fit In When News Hits</h2>
+      <p class="dek">The first minute after a major release is the most dangerous time for retail traders to be in the market.</p>
+      <p>This directly extends Module 06, lesson 5. In the seconds after a release, algorithmic systems parse the headline number and react before a human could read the same sentence. Retail traders attempting to compete in that first window aren't really trading — they're racing infrastructure they can't beat.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <rect x="20" y="40" width="220" height="50" fill="#FBEAE7" stroke="#B23A2E"/><text x="130" y="70" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B23A2E">0–60 SEC: ALGOS</text>
+          <rect x="270" y="40" width="470" height="50" fill="#E3F2E9" stroke="#1E7B4D"/><text x="505" y="70" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">MINUTES ONWARD: HUMAN ANALYTICAL WINDOW — your real opportunity</text>
+        </svg>
+        <figcaption>Fig. 1 — Retail traders fit best in the second window, not the first.</figcaption>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="news-literacy">
+      <div class="lesson-kicker"><span class="num">03</span> Skill Building</div>
+      <h2>News Literacy: A Skill Every Trader Needs</h2>
+      <p class="dek">News literacy matters for every type of trader, not just the ones who trade releases directly.</p>
+      <p>Even a pure price-action trader who never deliberately trades a news release still gets affected by news — open positions can suddenly become volatile, and price action setups can be invalidated within seconds by data nobody on the chart "warned" you about. News literacy means knowing what's scheduled, roughly what it means, and adjusting your trading plan (tighter stops, smaller size, or stepping aside entirely) around it — regardless of your core strategy.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="which-releases">
+      <div class="lesson-kicker"><span class="num">04</span> Prioritization</div>
+      <h2>Which Releases Actually Matter, and Why That Changes Over Time</h2>
+      <p class="dek">Rankings shift, and knowing which data matters most right now is itself a skill.</p>
+      <p>Module 06 introduced the high-impact shortlist (employment, inflation, central bank decisions). What that lesson didn't emphasize: the relative importance of each can shift depending on the market's dominant current concern. During an inflation scare, CPI prints dominate attention. During a growth scare, employment and PMI data take the top spot instead.</p>
+      <div class="callout"><strong>A simple habit:</strong> ask "what is the market most worried about right now?" before the week begins — that answer tells you which scheduled release deserves your closest attention.</div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="priced-in">
+      <div class="lesson-kicker"><span class="num">05</span> The Core Concept</div>
+      <h2>What Has the Market Already Priced In?</h2>
+      <p class="dek">The most important question before any release isn't "what will the number be?"</p>
+      <p>This lesson is a direct continuation of Module 05 (lesson 10) and Module 06 (lesson 2). Before trading any release, the practical question is always: what outcome does the market already expect, and how would today's print compare to that, not to some absolute standard of "good" or "bad"?</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="cb-comm">
+      <div class="lesson-kicker"><span class="num">06</span> Signal Reading</div>
+      <h2>Central Bank Communication: How to Read the Signal, Not Just the Decision</h2>
+      <p class="dek">Central banks move markets even on days with no rate decision at all.</p>
+      <p>Speeches, meeting minutes, and testimony to legislators are all opportunities for a central bank to shift its tone on the hawkish-dovish spectrum (Module 05, lesson 6) without taking any formal action. Markets watch these closely precisely because they're often the earliest signal of a policy shift, well before the next scheduled decision.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="120" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="10" text-anchor="middle">
+            <rect x="20" y="30" width="160" height="40" fill="#FCFBF9" stroke="#E1DDD3"/><text x="100" y="54">SPEECH</text>
+            <rect x="210" y="30" width="160" height="40" fill="#FCFBF9" stroke="#E1DDD3"/><text x="290" y="54">MINUTES</text>
+            <rect x="400" y="30" width="160" height="40" fill="#FCFBF9" stroke="#E1DDD3"/><text x="580" y="54">TESTIMONY</text>
+            <rect x="590" y="30" width="150" height="40" fill="#F1E6D2" stroke="#A8772E"/><text x="665" y="54" fill="#A8772E">RATE DECISION</text>
+          </g>
+          <text x="380" y="100" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">Tone can shift well before the actual decision arrives — watch all four, not just the last one.</text>
+        </svg>
+        <figcaption>Fig. 2 — Off-cycle communication often telegraphs a policy shift before the formal decision confirms it.</figcaption>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="off-calendar">
+      <div class="lesson-kicker"><span class="num">07</span> Unscheduled Risk</div>
+      <h2>Off-Calendar Risk: How to Trade the News You Can't Prepare For</h2>
+      <p class="dek">Some of the biggest moves happen with nothing on the calendar at all.</p>
+      <p>Surprise resignations, unscheduled central bank statements, sudden geopolitical developments (Module 07), and intervention (also Module 07) all share one trait: no calendar entry warns you. The practical defense isn't prediction — it's structural: appropriate position sizing, real stop-losses, and avoiding excessive leverage, so that an unforecastable shock is survivable rather than catastrophic.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="lesson" id="dangers">
+      <div class="lesson-kicker"><span class="num">08</span> Risk Awareness</div>
+      <h2>The Dangers of Trading the News</h2>
+      <p class="dek">The specific ways news trading can blow your account.</p>
+      <table class="ref">
+        <tr><th>Danger</th><th>What happens</th></tr>
+        <tr><td>Spread widening</td><td>Brokers widen spreads sharply around major releases, making entries and exits far more expensive than normal</td></tr>
+        <tr><td>Slippage</td><td>Orders fill well beyond their intended price during the fastest moments of the spike</td></tr>
+        <tr><td>Stop-loss failure</td><td>In fast, gapping conditions, a stop may execute far past its set level rather than at it</td></tr>
+        <tr><td>Whipsaws</td><td>An initial reaction reverses sharply once the full report is digested (Module 06, lesson 5)</td></tr>
+      </table>
+      <div class="warn"><strong>None of these are edge cases.</strong> They are the normal, expected behavior of markets during major releases — plan for them rather than being surprised by them.</div>
+    </section>
+
+    <!-- 9 -->
+    <section class="lesson" id="pre-positioning">
+      <div class="lesson-kicker"><span class="num">09</span> Entry Method</div>
+      <h2>Pre-Positioning: Build Your Trade Before the Data Print</h2>
+      <p class="dek">Build a pre-news bias and trade the outcome instead of the spike.</p>
+      <p>Pre-positioning means forming a directional bias ahead of a release — based on the macro thesis framework from Module 08, nowcasting data (Module 06, lesson 3), and market expectations (lesson 5 above) — and entering before the number drops, accepting the event risk deliberately rather than reacting to it after the fact.</p>
+      <div class="warn"><strong>The tradeoff:</strong> pre-positioning means accepting full exposure to the surprise itself, in both directions. This only makes sense with a clearly defined risk size you can survive being wrong about.</div>
+    </section>
+
+    <!-- 10 -->
+    <section class="lesson" id="post-spike">
+      <div class="lesson-kicker"><span class="num">10</span> Entry Method</div>
+      <h2>Trade After the Spike: The Post-Release Confirmation Entry</h2>
+      <p class="dek">Entering after news volatility settles and direction starts to hold.</p>
+      <p>The alternative to pre-positioning: wait through the algorithmic spike (lesson 2) entirely, let spreads normalize, and enter once the analytical phase shows a clear, holding direction — sacrificing some of the initial move in exchange for a meaningfully safer entry.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <polyline points="20,100 60,98 80,30 110,50 160,42 220,30 280,20" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="220" cy="30" r="5" fill="#1E7B4D"/>
+          <text x="230" y="20" font-family="Inter" font-size="11" fill="#1E7B4D">Entry here — after the spike settles into a holding direction</text>
+        </svg>
+        <figcaption>Fig. 3 — Skipping the chaotic first minute in favor of a calmer, confirmed entry point.</figcaption>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section class="lesson" id="straddle">
+      <div class="lesson-kicker"><span class="num">11</span> A Cautionary Tale</div>
+      <h2>The Straddle Trap: Why News Traders Get Burned</h2>
+      <p class="dek">Why the straddle fails in real news trading.</p>
+      <p>A straddle places pending orders on both sides of current price just before a release, intending for one to fill and ride the breakout. In theory it removes the need to predict direction. In practice, spread widening (lesson 8) often triggers both orders in a whipsaw, or fills one side at a far worse price than planned — turning a "neutral" setup into a guaranteed loss on slippage alone.</p>
+      <div class="warn"><strong>Why it keeps getting recommended anyway:</strong> it sounds clever on paper. The mechanics of real execution during volatile, wide-spread conditions are exactly what undermine it.</div>
+    </section>
+
+    <!-- 12 -->
+    <section class="lesson" id="catalyst-decay">
+      <div class="lesson-kicker"><span class="num">12</span> Time Management</div>
+      <h2>How Long Does a Catalyst Last? Understanding Catalyst Decay</h2>
+      <p class="dek">Most traders hold positions past their expiry date.</p>
+      <p>A "catalyst" is the news event justifying a trade. Its relevance decays over time as the market fully digests it and attention shifts to the next scheduled item. A trade justified by last week's jobs report has a weaker rationale today than it did three days ago — even if price hasn't moved much, the reason for being in the trade is aging.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="120" fill="#FFFFFF"/>
+          <path d="M30,30 Q300,30 700,90" fill="none" stroke="#A8772E" stroke-width="2"/>
+          <text x="40" y="20" font-family="JetBrains Mono" font-size="10" fill="#A8772E">catalyst relevance</text>
+          <text x="600" y="105" font-family="Inter" font-size="11" fill="#4A5159">decays toward zero over time</text>
+        </svg>
+        <figcaption>Fig. 4 — A catalyst's justification for a trade fades, even when price action hasn't yet caught up.</figcaption>
+      </div>
+    </section>
+
+    <!-- 13 -->
+    <section class="lesson" id="reassess">
+      <div class="lesson-kicker"><span class="num">13</span> Trade Management</div>
+      <h2>How Often Should You Reassess the Market Environment?</h2>
+      <p class="dek">Knowing when to reassess an open trade is worth more than any entry signal.</p>
+      <p>A practical cadence: reassess immediately after any major scheduled release relevant to your position, after any significant off-calendar shock, and at a fixed routine interval (daily or weekly, depending on your timeframe from Module 04) regardless of whether anything obvious has happened. Reassessing too rarely risks holding a thesis that's quietly become invalid; reassessing too often risks overreacting to noise.</p>
+    </section>
+
+    <!-- 14 -->
+    <section class="lesson" id="revision">
+      <div class="lesson-kicker"><span class="num">14</span> A Subtle Trap</div>
+      <h2>The Revision Problem: Don't Mistake the First Print for the Truth</h2>
+      <p class="dek">The number that moves the market is often not the final number.</p>
+      <p>Many economic releases (notably employment and GDP data) are routinely revised in subsequent months — sometimes substantially. The market reacts instantly to the first print, but that print is a preliminary estimate, not a settled fact. A trade thesis built heavily on a single data point should hold that point a little more loosely than its initial market reaction might suggest.</p>
+      <div class="warn"><strong>Practical implication:</strong> watch the revision to the <em>previous</em> month's figure, published alongside the new release — a large revision can sometimes matter more than the headline number itself.</div>
+    </section>
+
+    <!-- 15 -->
+    <section class="lesson" id="toolkit">
+      <div class="lesson-kicker"><span class="num">15</span> Practical Setup</div>
+      <h2>Your News Trading Toolkit</h2>
+      <p class="dek">Which tools to have open before the number drops.</p>
+      <div class="grid-cards">
+        <div class="card"><span class="tag">Calendar</span><h4>Economic calendar</h4><p>Release times, consensus forecasts, and prior readings (Module 06, lesson 4).</p></div>
+        <div class="card"><span class="tag">Pricing</span><h4>Rate-expectation tracker</h4><p>Market-implied probabilities for upcoming central bank decisions (Module 05, lesson 10).</p></div>
+        <div class="card"><span class="tag">Context</span><h4>Nowcasting dashboard</h4><p>Real-time growth estimates ahead of lagging GDP releases (Module 06, lesson 3).</p></div>
+        <div class="card"><span class="tag">Execution</span><h4>Broker spread monitor</h4><p>Awareness of current spread conditions before placing any order around a release.</p></div>
+        <div class="card"><span class="tag">News</span><h4>A real-time wire</h4><p>For unscheduled, off-calendar developments (lesson 7).</p></div>
+        <div class="card"><span class="tag">Discipline</span><h4>A written pre-news plan</h4><p>Position size, entry method (pre-position vs. post-spike), and invalidation level, decided before the number prints.</p></div>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Understanding and Trading the News</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Why is the first minute after a major release considered the most dangerous time for retail traders?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Algorithmic systems react far faster than a human can, and retail traders are essentially racing infrastructure they can't beat</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Markets are closed during that window</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Spreads are always at their tightest during that window</label>
+        <div class="reveal"><strong>Answer: A.</strong> The first minute is dominated by ultra-fast algorithmic reactions, wide spreads, and slippage — a genuinely difficult window for retail execution.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Why does central bank communication outside of scheduled rate decisions matter?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) Speeches and minutes have no real market impact</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Tone can shift on the hawkish-dovish spectrum well before the next formal decision, often telegraphing a policy change early</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Only the final rate decision is ever worth watching</label>
+        <div class="reveal"><strong>Answer: B.</strong> Off-cycle communication frequently signals a coming policy shift before it's confirmed by an actual decision.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why does the straddle strategy often fail in real news trading conditions?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) It always perfectly captures the breakout in the correct direction</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Spread widening and slippage during the volatile window often trigger both orders or fill one badly, undermining the supposedly neutral setup</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) Straddles are not actually possible to place around news events</label>
+        <div class="reveal"><strong>Answer: B.</strong> Real execution conditions (widened spreads, slippage) tend to defeat the straddle's theoretical neutrality.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. What is "catalyst decay"?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) The idea that a news event's relevance to a trade fades over time as the market fully digests it</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) A type of broker fee charged on overnight positions</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) A permanent, unchanging justification for any open trade</label>
+        <div class="reveal"><strong>Answer: A.</strong> A catalyst's justification for a trade weakens over time, even if price hasn't fully reflected that yet.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Why does the "revision problem" matter for data like employment and GDP reports?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) These releases are never revised once published</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) The market reacts instantly to a preliminary first print, which is often revised substantially in later months</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Revisions only apply to inflation data, never to growth or employment data</label>
+        <div class="reveal"><strong>Answer: B.</strong> Many key releases are preliminary estimates subject to meaningful later revision, even though the market reacts to the first print as if it were final.</div>
+      </div>
+    </section>
+
+    <!-- BONUS -->
+    <section class="lesson" id="fed-cheatsheet">
+      <div class="lesson-kicker"><span class="num">★</span> Bonus Lesson</div>
+      <h2>Hawkish Cut, Dovish Hike? A Cheat Sheet to Decode What the Fed Is Really Saying</h2>
+      <p class="dek">The Fed doesn't just set rates — it sends signals. Tone often moves markets more than the rate change itself.</p>
+
+      <p>Building directly on lesson 6, here's a practical reference for the six possible combinations of decision and tone, and how each tends to play out across major asset classes.</p>
+
+      <table class="ref">
+        <tr><th>Combination</th><th>What it means</th><th>Typical USD reaction</th></tr>
+        <tr><td>Hawkish hike</td><td>Raises rates and signals more tightening ahead</td><td>Strengthens, often sharply</td></tr>
+        <tr><td>Dovish hike</td><td>Raises rates but signals this may be the last one for a while</td><td>Mixed to weaker — the tone undercuts the headline</td></tr>
+        <tr><td>Hawkish hold</td><td>Leaves rates unchanged but signals hikes are still likely ahead</td><td>Can strengthen despite no actual change</td></tr>
+        <tr><td>Dovish hold</td><td>Leaves rates unchanged and signals patience or future easing</td><td>Tends to weaken</td></tr>
+        <tr><td>Hawkish cut</td><td>Cuts rates but frames it as a one-off adjustment, not the start of a cycle</td><td>Can hold up better than a typical cut would suggest</td></tr>
+        <tr><td>Dovish cut</td><td>Cuts rates and signals more cuts are coming</td><td>Weakens, often sharply</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="20" y="20" width="220" height="50" fill="#E3F2E9" stroke="#1E7B4D"/><text x="130" y="50" fill="#1E7B4D">EQUITIES</text>
+            <rect x="270" y="20" width="220" height="50" fill="#F1E6D2" stroke="#A8772E"/><text x="380" y="50" fill="#A8772E">BONDS / YIELDS</text>
+            <rect x="520" y="20" width="220" height="50" fill="#FBEAE7" stroke="#B23A2E"/><text x="630" y="50" fill="#B23A2E">USD / GOLD / CRYPTO</text>
+          </g>
+          <text x="380" y="110" text-anchor="middle" font-family="Inter" font-size="12" fill="#4A5159">Each asset class reads the same hawkish/dovish signal differently —</text>
+          <text x="380" y="130" text-anchor="middle" font-family="Inter" font-size="12" fill="#4A5159">a hawkish surprise often lifts the dollar and yields while pressuring equities, gold, and crypto.</text>
+        </svg>
+        <figcaption>Fig. 5 — The same Fed signal ripples differently across equities, bonds, and the dollar/gold/crypto complex.</figcaption>
+      </div>
+
+      <div class="callout"><strong>The practical use of this cheat sheet:</strong> before reacting to a Fed headline, classify it into one of the six boxes above based on both the actual decision <em>and</em> the accompanying tone — then expect the reaction across asset classes to follow the corresponding pattern, adjusted for what was already priced in (lesson 5).</div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 11 — UNDERSTANDING AND TRADING THE NEWS · NEXT MODULE: SENTIMENT ANALYSIS
+    </footer>
+  </main>
+</div>
+</body>
+</html>

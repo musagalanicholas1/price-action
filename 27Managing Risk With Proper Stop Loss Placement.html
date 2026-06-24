@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Managing Risk With Proper Stop Loss Placement — Module 27</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:44px; line-height:1.08; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:50px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:30px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16px; margin:0 0 24px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:20px; margin:30px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:26px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:16px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:18px 0; font-size:14px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:8px 10px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:22px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:16px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:16px;}
+  .card p{font-size:13.5px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 27</div>
+    <p class="toc-title">Proper Stop Loss<br>Placement</p>
+    <ol>
+      <li><a href="#what-is-sl">What Is a Stop Loss?</a></li>
+      <li><a href="#golden-rule">The Golden Rule of Placement</a></li>
+      <li><a href="#chart-based">Setting a Stop Based on the Chart</a></li>
+      <li><a href="#volatility-based">Setting a Stop Using Volatility</a></li>
+      <li><a href="#keeps-getting-hit">Why Your Stop Keeps Getting Hit</a></li>
+      <li><a href="#mistakes-rules">Mistakes, Rules &amp; Execution</a></li>
+      <li><a href="#playbook">The Stop Loss Playbook</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 27 of the Trading Curriculum</div>
+      <h1>Managing Risk With Proper Stop Loss Placement</h1>
+      <p class="lede">Most traders know what a stop loss is. A lot of them don't place it correctly. Learn exactly where a stop belongs on a chart, how to size a position around it, why obvious levels keep getting hit early, and what actually happens when a stop executes in a live account.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="20,40 80,30 140,45 200,20 260,35" fill="none" stroke="#1C2024" stroke-width="2"/>
+        <line x1="15" y1="50" x2="280" y2="50" stroke="#B23A2E" stroke-width="2" stroke-dasharray="4 3"/>
+        <text x="290" y="54" font-family="JetBrains Mono" font-size="10" fill="#B23A2E">stop</text>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-sl">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Is a Stop Loss?</h2>
+      <p class="dek">A predetermined exit, and what it costs you to skip this step.</p>
+      <p>A stop loss is a pre-set order that automatically closes a trade once price reaches a specified level, capping the loss on that trade at a known, predetermined amount. Trading without one means a single adverse move has no defined limit — directly undermining every risk percentage and position sizing calculation from Modules 24 and 26, which all assume a defined exit point exists.</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="golden-rule">
+      <div class="lesson-kicker"><span class="num">02</span> The Core Principle</div>
+      <h2>The Golden Rule of Stop Placement</h2>
+      <p class="dek">A subtle mistake in stop placement can ruin an otherwise solid trade.</p>
+      <p>The golden rule: a stop loss belongs at the price level where your original trade idea is objectively proven wrong — not at an arbitrary distance, and not at the maximum amount you're willing to lose. Many beginners reverse this logic, deciding how much they're willing to lose first and placing the stop there regardless of where the chart actually invalidates the trade.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="150" fill="#FFFFFF"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="10" fill="#B23A2E">WRONG: stop placed by "how much I want to lose"</text>
+          <polyline points="30,90 90,80 150,95 210,70 270,85" fill="none" stroke="#1C2024" stroke-width="1.5"/>
+          <line x1="20" y1="100" x2="290" y2="100" stroke="#B23A2E" stroke-dasharray="3 2"/>
+          <text x="20" y="135" font-family="Inter" font-size="10" fill="#B23A2E">An arbitrary distance, unrelated to any actual chart level</text>
+
+          <text x="420" y="20" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">RIGHT: stop placed where the idea is invalidated</text>
+          <polyline points="430,90 490,80 550,95 610,55 670,40" fill="none" stroke="#1C2024" stroke-width="1.5"/>
+          <line x1="420" y1="100" x2="690" y2="100" stroke="#1E7B4D" stroke-dasharray="3 2"/>
+          <text x="420" y="135" font-family="Inter" font-size="10" fill="#1E7B4D">Just beyond the structural level the trade idea depends on</text>
+        </svg>
+        <figcaption>Fig. 1 — The golden rule: the chart decides where the stop goes; risk percentage then decides position size, not the other way around.</figcaption>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="chart-based">
+      <div class="lesson-kicker"><span class="num">03</span> Method 1</div>
+      <h2>How to Set a Stop Loss Based on the Chart</h2>
+      <p class="dek">Using support, resistance, trendlines, and structure to find your exact invalidation point.</p>
+      <table class="ref">
+        <tr><th>Reference</th><th>Where the stop goes</th></tr>
+        <tr><td>Supply/demand zone (Module 01)</td><td>Just beyond the far edge of the zone</td></tr>
+        <tr><td>Swing high/low (Module 01)</td><td>Just beyond the relevant swing point</td></tr>
+        <tr><td>Trendline (Module 03)</td><td>Just beyond a confirmed trendline break</td></tr>
+        <tr><td>Break-and-retest level (Module 02)</td><td>Just beyond the retested level, on the far side from entry</td></tr>
+      </table>
+      <p>"Just beyond" matters — placing a stop exactly at a well-known level, rather than slightly past it, runs directly into the next lesson's problem.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="volatility-based">
+      <div class="lesson-kicker"><span class="num">04</span> Method 2</div>
+      <h2>How to Set a Stop Loss Using Volatility</h2>
+      <p class="dek">ATR helps place smarter stops and add the right buffer.</p>
+      <p>This extends Module 26, lesson 3 directly: rather than (or in addition to) a pure chart-based stop, add a buffer based on a fraction of current ATR beyond the structural level — ensuring the stop accounts for the market's current typical noise, not just the static chart level itself.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 110" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="110" fill="#FFFFFF"/>
+          <text x="380" y="55" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#1C2024">Stop = Structural Level ± (0.25 to 0.5 × current ATR)</text>
+        </svg>
+        <figcaption>Fig. 2 — Combining a chart-based level with a volatility buffer for a more robust stop.</figcaption>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="keeps-getting-hit">
+      <div class="lesson-kicker"><span class="num">05</span> A Common Frustration</div>
+      <h2>Why Your Stop Keeps Getting Hit (And How to Fix It)</h2>
+      <p class="dek">Stops placed at obvious levels get hit more often than they should.</p>
+      <p>Obvious technical levels — round numbers, clean swing points everyone can see on the same chart — attract resting orders from many participants at once, including stop-hunting style liquidity grabs (Module 02, lesson 5). Price often briefly pierces these exact levels before snapping back in the original direction, catching stops placed precisely there.</p>
+      <div class="warn"><strong>The fix:</strong> place stops a calculated distance beyond the obvious level (using the ATR buffer from lesson 4), rather than directly at it — requiring a genuine, larger move to trigger the stop rather than a brief, common liquidity-grab spike.</div>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="mistakes-rules">
+      <div class="lesson-kicker"><span class="num">06</span> Discipline</div>
+      <h2>Stop Loss Mistakes, Rules, and Execution</h2>
+      <p class="dek">Five common mistakes, three rules you can't break, and what happens when a stop executes.</p>
+
+      <div class="grid-cards">
+        <div class="card"><span class="tag">Mistake</span><h4>Moving the stop further away</h4><p>Widening a stop after entry to avoid taking a loss defeats the entire purpose of having one.</p></div>
+        <div class="card"><span class="tag">Mistake</span><h4>No stop at all</h4><p>"Mental stops" routinely fail under the emotional pressure of a live, losing position.</p></div>
+        <div class="card"><span class="tag">Mistake</span><h4>Placing it at round numbers</h4><p>Exactly the obvious-level problem from lesson 5.</p></div>
+        <div class="card"><span class="tag">Mistake</span><h4>Sizing first, stop second</h4><p>Reverses the correct order from lesson 2 — the chart should determine the stop, not the desired position size.</p></div>
+        <div class="card"><span class="tag">Mistake</span><h4>Ignoring volatility</h4><p>Using the same fixed pip stop in calm and volatile conditions alike.</p></div>
+      </div>
+
+      <h3>Three Rules You Can't Break</h3>
+      <ol>
+        <li>Never move a stop further away from price once a trade is open.</li>
+        <li>Always use a real, broker-side order — never rely on a mental stop alone.</li>
+        <li>Always know your stop level before entering, never decide it after the fact.</li>
+      </ol>
+
+      <p>When a stop executes in a live market, slippage (Module 06, lesson 5) can mean the actual fill differs slightly from the set level, especially during fast moves or low liquidity — a real-world detail your position sizing should leave reasonable room for, rather than assuming a perfect fill every time.</p>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="playbook">
+      <div class="lesson-kicker"><span class="num">07</span> Synthesis</div>
+      <h2>The Stop Loss Playbook</h2>
+      <p class="dek">The complete framework in one lesson: a pre-trade checklist.</p>
+      <ol>
+        <li>Identify the chart level where your trade idea is objectively invalidated (lesson 2–3).</li>
+        <li>Add an ATR-based buffer beyond that level to avoid common liquidity-grab spikes (lesson 4–5).</li>
+        <li>Calculate position size from this final stop distance (Module 26) — never the reverse.</li>
+        <li>Place a real, broker-side stop order immediately upon entry.</li>
+        <li>Never move it further away once the trade is open.</li>
+      </ol>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Proper Stop Loss Placement</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. According to the golden rule, where should a stop loss actually be placed?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) At the price level where the original trade idea is objectively proven wrong</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) At a fixed distance representing the maximum amount you're willing to lose</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Wherever feels emotionally comfortable in the moment</label>
+        <div class="reveal"><strong>Answer: A.</strong> The stop should reflect chart invalidation, not an arbitrary dollar amount decided independently of the chart.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Why do stops placed exactly at obvious round numbers or swing points get hit more often than expected?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) Those levels attract resting orders from many participants, making brief liquidity-grab spikes through them common</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Obvious levels are never actually approached by price</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Round numbers have no special significance to other market participants</label>
+        <div class="reveal"><strong>Answer: A.</strong> Crowded, well-known levels are more prone to brief stop-hunting spikes before the broader move resumes.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. What is the correct order of operations between setting a stop and calculating position size?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) Determine the stop distance from the chart first, then calculate position size from that distance</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Decide position size first, then fit the stop to match it</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) The two are unrelated and can be set in any order</label>
+        <div class="reveal"><strong>Answer: A.</strong> The stop comes from chart invalidation; position size is then derived from that stop distance and the risk percentage (Module 26).</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. Why is a "mental stop" (no real broker-side order) considered risky?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) Mental stops routinely fail under the emotional pressure of an open, losing position</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Mental stops are always more accurate than broker-side orders</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Brokers don't allow mental stops to be used</label>
+        <div class="reveal"><strong>Answer: A.</strong> Without an actual order in place, emotional pressure during a live losing trade often leads to the stop being ignored or moved.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Which of the three unbreakable rules in this module directly addresses the temptation to avoid taking a loss?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) Never move a stop further away from price once a trade is open</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) Always trade the maximum position size available</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Always use mental stops instead of broker-side orders</label>
+        <div class="reveal"><strong>Answer: A.</strong> Moving a stop further away to avoid a loss is one of the most common and damaging stop-loss mistakes covered in this module.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 27 — MANAGING RISK WITH PROPER STOP LOSS PLACEMENT · NEXT MODULE: SCALING IN AND OUT OF TRADES
+    </footer>
+  </main>
+</div>
+</body>
+</html>

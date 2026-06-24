@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Environment — Module 03</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:54px; line-height:1.04; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 03</div>
+    <p class="toc-title">Market<br>Environment</p>
+    <ol>
+      <li><a href="#know-environment">Know Your Market Environment</a></li>
+      <li><a href="#trending">What Is a Trending Market?</a></li>
+      <li><a href="#ranging">What Is a Range-Bound Market?</a></li>
+      <li><a href="#retrace-reverse">Retracement or Reversal?</a></li>
+      <li><a href="#identify">Identify Reversals &amp; Retracements</a></li>
+      <li><a href="#protect">Protect Yo Self From Reversals</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 03 of the Trading Curriculum</div>
+      <h1>Market Environment</h1>
+      <p class="lede">Learn how to read the market environment by identifying whether conditions are trending or range-bound, and how to spot the difference between a retracement and a full reversal — using ADX, moving averages, Bollinger Bands, Fibonacci levels, and trailing stops to match your strategy to the market and protect your capital when it shifts.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="0,50 60,48 120,52 180,46 240,20 300,10 360,4 420,30 480,55 540,58 600,56" fill="none" stroke="#1C2024" stroke-width="1.5" opacity="0.55"/>
+        <line x1="0" y1="50" x2="170" y2="50" stroke="#A8772E" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>
+        <line x1="0" y1="58" x2="170" y2="58" stroke="#A8772E" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="know-environment">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>Know Your Market Environment</h2>
+      <p class="dek">Matching your strategy to the market is the difference between winning and losing.</p>
+
+      <p>Every strategy you'll ever learn — trend pullbacks, breakouts, range fades, mean reversion — works well in one kind of market and poorly in another. A strategy isn't "good" or "bad" in isolation; it's good or bad relative to the environment you apply it in. The market environment is simply the answer to one question: is this asset, right now, on this timeframe, trending or range-bound?</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="200" fill="#FFFFFF"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">TRENDING</text>
+          <polyline points="30,160 80,140 130,150 180,100 230,75 280,40" fill="none" stroke="#1E7B4D" stroke-width="2"/>
+          <text x="20" y="190" font-family="Inter" font-size="11" fill="#4A5159">Pullback &amp; breakout strategies fit best here.</text>
+
+          <text x="400" y="20" font-family="JetBrains Mono" font-size="11" fill="#A8772E">RANGE-BOUND</text>
+          <line x1="400" y1="60" x2="730" y2="60" stroke="#A8772E" stroke-dasharray="3 2"/>
+          <line x1="400" y1="140" x2="730" y2="140" stroke="#A8772E" stroke-dasharray="3 2"/>
+          <polyline points="410,100 440,65 470,135 500,68 530,132 560,66 590,130 620,68 650,128" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <text x="400" y="190" font-family="Inter" font-size="11" fill="#4A5159">Fade-the-edge strategies fit best here.</text>
+        </svg>
+        <figcaption>Fig. 1 — Same toolkit, opposite environments. Using a trend strategy in a range (or vice versa) is fighting the market's actual behavior.</figcaption>
+      </div>
+
+      <h3>Why This Diagnosis Comes Before the Strategy</h3>
+      <p>A trend-following trader who buys every pullback works beautifully in a trending market and gets chopped up repeatedly in a range, where pullbacks just keep failing to extend. A range trader who fades every push to the edge of a "range" works beautifully until the range actually breaks into a trend — at which point every fade trade becomes a loser in a row. Identifying the environment first is what tells you which of these traders you should be acting like, today, on this chart.</p>
+
+      <div class="callout"><strong>The discipline:</strong> before opening a trade idea, name the environment out loud (even just to yourself): "this is trending" or "this is ranging." If you can't decide confidently, that uncertainty is itself useful information — it usually means caution, not a coin flip.</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="trending">
+      <div class="lesson-kicker"><span class="num">02</span> Reading Environment</div>
+      <h2>What Is a Trending Market?</h2>
+      <p class="dek">How to spot one using ADX, moving averages, and Bollinger Bands — and why liquidity matters.</p>
+
+      <p>A trending market is one where price is making sustained progress in one direction over time, as defined by the Higher-High/Higher-Low or Lower-High/Lower-Low sequences covered in Module 01. The tools below give you an independent, indicator-based way to confirm what structure is already suggesting.</p>
+
+      <h3>Tool 1: ADX (Average Directional Index)</h3>
+      <p>ADX measures the <em>strength</em> of a trend, not its direction. As a rough guide:</p>
+      <table class="ref">
+        <tr><th>ADX reading</th><th>Interpretation</th></tr>
+        <tr><td>Below 20</td><td>Weak or absent trend — likely ranging</td></tr>
+        <tr><td>20–40</td><td>A developing or established trend</td></tr>
+        <tr><td>Above 40</td><td>A strong, often mature trend (watch for exhaustion)</td></tr>
+      </table>
+
+      <h3>Tool 2: Moving Averages</h3>
+      <p>In a healthy trend, price tends to stay on one side of a key moving average (commonly the 50 or 200-period), and a faster moving average stays separated from — and angled in the same direction as — a slower one. Moving averages that are flat and tangled together (frequently crossing) typically describe a range, not a trend.</p>
+
+      <h3>Tool 3: Bollinger Bands</h3>
+      <p>During a strong trend, price often "walks the band" — hugging the upper band in an uptrend or the lower band in a downtrend for extended stretches, rather than oscillating back to the middle.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 230" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="230" fill="#FFFFFF"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="10" fill="#4A5159">PRICE WALKING THE UPPER BOLLINGER BAND</text>
+          <polyline points="30,180 90,160 150,170 210,120 270,95 330,55 390,40 450,20" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <polyline points="30,200 90,175 150,185 210,140 270,115 330,75 390,55 450,35" fill="none" stroke="#A8772E" stroke-width="1" stroke-dasharray="3 2"/>
+          <polyline points="30,160 90,140 150,150 210,100 270,75 330,35 390,20 450,5" fill="none" stroke="#A8772E" stroke-width="1" stroke-dasharray="3 2"/>
+          <text x="460" y="40" font-family="Inter" font-size="11" fill="#4A5159">Price clings to the upper band</text>
+          <text x="460" y="58" font-family="Inter" font-size="11" fill="#4A5159">instead of reverting to the middle.</text>
+        </svg>
+        <figcaption>Fig. 2 — A trend signature on Bollinger Bands: persistent contact with one band rather than oscillation.</figcaption>
+      </div>
+
+      <h3>A Note on Liquidity</h3>
+      <p>Trends tend to be cleaner and more reliable in liquid markets with consistent participation (major forex pairs during active sessions, large-cap stocks, major indices). Thin, illiquid conditions can produce trend-<em>looking</em> moves that are really just a handful of large orders pushing price around — these are more prone to violent, unstructured reversals.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="ranging">
+      <div class="lesson-kicker"><span class="num">03</span> Reading Environment</div>
+      <h2>What Is a Range-Bound Market?</h2>
+      <p class="dek">How to spot one using ADX and Bollinger Bands, and which tools and pairs work best for range trading.</p>
+
+      <p>A range-bound market is one where price oscillates between a relatively well-defined ceiling and floor without making sustained directional progress — the Equal-Highs/Equal-Lows structure from Module 01.</p>
+
+      <h3>Confirming a Range</h3>
+      <ul>
+        <li><strong>ADX below ~20</strong>, often drifting sideways itself rather than trending up or down.</li>
+        <li><strong>Bollinger Bands contracting and roughly parallel</strong>, with price oscillating between the upper and lower band rather than walking one side.</li>
+        <li><strong>Multiple touches of similar highs and lows</strong> visible directly on the chart, with price repeatedly reversing at both boundaries.</li>
+      </ul>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="200" fill="#FFFFFF"/>
+          <line x1="40" y1="50" x2="700" y2="50" stroke="#A8772E" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <line x1="40" y1="150" x2="700" y2="150" stroke="#A8772E" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <polyline points="50,100 90,55 130,145 170,58 210,142 250,56 290,144 330,57 370,143 410,58 450,142" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <text x="710" y="53" font-family="JetBrains Mono" font-size="10" fill="#A8772E">ceiling</text>
+          <text x="710" y="153" font-family="JetBrains Mono" font-size="10" fill="#A8772E">floor</text>
+        </svg>
+        <figcaption>Fig. 3 — A clean range: repeated, near-equal reversals at both boundaries.</figcaption>
+      </div>
+
+      <h3>Which Tools Suit Range Conditions</h3>
+      <table class="ref">
+        <tr><th>Tool</th><th>How it's used in a range</th></tr>
+        <tr><td>RSI / Stochastic</td><td>Overbought/oversold readings near the range edges support a fade trade</td></tr>
+        <tr><td>Bollinger Bands</td><td>Touches of the outer bands, with price reverting toward the middle, support a reversal back into the range</td></tr>
+        <tr><td>Horizontal S/R lines</td><td>The simplest and most direct way to define the range boundaries themselves</td></tr>
+      </table>
+
+      <h3>Which Currency Pairs Tend to Range</h3>
+      <p>Pairs with smaller interest rate differentials and less directional macro pressure (certain cross pairs, or major pairs during quiet, low-news periods) tend to range more often than pairs being actively driven by a strong fundamental theme. Ranges also dominate during off-peak trading hours and ahead of major scheduled news, when participants are reluctant to commit to a direction.</p>
+
+      <div class="warn"><strong>Caution:</strong> ranges eventually break. The longer a range persists and the more times it's tested, the more energy is typically building for an eventual breakout — treat every range as temporary, not permanent.</div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="retrace-reverse">
+      <div class="lesson-kicker"><span class="num">04</span> Trend Behavior</div>
+      <h2>Trend Retracement or Reversal?</h2>
+      <p class="dek">The difference between a healthy pullback and a full reversal — and how to protect yourself when you can't tell which one you're in.</p>
+
+      <p>Inside a trend, price rarely moves in a straight line. It pulls back, resumes, pulls back again. Most of these pullbacks are <strong>retracements</strong> — temporary, healthy pauses within a trend that remains intact. Occasionally, a pullback is actually the start of a <strong>reversal</strong> — the trend genuinely ending and a new one beginning in the opposite direction. The hard part: in real time, the first few candles of each look identical.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <text x="20" y="20" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">RETRACEMENT</text>
+          <polyline points="30,160 90,120 140,150 190,90 240,125 290,60" fill="none" stroke="#1E7B4D" stroke-width="2"/>
+          <circle cx="140" cy="150" r="4" fill="#1F5F5B"/>
+          <circle cx="240" cy="125" r="4" fill="#1F5F5B"/>
+          <text x="30" y="190" font-family="Inter" font-size="11" fill="#1E7B4D">Each pullback holds above the prior low — trend intact.</text>
+
+          <text x="420" y="20" font-family="JetBrains Mono" font-size="10" fill="#B23A2E">REVERSAL</text>
+          <polyline points="430,160 490,120 540,150 590,95 640,160 690,190" fill="none" stroke="#B23A2E" stroke-width="2"/>
+          <circle cx="540" cy="150" r="4" fill="#1F5F5B"/>
+          <circle cx="640" cy="160" r="4" fill="#B23A2E"/>
+          <text x="420" y="200" font-family="Inter" font-size="11" fill="#B23A2E">A pullback breaks the prior low — structure has flipped.</text>
+        </svg>
+        <figcaption>Fig. 4 — Identical opening shape. The defining difference only appears once price either holds or breaks the prior swing point.</figcaption>
+      </div>
+
+      <h3>Why You Can't Always Know in Real Time</h3>
+      <p>There is no indicator that tells you with certainty, the moment a pullback starts, whether it will hold or break. This is a structural feature of markets, not a tool you're missing. The honest answer is: you manage the uncertainty rather than eliminate it — which is exactly what the next two lessons cover.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="identify">
+      <div class="lesson-kicker"><span class="num">05</span> Trend Behavior</div>
+      <h2>How to Identify Reversals and Retracements</h2>
+      <p class="dek">Three practical methods: Fibonacci levels, pivot points, and trend lines.</p>
+
+      <h3>Method 1: Fibonacci Retracement Levels</h3>
+      <p>Measure the most recent significant swing (low to high in an uptrend) and apply Fibonacci retracement levels — most commonly 38.2%, 50%, and 61.8%. A pullback that holds within this zone and resumes is behaving like a typical retracement. A pullback that drives well beyond the 61.8% level (some traders use the 78.6% level as the final warning) starts to look statistically more like a reversal in progress.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <polyline points="40,180 200,40" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <line x1="40" y1="40" x2="600" y2="40" stroke="#E1DDD3" stroke-dasharray="2 2"/>
+          <line x1="40" y1="93" x2="600" y2="93" stroke="#A8772E" stroke-dasharray="3 2"/><text x="610" y="96" font-family="JetBrains Mono" font-size="10" fill="#A8772E">38.2%</text>
+          <line x1="40" y1="110" x2="600" y2="110" stroke="#A8772E" stroke-dasharray="3 2"/><text x="610" y="113" font-family="JetBrains Mono" font-size="10" fill="#A8772E">50.0%</text>
+          <line x1="40" y1="129" x2="600" y2="129" stroke="#A8772E" stroke-dasharray="3 2"/><text x="610" y="132" font-family="JetBrains Mono" font-size="10" fill="#A8772E">61.8%</text>
+          <line x1="40" y1="180" x2="600" y2="180" stroke="#E1DDD3" stroke-dasharray="2 2"/>
+          <polyline points="200,40 240,80 280,105 320,90 360,55" fill="none" stroke="#1E7B4D" stroke-width="2"/>
+          <text x="370" y="50" font-family="Inter" font-size="11" fill="#1E7B4D">holds inside the zone — typical retracement</text>
+        </svg>
+        <figcaption>Fig. 5 — A pullback holding within the 38.2–61.8% zone before resuming is the classic retracement signature.</figcaption>
+      </div>
+
+      <h3>Method 2: Pivot Points</h3>
+      <p>Standard pivot points (calculated from the prior period's high, low, and close) give you objective reference levels independent of where you happen to draw a Fibonacci grid. A pullback that respects a pivot support/resistance level and resumes the trend is behaving consistently with a retracement; a clean break through multiple pivot levels is a warning sign.</p>
+
+      <h3>Method 3: Trend Lines</h3>
+      <p>A rising trendline connecting prior swing lows (in an uptrend) gives you a dynamic level to watch. A pullback that touches the trendline and resumes is a textbook retracement. A decisive close below that trendline, especially combined with a broken swing low, is one of the earliest and most direct reversal warnings available.</p>
+
+      <table class="ref">
+        <tr><th>Signal</th><th>Leans "retracement"</th><th>Leans "reversal"</th></tr>
+        <tr><td>Fibonacci depth</td><td>Holds within 38.2–61.8%</td><td>Drives through 61.8–78.6%+</td></tr>
+        <tr><td>Pivot levels</td><td>Respects nearby pivot support/resistance</td><td>Breaks through multiple pivot levels</td></tr>
+        <tr><td>Trendline</td><td>Touches and bounces off the trendline</td><td>Closes decisively through it</td></tr>
+        <tr><td>Structure (Module 01)</td><td>Higher Low (or Lower High) holds</td><td>Prior swing point breaks — a CHoCH</td></tr>
+      </table>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="protect">
+      <div class="lesson-kicker"><span class="num">06</span> Protection</div>
+      <h2>Protect Yo Self From Reversals</h2>
+      <p class="dek">How trailing stop losses protect your capital when a retracement turns into a full reversal.</p>
+
+      <p>Since you can't know with certainty in real time which pullback is "the one," the practical answer is to manage your open trades so that the cost of being wrong shrinks as the trade matures. A trailing stop loss is the primary tool for this: instead of leaving your stop fixed at its original level for the life of the trade, you move it progressively in the direction of the trade as price makes new progress — locking in gained ground while still giving the trend room to breathe.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="220" fill="#FFFFFF"/>
+          <polyline points="40,180 110,150 170,160 230,110 290,125 350,75 410,90 470,45" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <polyline points="40,200 110,185 170,185 230,150 290,150 350,115 410,115 470,80" fill="none" stroke="#1E7B4D" stroke-width="2" stroke-dasharray="5 3"/>
+          <text x="480" y="80" font-family="Inter" font-size="11" fill="#1E7B4D">trailing stop — steps up</text>
+          <text x="480" y="98" font-family="Inter" font-size="11" fill="#1E7B4D">behind each new higher low</text>
+        </svg>
+        <figcaption>Fig. 6 — A trailing stop steps up behind each confirmed higher low, converting unrealized gains into protected gains as the trend matures.</figcaption>
+      </div>
+
+      <h3>Practical Ways to Trail a Stop</h3>
+      <ul>
+        <li><strong>Structure-based trailing:</strong> move your stop just beyond each new confirmed swing low (in an uptrend) as it forms — directly tying your protection to the Module 01 framework.</li>
+        <li><strong>ATR-based trailing:</strong> keep your stop a fixed multiple of ATR behind current price, automatically adjusting for changing volatility.</li>
+        <li><strong>Moving-average trailing:</strong> use a moving average (e.g., the 20 or 50-period) as a dynamic trailing reference, exiting if price closes decisively beyond it.</li>
+      </ul>
+
+      <h3>Reading Strength Before It's Lost</h3>
+      <p>Watch for early signs that a trend is losing strength even before a full reversal confirms: shrinking candle ranges, ADX rolling over from elevated levels, momentum indicators diverging from price (price makes a new high while RSI/MACD makes a lower high), and pullbacks growing deeper than previous ones. None of these guarantee a reversal alone, but together they're a legitimate reason to tighten your trailing stop ahead of time rather than waiting for confirmation.</p>
+
+      <div class="callout"><strong>The core principle:</strong> you don't need to correctly predict whether a pullback is a retracement or a reversal. You need a stop management process that protects you appropriately either way — giving the trade room if it's a retracement, and getting you out with profit intact if it's a reversal.</div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Market Environment</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Why does identifying the market environment come before choosing a strategy?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Strategies that work well in a trend often perform poorly in a range, and vice versa</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) The environment never actually changes once established</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Strategy choice has no real relationship to market conditions</label>
+        <div class="reveal"><strong>Answer: A.</strong> A strategy is only "good" relative to the environment it's applied in — trend-following and range-fading tools work against each other if used in the wrong conditions.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. An ADX reading is sitting around 12 and drifting sideways. What does this suggest?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) A strong, mature trend</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) A weak or absent trend — likely range-bound conditions</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) An imminent breakout is guaranteed</label>
+        <div class="reveal"><strong>Answer: B.</strong> ADX readings below roughly 20 typically indicate a weak or absent trend, consistent with range-bound price behavior.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. In a trending market, what does it mean when price is "walking the band" on the Bollinger Bands?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) Price keeps reverting sharply to the middle band</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Price persistently hugs one outer band rather than oscillating back to the middle</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) The bands have stopped functioning</label>
+        <div class="reveal"><strong>Answer: B.</strong> "Walking the band" describes sustained contact with one band — a hallmark of strong trending conditions rather than range-bound mean reversion.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. What is the key structural difference between a retracement and a reversal?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) A retracement holds the prior swing point; a reversal breaks it</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) A retracement always lasts longer than a reversal</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) There is no structural difference between the two</label>
+        <div class="reveal"><strong>Answer: A.</strong> A retracement holds above (or below) the prior swing point and the trend continues; a reversal breaks that swing point, signaling structure has genuinely flipped.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. A pullback in an uptrend drives well beyond the 61.8% Fibonacci retracement level. What does this suggest?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) It's a guaranteed reversal</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) It statistically leans more toward reversal behavior than a typical healthy retracement</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Fibonacci levels are irrelevant to this situation</label>
+        <div class="reveal"><strong>Answer: B.</strong> Pullbacks driving well beyond the 61.8% level start to look statistically more like the early stage of a reversal, though this alone isn't a certainty.</div>
+      </div>
+
+      <div class="quiz-q" id="q6">
+        <p class="q">6. Why use a trailing stop instead of a fixed stop loss as a trend matures?</p>
+        <label onclick="document.getElementById('q6').classList.add('show')">A) It locks in gained ground while still giving the trend room to continue, without requiring certainty about whether a pullback will hold or break</label>
+        <label onclick="document.getElementById('q6').classList.add('show')">B) It guarantees the trade will never lose money</label>
+        <label onclick="document.getElementById('q6').classList.add('show')">C) It removes the need to ever check the chart again</label>
+        <div class="reveal"><strong>Answer: A.</strong> A trailing stop manages the uncertainty between retracement and reversal by protecting accumulated gains progressively, rather than requiring a correct real-time prediction.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 03 — MARKET ENVIRONMENT · NEXT MODULE: MULTIPLE TIME FRAME ANALYSIS
+    </footer>
+  </main>
+</div>
+</body>
+</html>

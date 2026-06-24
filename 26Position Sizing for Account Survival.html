@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Position Sizing for Account Survival — Module 26</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:48px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 26</div>
+    <p class="toc-title">Position Sizing for<br>Account Survival</p>
+    <ol>
+      <li><a href="#what-is-sizing">What Is Position Sizing?</a></li>
+      <li><a href="#calculating">Calculating Your Position Size</a></li>
+      <li><a href="#volatility-adjusted">Volatility-Adjusted Sizing</a></li>
+      <li><a href="#portfolio-heat">Portfolio Heat</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 26 of the Trading Curriculum</div>
+      <h1>Position Sizing for Account Survival</h1>
+      <p class="lede">Entries get the attention. Position sizing determines who survives. This module shows you the exact formula for calculating the right trade size for any pair and account currency, how to adjust for volatility, and how to make sure one bad session never takes you out of the game.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="10" width="20" height="44" fill="#1E7B4D" opacity="0.8"/>
+        <rect x="50" y="20" width="20" height="34" fill="#1E7B4D" opacity="0.8"/>
+        <rect x="80" y="30" width="20" height="24" fill="#1E7B4D" opacity="0.8"/>
+        <rect x="110" y="6" width="20" height="48" fill="#B23A2E" opacity="0.8"/>
+        <text x="120" y="2" font-family="JetBrains Mono" font-size="8" fill="#B23A2E">oversized</text>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-is-sizing">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What is Position Sizing?</h2>
+      <p class="dek">What you're actually solving for, and why getting it wrong is the fastest way to blow an account.</p>
+
+      <p>Position sizing answers one specific question: given my risk percentage (Module 24) and my stop-loss distance, exactly how many units of this instrument should I trade? It is the bridge between an abstract risk rule ("I risk 1% per trade") and an actual, executable order size. Skipping this calculation — trading a habitual lot size instead — means your real dollar risk on any given trade is essentially random, disconnected from the risk percentage you intended.</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="calculating">
+      <div class="lesson-kicker"><span class="num">02</span> The Formula</div>
+      <h2>Calculating Your Position Size</h2>
+      <p class="dek">A simple three-step formula for any currency pair and account currency.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="200" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" fill="#1C2024">
+            <rect x="20" y="15" width="720" height="40" rx="6" fill="#E3EFEE" stroke="#1F5F5B"/><text x="40" y="40" fill="#1F5F5B">STEP 1 — Determine dollar risk: Account Balance × Risk %</text>
+            <rect x="20" y="65" width="720" height="40" rx="6" fill="#F1E6D2" stroke="#A8772E"/><text x="40" y="90" fill="#A8772E">STEP 2 — Determine stop distance in pips, from your chart (Module 23)</text>
+            <rect x="20" y="115" width="720" height="40" rx="6" fill="#E3F2E9" stroke="#1E7B4D"/><text x="40" y="140" fill="#1E7B4D">STEP 3 — Position Size = Dollar Risk ÷ (Stop Distance × Pip Value)</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 1 — The three-step position sizing process, in order.</figcaption>
+      </div>
+
+      <h3>A Worked Example</h3>
+      <table class="ref">
+        <tr><th>Input</th><th>Value</th></tr>
+        <tr><td>Account balance</td><td>$10,000</td></tr>
+        <tr><td>Risk per trade</td><td>1% → $100</td></tr>
+        <tr><td>Stop distance</td><td>50 pips</td></tr>
+        <tr><td>Pip value (standard lot, this pair)</td><td>$10/pip</td></tr>
+        <tr><td><strong>Position size</strong></td><td><strong>$100 ÷ (50 × $10) = 0.2 standard lots</strong></td></tr>
+      </table>
+
+      <div class="callout"><strong>Pip value varies by pair and account currency.</strong> Always confirm the actual pip value for your specific pair and account denomination — most trading platforms display this directly, or it can be calculated from the pair's quote currency exchange rate.</div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="volatility-adjusted">
+      <div class="lesson-kicker"><span class="num">03</span> A Smarter Approach</div>
+      <h2>Volatility-Adjusted Position Sizing</h2>
+      <p class="dek">A fixed pip stop treats every market condition the same — and that's a problem.</p>
+
+      <p>A 30-pip stop might be wide during a quiet, low-volatility period and uncomfortably tight during a volatile one — the same fixed pip distance means a very different probability of simply being "noise-stopped" depending on current conditions. Anchoring the stop distance to ATR (Module 02) rather than a fixed pip count adjusts automatically as volatility changes.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="150" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <rect x="40" y="40" width="320" height="50" fill="#E3F2E9" stroke="#1E7B4D"/><text x="200" y="62" fill="#1E7B4D">Low volatility: ATR small</text><text x="200" y="80" fill="#1E7B4D" font-size="10">tighter stop, larger position size</text>
+            <rect x="400" y="40" width="320" height="50" fill="#FBEAE7" stroke="#B23A2E"/><text x="560" y="62" fill="#B23A2E">High volatility: ATR large</text><text x="560" y="80" fill="#B23A2E" font-size="10">wider stop, smaller position size</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 2 — ATR-based sizing keeps your dollar risk consistent even as stop distance changes with volatility.</figcaption>
+      </div>
+
+      <p>The key insight: as stop distance (the denominator in the sizing formula) changes with volatility, position size automatically adjusts in the opposite direction to keep dollar risk constant — wider stops in volatile conditions are offset by a smaller position, and vice versa.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="portfolio-heat">
+      <div class="lesson-kicker"><span class="num">04</span> Total Exposure</div>
+      <h2>Portfolio Heat: Managing Your Total Risk Exposure</h2>
+      <p class="dek">Sizing individual trades correctly is only half the job.</p>
+
+      <p>"Portfolio heat" refers to the total risk currently exposed across all open positions simultaneously. Even if each individual trade is sized correctly per Module 24's per-trade limit, having many positions open at once — especially correlated ones (Module 17) — can mean your real combined exposure is far larger than any single trade suggests.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="130" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="10" text-anchor="middle">
+            <rect x="20" y="30" width="170" height="40" fill="#FCFBF9" stroke="#E1DDD3"/><text x="105" y="54">Trade 1: 1% risk</text>
+            <rect x="210" y="30" width="170" height="40" fill="#FCFBF9" stroke="#E1DDD3"/><text x="295" y="54">Trade 2: 1% risk</text>
+            <rect x="400" y="30" width="170" height="40" fill="#FCFBF9" stroke="#E1DDD3"/><text x="485" y="54">Trade 3: 1% risk</text>
+            <rect x="590" y="30" width="150" height="40" fill="#FBEAE7" stroke="#B23A2E"/><text x="665" y="54" fill="#B23A2E">Combined: 3%+</text>
+          </g>
+          <text x="380" y="110" text-anchor="middle" font-family="Inter" font-size="11" fill="#4A5159">Three individually well-sized trades can still produce uncomfortable total portfolio heat — especially if correlated.</text>
+        </svg>
+        <figcaption>Fig. 3 — Per-trade discipline alone doesn't manage total simultaneous exposure.</figcaption>
+      </div>
+
+      <p>Managing portfolio heat means setting a maximum total risk percentage across all open positions at once (echoing the layered risk budgeting from Module 24, lesson 4), and accounting for correlation when several open trades effectively express the same underlying view.</p>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Position Sizing</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. What specific question does position sizing answer?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Given my risk percentage and stop distance, exactly how many units should I trade?</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Which currency pair should I trade today?</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) What time of day should I place my trade?</label>
+        <div class="reveal"><strong>Answer: A.</strong> Position sizing converts an abstract risk percentage and stop distance into an actual, executable trade size.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. With a $100 dollar risk, a 50-pip stop, and a $10/pip value, what is the correct position size?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) 0.2 standard lots</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) 2.0 standard lots</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) 5.0 standard lots</label>
+        <div class="reveal"><strong>Answer: A.</strong> $100 ÷ (50 pips × $10/pip) = 0.2 standard lots.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why does ATR-based, volatility-adjusted sizing work better than a fixed pip stop across changing conditions?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) It automatically adjusts stop distance and position size together so dollar risk stays consistent regardless of current volatility</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) ATR-based sizing ignores volatility entirely</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) A fixed pip stop is always superior in every market condition</label>
+        <div class="reveal"><strong>Answer: A.</strong> Tying stop distance to ATR keeps the resulting dollar risk consistent as volatility changes, unlike a fixed pip distance.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. What does "portfolio heat" refer to?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) The total risk currently exposed across all open positions simultaneously</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) The risk on a single isolated trade</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) A measure of how volatile a single currency pair is</label>
+        <div class="reveal"><strong>Answer: A.</strong> Portfolio heat captures combined exposure across multiple open positions, which can exceed what any single per-trade limit suggests.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Why can three individually well-sized 1%-risk trades still create a risk management problem?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) If the trades are correlated, their combined real exposure can be significantly higher than 3% in practice</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) Three 1% trades can never add up to more than 1% of total risk</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Per-trade sizing automatically accounts for all correlation</label>
+        <div class="reveal"><strong>Answer: A.</strong> Correlated positions (Module 17) can stack risk rather than diversify it, meaning combined exposure can exceed what per-trade sizing alone suggests.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 26 — POSITION SIZING FOR ACCOUNT SURVIVAL · NEXT MODULE: MANAGING RISK WITH PROPER STOP LOSS PLACEMENT
+    </footer>
+  </main>
+</div>
+</body>
+</html>

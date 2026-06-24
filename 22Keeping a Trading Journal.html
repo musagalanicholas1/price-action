@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keeping a Trading Journal — Module 22</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:13.5px; padding:6px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  .toc .bonus-link::before{content:"★"; color:var(--gold);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:48px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:50px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:30px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16px; margin:0 0 24px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:20px; margin:30px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:26px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:16px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:18px 0; font-size:14px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:8px 10px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:22px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:16px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:16px;}
+  .card p{font-size:13.5px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 22</div>
+    <p class="toc-title">Keeping a Trading<br>Journal</p>
+    <ol>
+      <li><a href="#why-journal">Why Traders Need a Journal</a></li>
+      <li><a href="#three-layers">The Three Layers</a></li>
+      <li><a href="#before-trade">Before You Trade</a></li>
+      <li><a href="#after-trade">After You Trade: The Retrospective</a></li>
+      <li><a href="#actually-make-money">Does It Actually Make Money?</a></li>
+      <li><a href="#review-journal">How to Review Your Journal</a></li>
+      <li><a href="#five-habits">5 Habits to Keep It Alive</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+      <li><a href="#journal-tools" class="bonus-link">Which Tool Should You Use?</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 22 of the Trading Curriculum</div>
+      <h1>Keeping a Trading Journal</h1>
+      <p class="lede">Most traders blame their strategy when results don't improve. The real problem is almost always execution, and execution is invisible without a journal. This module shows you exactly how to build one that makes you better.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="30" y="10" width="160" height="44" rx="4" fill="none" stroke="#1F5F5B" stroke-width="2"/>
+        <line x1="45" y1="24" x2="175" y2="24" stroke="#1F5F5B" stroke-width="1.5"/>
+        <line x1="45" y1="34" x2="175" y2="34" stroke="#1F5F5B" stroke-width="1.5"/>
+        <line x1="45" y1="44" x2="120" y2="44" stroke="#1F5F5B" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="why-journal">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>Why Traders Need a Journal</h2>
+      <p class="dek">Completely different from a broker trade log.</p>
+      <p>A broker's trade log shows what happened: entry, exit, profit or loss. A trading journal captures something a broker log never can — <em>why</em> you took the trade, what you were thinking, and whether you actually followed your plan (Module 19). The real reason most retail traders lose money is usually invisible without this layer: not a bad strategy, but inconsistent execution of a reasonable one.</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="three-layers">
+      <div class="lesson-kicker"><span class="num">02</span> Structure</div>
+      <h2>The Three Layers Every Trading Journal Needs</h2>
+      <p class="dek">The layer most beginners skip is the one that matters most.</p>
+      <table class="ref">
+        <tr><th>Layer</th><th>What it captures</th></tr>
+        <tr><td>Quantitative</td><td>Entry, exit, size, P&amp;L, R-multiple — the numbers a broker log already gives you</td></tr>
+        <tr><td>Contextual</td><td>Setup type, market environment (Module 03), confluence factors present (Module 01)</td></tr>
+        <tr><td>Psychological</td><td>What you were thinking and feeling, whether you followed your plan exactly — most often skipped, most often where the real lessons live</td></tr>
+      </table>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="before-trade">
+      <div class="lesson-kicker"><span class="num">03</span> Pre-Trade</div>
+      <h2>Before You Trade: Planning Your Journal Entry</h2>
+      <p class="dek">What to write before you place a single order.</p>
+      <ul>
+        <li><strong>Setup identified</strong> — which specific system rule (Module 21) this trade matches.</li>
+        <li><strong>Trade signal</strong> — the exact condition that confirmed entry was valid.</li>
+        <li><strong>Entry trigger</strong> — the precise price or candle close that initiated the trade.</li>
+        <li><strong>Exit levels</strong> — stop-loss and target, defined before entry, not adjusted reactively afterward.</li>
+        <li><strong>Management plan</strong> — any planned scaling (Module 25) or trailing-stop rule for this specific trade.</li>
+      </ul>
+      <div class="callout"><strong>Why before, not during:</strong> decisions written down before entry are made with a clear head; decisions made once a position is open are contaminated by the emotional pull of unrealized profit or loss.</div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="after-trade">
+      <div class="lesson-kicker"><span class="num">04</span> Post-Trade</div>
+      <h2>After You Trade: The Retrospective</h2>
+      <p class="dek">A structured review that goes beyond profit and loss.</p>
+      <p>A useful retrospective asks: did I follow my plan exactly, regardless of outcome? What actually happened versus what I expected? What is the one specific, actionable lesson from this trade — not a vague feeling, but something concrete enough to act on next time?</p>
+      <div class="warn"><strong>A critical distinction:</strong> a losing trade executed exactly per plan is a process success, even with a negative outcome. A winning trade that broke the plan is a process failure, even with a positive outcome. Reviewing outcome alone, rather than process, teaches the wrong lessons over time.</div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="actually-make-money">
+      <div class="lesson-kicker"><span class="num">05</span> The Real Numbers</div>
+      <h2>Does Your Trading System Actually Make Money?</h2>
+      <p class="dek">Win rate alone tells you almost nothing. Expectancy reveals the truth.</p>
+      <p>Win rate ignores the size of wins versus losses — a system winning 30% of the time can still be highly profitable if winners are large enough relative to losers, while a system winning 70% of the time can still lose money if losers are disproportionately large.</p>
+      <div class="figure">
+        <svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="130" fill="#FFFFFF"/>
+          <text x="20" y="30" font-family="JetBrains Mono" font-size="11" fill="#1C2024">Expectancy = (Win% × Avg Win) − (Loss% × Avg Loss)</text>
+          <rect x="20" y="50" width="340" height="50" fill="#E3F2E9" stroke="#1E7B4D"/><text x="190" y="70" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">30% win rate, 3R avg win</text><text x="190" y="90" text-anchor="middle" font-family="Inter" font-size="10" fill="#4A5159">→ can be strongly profitable</text>
+          <rect x="400" y="50" width="340" height="50" fill="#FBEAE7" stroke="#B23A2E"/><text x="570" y="70" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B23A2E">70% win rate, 0.3R avg win</text><text x="570" y="90" text-anchor="middle" font-family="Inter" font-size="10" fill="#4A5159">→ can still lose money</text>
+        </svg>
+        <figcaption>Fig. 1 — Expectancy, not win rate, is the number that actually answers whether a system is profitable.</figcaption>
+      </div>
+      <p>A meaningful sample is also essential — Module 21's testing discussion applies directly here: drawing conclusions from a handful of trades risks mistaking normal variance for a real edge or a real flaw.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="review-journal">
+      <div class="lesson-kicker"><span class="num">06</span> Review Cadence</div>
+      <h2>How to Review Your Trading Journal</h2>
+      <p class="dek">A four-level review cadence, and why you should only make one change per cycle.</p>
+      <table class="ref">
+        <tr><th>Cadence</th><th>Focus</th></tr>
+        <tr><td>Daily</td><td>Quick check: did today's trades follow the plan?</td></tr>
+        <tr><td>Weekly</td><td>Spot short-term patterns in execution or setup quality</td></tr>
+        <tr><td>Monthly</td><td>Calculate expectancy and other statistics (lesson 5) across a meaningful sample</td></tr>
+        <tr><td>Quarterly</td><td>Consider one deliberate, evidence-based rule change (echoing Module 19's 90-day cadence)</td></tr>
+      </table>
+      <p>An error log — a running list of specific, recurring mistakes (entering too early, ignoring the higher timeframe, moving a stop reactively) — accelerates this process by making patterns visible across many entries at once rather than relying on memory.</p>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="five-habits">
+      <div class="lesson-kicker"><span class="num">07</span> Sustaining the Habit</div>
+      <h2>Keep Your Trading Journal Alive With These 5 Habits</h2>
+      <p class="dek">What keeps a journaling practice alive past the initial enthusiasm.</p>
+      <div class="grid-cards">
+        <div class="card"><span class="tag">Habit 1</span><h4>Journal immediately</h4><p>Write the entry right after the trade, not from memory days later.</p></div>
+        <div class="card"><span class="tag">Habit 2</span><h4>Keep the template short</h4><p>A journal so long it feels like a chore gets abandoned within weeks.</p></div>
+        <div class="card"><span class="tag">Habit 3</span><h4>Schedule the review</h4><p>Treat the weekly/monthly review as a fixed appointment, not an optional extra.</p></div>
+        <div class="card"><span class="tag">Habit 4</span><h4>Journal losses honestly</h4><p>The instinct to skip documenting a bad trade is exactly when the data matters most.</p></div>
+        <div class="card"><span class="tag">Habit 5</span><h4>Revisit old entries</h4><p>Periodically reread entries from months ago — patterns often only become visible with that distance.</p></div>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Keeping a Trade Journal</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. What does a trading journal capture that a broker's trade log cannot?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) The why behind a trade and whether the plan was actually followed</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) Nothing — they are functionally identical</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Only the entry and exit price</label>
+        <div class="reveal"><strong>Answer: A.</strong> The psychological and contextual layers — reasoning and plan adherence — are what a journal adds beyond the raw broker log.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. A trade loses money but was executed exactly according to plan. How should this be classified in review?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) A process success, even though the outcome was negative</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Automatically a mistake, since it lost money</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Irrelevant and not worth journaling</label>
+        <div class="reveal"><strong>Answer: A.</strong> Reviewing process rather than outcome alone is essential — a plan-following loss is a process success.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why can a system with only a 30% win rate still be highly profitable?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) If average winners are large enough relative to average losers, expectancy can still be strongly positive</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Win rate is the only number that matters</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) A 30% win rate is mathematically impossible to be profitable</label>
+        <div class="reveal"><strong>Answer: A.</strong> Expectancy accounts for both win rate and the relative size of wins versus losses, which is why win rate alone can be misleading.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. Why does the review cadence framework recommend only one deliberate rule change per quarterly cycle?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) To preserve the ability to attribute any subsequent change in results to that specific adjustment</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Because rules should never be changed</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Quarterly reviews are purely ceremonial with no real purpose</label>
+        <div class="reveal"><strong>Answer: A.</strong> Isolating one change at a time mirrors the same evidence-based principle from Module 19's 90-day plan evolution framework.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Why is journaling losing trades honestly especially important?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) The instinct to skip documenting a bad trade occurs exactly when that data is most valuable for improvement</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) Losing trades don't need to be documented at all</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Only winning trades provide useful information</label>
+        <div class="reveal"><strong>Answer: A.</strong> Avoiding documentation of losses removes exactly the data most likely to reveal patterns worth correcting.</div>
+      </div>
+    </section>
+
+    <!-- BONUS -->
+    <section class="lesson" id="journal-tools">
+      <div class="lesson-kicker"><span class="num">★</span> Bonus Lesson</div>
+      <h2>Which Trading Journal Tool Should You Use?</h2>
+      <p class="dek">A practical guide to the main journaling platforms available today.</p>
+      <p>Options generally range from free, simple spreadsheet templates to dedicated journaling software with automated trade import, screenshot annotation, and built-in expectancy/statistics calculations. Costs and feature sets vary, and the right choice depends on how much automation versus manual reflection you want in your process.</p>
+      <div class="callout"><strong>The one rule that applies regardless of tool:</strong> the best journal is the one you actually use consistently. An elaborate, feature-rich tool abandoned after two weeks is worth less than a simple spreadsheet maintained for a year.</div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 22 — KEEPING A TRADING JOURNAL · NEXT MODULE: PERSONALITY QUIZZES
+    </footer>
+  </main>
+</div>
+</body>
+</html>

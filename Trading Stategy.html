@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Trading System — The 4-Timeframe Top-Down Method</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:21px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:13.5px; padding:6px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:46px; line-height:1.07; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:50px 64px; border-bottom:1px solid var(--line); max-width:920px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:30px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16px; margin:0 0 26px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:20px; margin:30px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:26px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:16px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:18px 0; font-size:14px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:8px 10px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:22px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:16px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:16px;}
+  .card p{font-size:13.5px; margin:0; color:var(--ink-soft);}
+  .checklist{list-style:none; margin:0; padding:0;}
+  .checklist li{
+    display:flex; gap:12px; align-items:flex-start;
+    padding:12px 14px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; background:var(--panel); font-size:14.5px;
+  }
+  .checklist li::before{content:"☐"; font-size:18px; color:var(--gold); flex-shrink:0; line-height:1;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">Your Personal Playbook</div>
+    <p class="toc-title">The 4-Timeframe<br>Top-Down Method</p>
+    <ol>
+      <li><a href="#intro">How This System Works</a></li>
+      <li><a href="#sessions">Your Daily Routine in Uganda Time</a></li>
+      <li><a href="#daily">Step 1 — The Daily Chart: Bias</a></li>
+      <li><a href="#4h">Step 2 — The 4H Chart: Zones</a></li>
+      <li><a href="#1h">Step 3 — The 1H Chart: Confluence</a></li>
+      <li><a href="#15m">Step 4 — The 15M Chart: The Trigger</a></li>
+      <li><a href="#stop-target">Stop Loss, Sizing &amp; Target</a></li>
+      <li><a href="#checklist">The Full Pre-Trade Checklist</a></li>
+      <li><a href="#walkthrough">A Complete Worked Example</a></li>
+      <li><a href="#cheatsheet">One-Page Cheat Sheet</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Built from everything covered in this curriculum</div>
+      <h1>Your Trading System: The 4-Timeframe Top-Down Method</h1>
+      <p class="lede">This is the exact system I want you to run before you ever click buy or sell — Daily, 4H, 1H, and 15M working together, in order, every single time. Nothing here is new theory. It's the price action, zone, confluence, multi-timeframe, and risk frameworks from this entire curriculum, assembled into one repeatable routine you can follow like a checklist.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="10" width="130" height="44" rx="4" fill="#E3EFEE" stroke="#1F5F5B"/><text x="75" y="36" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1F5F5B">DAILY</text>
+        <rect x="160" y="10" width="130" height="44" rx="4" fill="#F1E6D2" stroke="#A8772E"/><text x="225" y="36" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#A8772E">4H</text>
+        <rect x="310" y="10" width="130" height="44" rx="4" fill="#FCFBF9" stroke="#E1DDD3"/><text x="375" y="36" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#4A5159">1H</text>
+        <rect x="460" y="10" width="130" height="44" rx="4" fill="#E3F2E9" stroke="#1E7B4D"/><text x="525" y="36" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">15M</text>
+      </svg>
+    </div>
+
+    <!-- INTRO -->
+    <section class="lesson" id="intro">
+      <div class="lesson-kicker"><span class="num">00</span> Orientation</div>
+      <h2>How This System Works</h2>
+      <p class="dek">One job per timeframe. Never skip a step. Never work bottom-up.</p>
+
+      <p>Every timeframe in this system has exactly one job. You move through them in strict order — Daily first, then 4H, then 1H, then 15M — and you never let a "good-looking" 15M candle pull you into a trade before the higher timeframes have approved the idea. This is the top-down approach from Module 04, applied as a fixed daily habit.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 800 230" xmlns="http://www.w3.org/2000/svg">
+          <rect width="800" height="230" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="12" fill="#1C2024">
+            <rect x="20" y="10" width="760" height="44" rx="6" fill="#E3EFEE" stroke="#1F5F5B"/><text x="40" y="38" fill="#1F5F5B">DAILY — What is the big-picture bias? Trend, range, or reversal risk?</text>
+            <rect x="20" y="64" width="760" height="44" rx="6" fill="#F1E6D2" stroke="#A8772E"/><text x="40" y="92" fill="#A8772E">4H — Where exactly is the nearest high-quality zone in that direction?</text>
+            <rect x="20" y="118" width="760" height="44" rx="6" fill="#FCFBF9" stroke="#E1DDD3"/><text x="40" y="146" fill="#4A5159">1H — Does confluence stack at that zone? Is the setup actually valid?</text>
+            <rect x="20" y="172" width="760" height="44" rx="6" fill="#E3F2E9" stroke="#1E7B4D"/><text x="40" y="200" fill="#1E7B4D">15M — What exact candle confirms the entry, right now?</text>
+          </g>
+        </svg>
+        <figcaption>Fig. 0 — The four questions you answer, in this exact order, every single time.</figcaption>
+      </div>
+
+      <div class="callout"><strong>The rule that protects you from yourself:</strong> if the Daily chart doesn't give you a clear bias, you don't trade that pair today. No exceptions. A confused higher timeframe means a confused trade, no matter how clean the 15M setup looks.</div>
+    </section>
+
+    <!-- SESSIONS -->
+    <section class="lesson" id="sessions">
+      <div class="lesson-kicker"><span class="num">01</span> Timing</div>
+      <h2>Your Daily Routine in Uganda Time (EAT)</h2>
+      <p class="dek">Know exactly when to do each step of your analysis.</p>
+
+      <p>Uganda runs on East Africa Time (EAT), UTC+3. Here's how the four major forex sessions line up on your clock (times shift by about an hour depending on UK/US daylight saving — treat these as your standard reference):</p>
+
+      <table class="ref">
+        <tr><th>Session</th><th>EAT (Uganda time)</th><th>Character</th></tr>
+        <tr><td>Sydney</td><td>00:00 – 09:00</td><td>Quiet, lower volume — sets the overnight tone</td></tr>
+        <tr><td>Tokyo</td><td>03:00 – 12:00</td><td>Moderate volume, JPY pairs most active</td></tr>
+        <tr><td>London</td><td>11:00 – 20:00</td><td>High volume, the session that usually starts the day's real move</td></tr>
+        <tr><td>New York</td><td>16:00 – 01:00</td><td>High volume, often extends or reverses London's move</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="800" height="200" fill="#FFFFFF"/>
+          <line x1="20" y1="170" x2="780" y2="170" stroke="#E1DDD3"/>
+          <text x="20" y="190" font-family="JetBrains Mono" font-size="9" fill="#4A5159">00:00</text>
+          <text x="780" y="190" font-family="JetBrains Mono" font-size="9" fill="#4A5159" text-anchor="end">24:00 EAT</text>
+          <!-- sessions as bars -->
+          <rect x="20" y="30" width="285" height="16" fill="#E3EFEE" stroke="#1F5F5B"/><text x="25" y="26" font-family="JetBrains Mono" font-size="9" fill="#1F5F5B">SYDNEY</text>
+          <rect x="115" y="55" width="285" height="16" fill="#F1E6D2" stroke="#A8772E"/><text x="120" y="51" font-family="JetBrains Mono" font-size="9" fill="#A8772E">TOKYO</text>
+          <rect x="345" y="80" width="285" height="16" fill="#FBEAE7" stroke="#B23A2E"/><text x="350" y="76" font-family="JetBrains Mono" font-size="9" fill="#B23A2E">LONDON</text>
+          <rect x="500" y="105" width="285" height="16" fill="#E3F2E9" stroke="#1E7B4D"/><text x="505" y="101" font-family="JetBrains Mono" font-size="9" fill="#1E7B4D">NEW YORK (wraps past midnight)</text>
+          <!-- overlap highlight -->
+          <rect x="500" y="80" width="130" height="41" fill="#A8772E" opacity="0.18"/>
+          <text x="510" y="140" font-family="JetBrains Mono" font-size="10" fill="#A8772E" font-weight="bold">16:00–20:00 EAT — London/NY overlap: your prime entry window</text>
+        </svg>
+        <figcaption>Fig. 1 — All four sessions mapped onto a 24-hour Uganda-time clock. The shaded overlap is where liquidity and follow-through are strongest.</figcaption>
+      </div>
+
+      <h3>Your Recommended Daily Schedule</h3>
+      <table class="ref">
+        <tr><th>Time (EAT)</th><th>What you do</th></tr>
+        <tr><td><strong>07:00 – 08:00</strong></td><td>Daily &amp; 4H top-down analysis (Steps 1–2 below). Mark bias and zones before London wakes up.</td></tr>
+        <tr><td><strong>10:30 – 11:00</strong></td><td>Pre-London prep. Refine your 1H zone (Step 3). Set price alerts at your zone.</td></tr>
+        <tr><td><strong>11:00 – 16:00</strong></td><td>London session live. Watch for setups forming on the 1H/15M as volume builds.</td></tr>
+        <tr><td><strong>16:00 – 20:00</strong></td><td><strong>Prime entry window.</strong> London/New York overlap. This is when most of your 15M entry triggers (Step 4) should actually fire.</td></tr>
+        <tr><td><strong>After 20:00</strong></td><td>London has closed. Manage open trades only — avoid placing brand-new entries into thinning liquidity.</td></tr>
+      </table>
+
+      <div class="warn"><strong>Why this matters:</strong> the exact same setup that works beautifully during the London/New York overlap can fail in quiet, low-liquidity hours simply because there isn't enough participation to drive follow-through. Timing isn't a footnote — it's part of the setup.</div>
+    </section>
+
+    <!-- STEP 1: DAILY -->
+    <section class="lesson" id="daily">
+      <div class="lesson-kicker"><span class="num">02</span> Step 1</div>
+      <h2>The Daily Chart: Establishing Your Bias</h2>
+      <p class="dek">Your job here is singular: decide whether this pair is trending up, trending down, or ranging.</p>
+
+      <h3>What To Look For</h3>
+      <ul>
+        <li><strong>Market structure (Module 01):</strong> label the last 5–8 swing highs and lows. Higher Highs + Higher Lows = uptrend. Lower Highs + Lower Lows = downtrend. Roughly equal highs/lows = range.</li>
+        <li><strong>Major supply/demand zones (Module 01):</strong> mark the two or three most significant zones — the origin of sharp, impulsive moves — currently visible on the chart.</li>
+        <li><strong>Trend strength check (Module 03):</strong> glance at ADX and whether price is "walking the band" on Bollinger Bands to confirm whether this is genuinely trending or quietly rotating in a range.</li>
+        <li><strong>Recent structural break check (Module 01):</strong> has there been a recent Change of Character (CHoCH)? That's your earliest clue the bias might be shifting.</li>
+      </ul>
+
+      <div class="figure">
+        <svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg">
+          <rect width="800" height="240" fill="#FFFFFF"/>
+          <text x="20" y="22" font-family="JetBrains Mono" font-size="11" fill="#1F5F5B">DAILY — EXAMPLE: CLEAN UPTREND</text>
+          <polyline points="30,190 110,150 190,170 270,110 350,140 430,80 510,105 590,55" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="110" cy="150" r="4" fill="#1E7B4D"/><text x="95" y="135" font-family="JetBrains Mono" font-size="9" fill="#1E7B4D">HH</text>
+          <circle cx="190" cy="170" r="4" fill="#1E7B4D"/><text x="175" y="190" font-family="JetBrains Mono" font-size="9" fill="#1E7B4D">HL</text>
+          <circle cx="270" cy="110" r="4" fill="#1E7B4D"/><text x="255" y="95" font-family="JetBrains Mono" font-size="9" fill="#1E7B4D">HH</text>
+          <circle cx="350" cy="140" r="4" fill="#1E7B4D"/><text x="335" y="160" font-family="JetBrains Mono" font-size="9" fill="#1E7B4D">HL</text>
+          <rect x="320" y="145" width="120" height="22" fill="#E3F2E9" stroke="#1E7B4D" stroke-dasharray="2 2"/>
+          <text x="325" y="225" font-family="Inter" font-size="11" fill="#1E7B4D">Demand zone — the area you'll watch on the 4H and 1H for the actual entry.</text>
+        </svg>
+        <figcaption>Fig. 2 — A Daily chart confirming uptrend bias, with one major demand zone marked for the lower timeframes to refine.</figcaption>
+      </div>
+
+      <div class="callout"><strong>Your Daily output, written down:</strong> "[Pair] is in a [Daily uptrend / downtrend / range]. The nearest [demand / supply] zone in my favored direction sits at [price]." That single sentence is what you carry into Step 2.</div>
+    </section>
+
+    <!-- STEP 2: 4H -->
+    <section class="lesson" id="4h">
+      <div class="lesson-kicker"><span class="num">03</span> Step 2</div>
+      <h2>The 4H Chart: Zooming Into the Zone</h2>
+      <p class="dek">Your job: confirm the Daily zone still looks valid, and tighten its boundaries.</p>
+
+      <h3>What To Look For</h3>
+      <ul>
+        <li><strong>Confirm the Daily zone hasn't already been used up.</strong> Check how many times it's been retested (Module 01) — a fresh zone is worth more than one tested repeatedly.</li>
+        <li><strong>Refine the zone's exact boundaries.</strong> The Daily chart gives you the general area; the 4H lets you tighten it to the actual base candles of the original impulsive move.</li>
+        <li><strong>Check 4H structure agrees with the Daily bias.</strong> If Daily says uptrend but 4H structure shows a developing CHoCH, slow down — this is a genuine disagreement worth waiting out.</li>
+        <li><strong>Note any 4H trendline or channel boundary (Grade 1)</strong> intersecting the same zone — early confluence building.</li>
+      </ul>
+
+      <div class="figure">
+        <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="800" height="220" fill="#FFFFFF"/>
+          <text x="20" y="22" font-family="JetBrains Mono" font-size="11" fill="#A8772E">4H — ZOOMED INTO THE DAILY DEMAND ZONE</text>
+          <rect x="40" y="120" width="600" height="40" fill="#E3F2E9" stroke="#1E7B4D" stroke-dasharray="3 2"/>
+          <text x="50" y="145" font-family="JetBrains Mono" font-size="10" fill="#1E7B4D">refined zone — tightened to the actual base candles</text>
+          <polyline points="60,170 120,150 180,165 240,135 300,155 360,128 420,148 480,150" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <text x="500" y="80" font-family="Inter" font-size="11" fill="#4A5159">Price is approaching the zone again —</text>
+          <text x="500" y="100" font-family="Inter" font-size="11" fill="#4A5159">first retest, still relatively fresh.</text>
+        </svg>
+        <figcaption>Fig. 3 — The same zone, narrowed to its precise boundaries on the 4H, with freshness noted.</figcaption>
+      </div>
+
+      <div class="warn"><strong>A genuine disagreement between Daily and 4H is information, not noise.</strong> If structure conflicts, the correct response is patience — wait for clarity rather than forcing the next steps anyway.</div>
+    </section>
+
+    <!-- STEP 3: 1H -->
+    <section class="lesson" id="1h">
+      <div class="lesson-kicker"><span class="num">04</span> Step 3</div>
+      <h2>The 1H Chart: Stacking Confluence</h2>
+      <p class="dek">Your job: score how many independent reasons exist to expect a reaction at this exact price.</p>
+
+      <h3>What To Look For — Your Confluence Checklist</h3>
+      <table class="ref">
+        <tr><th>Factor</th><th>Present? (yes/no)</th></tr>
+        <tr><td>The refined 4H supply/demand zone itself</td><td>—</td></tr>
+        <tr><td>A 1H swing high/low at the same price</td><td>—</td></tr>
+        <tr><td>A Fibonacci 38.2–61.8% retracement of the last major leg lining up here</td><td>—</td></tr>
+        <tr><td>A round, psychological number nearby (Grade 1)</td><td>—</td></tr>
+        <tr><td>A rising/falling 1H trendline intersecting this price</td><td>—</td></tr>
+        <tr><td>Alignment with the Daily/4H bias direction</td><td>—</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg">
+          <rect width="800" height="220" fill="#FFFFFF"/>
+          <line x1="60" y1="180" x2="740" y2="180" stroke="#A8772E" stroke-width="2"/>
+          <text x="350" y="200" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#A8772E">YOUR ENTRY ZONE</text>
+          <g font-family="Inter" font-size="10" fill="#4A5159">
+            <line x1="120" y1="40" x2="120" y2="175" stroke="#1F5F5B" stroke-dasharray="3 3"/><text x="60" y="32">4H zone</text>
+            <line x1="260" y1="40" x2="260" y2="175" stroke="#1F5F5B" stroke-dasharray="3 3"/><text x="210" y="32">1H swing low</text>
+            <line x1="400" y1="40" x2="400" y2="175" stroke="#1F5F5B" stroke-dasharray="3 3"/><text x="350" y="32">50% Fib</text>
+            <line x1="540" y1="40" x2="540" y2="175" stroke="#1F5F5B" stroke-dasharray="3 3"/><text x="495" y="32">round number</text>
+            <line x1="660" y1="40" x2="660" y2="175" stroke="#1F5F5B" stroke-dasharray="3 3"/><text x="615" y="32">trendline</text>
+          </g>
+          <circle cx="120" cy="180" r="5" fill="#1F5F5B"/><circle cx="260" cy="180" r="5" fill="#1F5F5B"/><circle cx="400" cy="180" r="5" fill="#1F5F5B"/><circle cx="540" cy="180" r="5" fill="#1F5F5B"/><circle cx="660" cy="180" r="5" fill="#1F5F5B"/>
+        </svg>
+        <figcaption>Fig. 4 — Five independent factors converging near the same price. Score 4+ and this is a high-conviction zone (Module 01).</figcaption>
+      </div>
+
+      <div class="callout"><strong>Your minimum bar:</strong> require at least 3 of the 6 checklist factors present before you even move to Step 4. Fewer than that, and you're trading on hope, not structure.</div>
+    </section>
+
+    <!-- STEP 4: 15M -->
+    <section class="lesson" id="15m">
+      <div class="lesson-kicker"><span class="num">05</span> Step 4</div>
+      <h2>The 15M Chart: Your Entry Trigger</h2>
+      <p class="dek">Your job: wait for one specific candle to confirm, right at your 1H zone — then act.</p>
+
+      <p>Remember the rule from Module 01, lesson 5: a candlestick pattern only matters because of where it forms. On the 15M chart, you are only watching for these patterns when price is actually trading inside the 1H confluence zone from Step 3 — the same pattern anywhere else on the chart is noise.</p>
+
+      <h3>The Three Trigger Patterns to Watch</h3>
+      <div class="figure">
+        <svg viewBox="0 0 800 230" xmlns="http://www.w3.org/2000/svg">
+          <rect width="800" height="230" fill="#FFFFFF"/>
+          <!-- Pin bar -->
+          <text x="40" y="25" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">1. BULLISH PIN BAR</text>
+          <line x1="100" y1="40" x2="100" y2="160" stroke="#1E7B4D" stroke-width="2.5"/>
+          <rect x="92" y="120" width="16" height="30" fill="#1E7B4D"/>
+          <text x="40" y="190" font-family="Inter" font-size="10" fill="#1E7B4D">Long lower wick, small body near the top — rejection off the zone.</text>
+
+          <!-- Engulfing -->
+          <text x="320" y="25" font-family="JetBrains Mono" font-size="11" fill="#1F5F5B">2. BULLISH ENGULFING</text>
+          <line x1="360" y1="100" x2="360" y2="130" stroke="#B23A2E" stroke-width="2"/><rect x="354" y="105" width="12" height="20" fill="#B23A2E"/>
+          <line x1="400" y1="70" x2="400" y2="160" stroke="#1E7B4D" stroke-width="2.5"/><rect x="392" y="80" width="16" height="70" fill="#1E7B4D"/>
+          <text x="320" y="190" font-family="Inter" font-size="10" fill="#1F5F5B">A large bullish candle fully swallows the prior bearish one.</text>
+
+          <!-- Inside bar breakout -->
+          <text x="600" y="25" font-family="JetBrains Mono" font-size="11" fill="#A8772E">3. INSIDE BAR BREAKOUT</text>
+          <line x1="630" y1="70" x2="630" y2="150" stroke="#1C2024" stroke-width="2.5"/><rect x="622" y="85" width="16" height="50" fill="#1C2024"/>
+          <line x1="660" y1="95" x2="660" y2="130" stroke="#4A5159" stroke-width="2"/><rect x="654" y="100" width="12" height="20" fill="#FCFBF9" stroke="#4A5159"/>
+          <line x1="690" y1="50" x2="690" y2="120" stroke="#1E7B4D" stroke-width="2.5"/><rect x="682" y="55" width="16" height="50" fill="#1E7B4D"/>
+          <text x="600" y="190" font-family="Inter" font-size="10" fill="#A8772E">A contraction candle, then a break in the zone's favored direction.</text>
+        </svg>
+        <figcaption>Fig. 5 — The three trigger candles this system watches for, only inside an already-qualified 1H zone.</figcaption>
+      </div>
+
+      <table class="ref">
+        <tr><th>Pattern</th><th>What confirms it</th><th>Entry point</th></tr>
+        <tr><td>Pin bar / rejection wick</td><td>Close of the pin bar, back inside the prior range</td><td>On the close, or a break of the pin bar's high (for longs)</td></tr>
+        <tr><td>Engulfing candle</td><td>A full-bodied candle closing beyond the entire prior candle's range</td><td>On the close of the engulfing candle</td></tr>
+        <tr><td>Inside bar breakout</td><td>A clean break of the inside bar's high or low, in the favored direction</td><td>On the break itself, or a retest of the inside bar's edge</td></tr>
+      </table>
+
+      <div class="warn"><strong>If 30–45 minutes pass at your zone with no qualifying candle,</strong> stand aside. Chasing an entry that never confirmed is how a well-analyzed trade idea turns into an undisciplined loss.</div>
+    </section>
+
+    <!-- STOP/TARGET -->
+    <section class="lesson" id="stop-target">
+      <div class="lesson-kicker"><span class="num">06</span> Risk &amp; Targets</div>
+      <h2>Stop Loss, Position Sizing &amp; Target</h2>
+      <p class="dek">The mechanical part — never skipped, never improvised.</p>
+
+      <h3>Stop Loss Placement (Module 27)</h3>
+      <p>Place your stop just beyond the far edge of your 1H zone, plus a small ATR buffer to avoid common liquidity-grab spikes — never at the zone's exact edge, and never based on "how much you're willing to lose."</p>
+
+      <h3>Position Size (Module 26)</h3>
+      <div class="figure">
+        <svg viewBox="0 0 800 90" xmlns="http://www.w3.org/2000/svg">
+          <rect width="800" height="90" fill="#FFFFFF"/>
+          <text x="400" y="50" text-anchor="middle" font-family="JetBrains Mono" font-size="14" fill="#1C2024">Position Size = (Account × Risk %) ÷ (Stop Distance × Pip Value)</text>
+        </svg>
+        <figcaption>Fig. 6 — Calculate this every single trade. Never trade a habitual lot size.</figcaption>
+      </div>
+      <p>Risk 0.5–1% of your account per trade (Module 24) — tighter while you're still validating this system against your own results.</p>
+
+      <h3>Target (Modules 01, 02, 24)</h3>
+      <ul>
+        <li>Aim first for the next opposing structural level on the 1H or 4H chart — a prior swing high/low or the opposite edge of a range.</li>
+        <li>Confirm your reward-to-risk ratio is at least 1.5:1, ideally 2:1 or better, before entering.</li>
+        <li>Consider scaling out a portion at the first target and trailing the remainder (Module 28) if the higher-timeframe trend remains intact.</li>
+      </ul>
+    </section>
+
+    <!-- CHECKLIST -->
+    <section class="lesson" id="checklist">
+      <div class="lesson-kicker"><span class="num">07</span> Before You Click Buy or Sell</div>
+      <h2>The Full Pre-Trade Checklist</h2>
+      <p class="dek">Run through this, every time, with no exceptions.</p>
+
+      <ul class="checklist">
+        <li>Daily chart bias is clear: trending up, trending down, or genuinely ranging — written down in one sentence.</li>
+        <li>4H zone confirmed, refined to its precise boundaries, and checked for freshness.</li>
+        <li>1H confluence checklist scores at least 3 of 6 factors.</li>
+        <li>Price is currently trading inside the qualified 1H zone — not approaching it, not far from it.</li>
+        <li>A valid 15M trigger candle (pin bar, engulfing, or inside bar breakout) has actually closed and confirmed.</li>
+        <li>Stop loss is placed just beyond the zone, with an ATR buffer — calculated, not guessed.</li>
+        <li>Position size is calculated from account size, risk %, and stop distance — not a habitual lot size.</li>
+        <li>Reward-to-risk ratio to the next structural target is at least 1.5:1.</li>
+        <li>The current time is within or approaching the London/New York overlap (16:00–20:00 EAT) — or you have a specific reason to act outside it.</li>
+        <li>No major scheduled news release for this pair is due in the next 30 minutes (Module 11).</li>
+      </ul>
+    </section>
+
+    <!-- WALKTHROUGH -->
+    <section class="lesson" id="walkthrough">
+      <div class="lesson-kicker"><span class="num">08</span> Putting It All Together</div>
+      <h2>A Complete Worked Example</h2>
+      <p class="dek">Walking through all four timeframes on one imaginary EUR/USD setup.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg">
+          <rect width="800" height="360" fill="#FFFFFF"/>
+          <!-- Daily -->
+          <text x="20" y="22" font-family="JetBrains Mono" font-size="11" fill="#1F5F5B">DAILY — Uptrend confirmed (HH/HL). Demand zone near 1.0850.</text>
+          <polyline points="30,80 90,60 150,72 210,45 270,58" fill="none" stroke="#1C2024" stroke-width="1.5"/>
+          <rect x="230" y="55" width="80" height="14" fill="#E3F2E9" stroke="#1E7B4D" stroke-dasharray="2 2"/>
+
+          <!-- 4H -->
+          <text x="20" y="110" font-family="JetBrains Mono" font-size="11" fill="#A8772E">4H — Zone refined to 1.0845–1.0855. First retest, still fresh.</text>
+          <polyline points="30,170 90,155 150,165 210,145 270,160" fill="none" stroke="#1C2024" stroke-width="1.5"/>
+          <rect x="220" y="150" width="60" height="18" fill="#F1E6D2" stroke="#A8772E" stroke-dasharray="2 2"/>
+
+          <!-- 1H -->
+          <text x="20" y="200" font-family="JetBrains Mono" font-size="11" fill="#4A5159">1H — Confluence: zone + 50% Fib + round number 1.0850 + rising trendline. Score: 4/6.</text>
+          <polyline points="30,260 90,250 150,255 210,235 270,248" fill="none" stroke="#1C2024" stroke-width="1.5"/>
+          <line x1="200" y1="220" x2="280" y2="260" stroke="#1F5F5B" stroke-dasharray="3 2"/>
+
+          <!-- 15M -->
+          <text x="20" y="290" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">15M — 16:40 EAT, London/NY overlap. Bullish engulfing closes inside the zone. ENTRY.</text>
+          <line x1="60" y1="320" x2="60" y2="345" stroke="#B23A2E" stroke-width="2"/><rect x="54" y="325" width="12" height="15" fill="#B23A2E"/>
+          <line x1="90" y1="305" x2="90" y2="345" stroke="#1E7B4D" stroke-width="2.5"/><rect x="82" y="312" width="16" height="33" fill="#1E7B4D"/>
+          <text x="120" y="330" font-family="Inter" font-size="11" fill="#1E7B4D">Entry on the close. Stop just below 1.0840. Target: 1.0920 (next swing high). R:R ≈ 2:1.</text>
+        </svg>
+        <figcaption>Fig. 7 — All four timeframes agreeing, a confirmed trigger candle, and a clean risk/reward — exactly what this system is built to find.</figcaption>
+      </div>
+
+      <p>Notice what made this trade qualify: every step had to pass before the next one even mattered. If the 1H confluence had scored only 1, you'd have stopped there — no 15M chart needed, because a thin setup doesn't deserve your capital regardless of how nice the entry candle looks.</p>
+    </section>
+
+    <!-- CHEAT SHEET -->
+    <section class="lesson" id="cheatsheet">
+      <div class="lesson-kicker"><span class="num">09</span> Keep This Visible</div>
+      <h2>One-Page Cheat Sheet</h2>
+      <p class="dek">Pin this next to your charts.</p>
+
+      <div class="grid-cards">
+        <div class="card"><span class="tag">Daily</span><h4>Bias</h4><p>HH/HL = up. LH/LL = down. Equal highs/lows = range. Mark the nearest major zone.</p></div>
+        <div class="card"><span class="tag">4H</span><h4>Zone</h4><p>Refine boundaries. Check freshness. Confirm structure agrees with Daily.</p></div>
+        <div class="card"><span class="tag">1H</span><h4>Confluence</h4><p>Score against 6 factors. Need 3+ to proceed. This is your entry zone.</p></div>
+        <div class="card"><span class="tag">15M</span><h4>Trigger</h4><p>Pin bar, engulfing, or inside bar breakout — only inside the qualified zone.</p></div>
+        <div class="card"><span class="tag">Risk</span><h4>Stop &amp; Size</h4><p>Stop beyond zone + ATR buffer. Size from account × risk% ÷ stop distance.</p></div>
+        <div class="card"><span class="tag">Timing</span><h4>EAT Windows</h4><p>Prep 07:00–08:00. Watch 11:00 onward. Best entries 16:00–20:00.</p></div>
+      </div>
+
+      <div class="callout"><strong>The whole point of writing this down:</strong> a system you follow inconsistently isn't really a system — it's a collection of good ideas you sometimes use. Run this checklist every time, journal every trade against it (Module 22), and let your results — not your feelings — tell you what to refine.</div>
+    </section>
+
+    <footer class="endcap">
+      YOUR TRADING SYSTEM · BUILT FROM THE FULL CURRICULUM · REVIEW MONTHLY, ADJUST ONE RULE AT A TIME
+    </footer>
+  </main>
+</div>
+</body>
+</html>

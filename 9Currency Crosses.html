@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Currency Crosses — Module 09</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:54px; line-height:1.04; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 09</div>
+    <p class="toc-title">Currency<br>Crosses</p>
+    <ol>
+      <li><a href="#what-are-crosses">What Are Currency Crosses?</a></li>
+      <li><a href="#hidden-force">The Hidden Force on Dollar Pairs</a></li>
+      <li><a href="#which-trade">Which Trade Do You Take?</a></li>
+      <li><a href="#fundamental-cross">Trading Your View With a Cross</a></li>
+      <li><a href="#worth-trading">Which Crosses Are Worth Trading?</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 09 of the Trading Curriculum</div>
+      <h1>Currency Crosses</h1>
+      <p class="lede">Most forex traders limit themselves to the seven major dollar pairs — meaning every trade they take is really just one bet: is the dollar strong or weak today? Currency crosses free you from that constraint, letting you trade the relationship between any two economies directly.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="32" r="26" fill="none" stroke="#1F5F5B" stroke-width="2"/>
+        <circle cx="300" cy="32" r="26" fill="none" stroke="#A8772E" stroke-width="2"/>
+        <circle cx="500" cy="32" r="26" fill="none" stroke="#B23A2E" stroke-width="2"/>
+        <line x1="126" y1="32" x2="274" y2="32" stroke="#1C2024" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <line x1="326" y1="32" x2="474" y2="32" stroke="#1C2024" stroke-width="1.5" stroke-dasharray="3 3"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="what-are-crosses">
+      <div class="lesson-kicker"><span class="num">01</span> Foundations</div>
+      <h2>What Are Currency Crosses?</h2>
+      <p class="dek">Why the FX market is obsessed with the U.S. dollar, and why trading crosses gives you more opportunities than sticking to the majors.</p>
+
+      <p>A currency cross (or cross pair) is any currency pair that doesn't include the U.S. dollar — EUR/GBP, AUD/JPY, GBP/CAD, and so on. The "majors" (EUR/USD, USD/JPY, GBP/USD, USD/CHF, USD/CAD, AUD/USD, NZD/USD) all share one currency in common: USD. That shared structure is exactly the limitation crosses solve.</p>
+
+      <h3>Why the Dollar Dominates</h3>
+      <p>The U.S. dollar sits on one side of the overwhelming majority of global FX transactions, a legacy of its role as the world's primary reserve and invoicing currency (revisited in depth in Module 10). This is convenient for liquidity, but it also means a trader who only trades majors is, in every single trade, really making one underlying bet over and over: dollar strength or dollar weakness.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="200" fill="#FFFFFF"/>
+          <circle cx="380" cy="100" r="50" fill="#F1E6D2" stroke="#A8772E" stroke-width="2"/>
+          <text x="380" y="105" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#A8772E">USD</text>
+          <g font-family="JetBrains Mono" font-size="11" fill="#1F5F5B">
+            <circle cx="150" cy="40" r="28" fill="#E3EFEE" stroke="#1F5F5B"/><text x="150" y="44" text-anchor="middle">EUR</text>
+            <circle cx="150" cy="160" r="28" fill="#E3EFEE" stroke="#1F5F5B"/><text x="150" y="164" text-anchor="middle">GBP</text>
+            <circle cx="610" cy="40" r="28" fill="#E3EFEE" stroke="#1F5F5B"/><text x="610" y="44" text-anchor="middle">JPY</text>
+            <circle cx="610" cy="160" r="28" fill="#E3EFEE" stroke="#1F5F5B"/><text x="610" y="164" text-anchor="middle">AUD</text>
+          </g>
+          <line x1="178" y1="48" x2="338" y2="82" stroke="#1C2024" stroke-dasharray="3 2"/>
+          <line x1="178" y1="152" x2="338" y2="118" stroke="#1C2024" stroke-dasharray="3 2"/>
+          <line x1="422" y1="82" x2="582" y2="48" stroke="#1C2024" stroke-dasharray="3 2"/>
+          <line x1="422" y1="118" x2="582" y2="152" stroke="#1C2024" stroke-dasharray="3 2"/>
+          <line x1="150" y1="68" x2="610" y2="68" stroke="#B23A2E" stroke-width="1.5" opacity="0.5"/>
+          <text x="380" y="60" text-anchor="middle" font-family="Inter" font-size="10" fill="#B23A2E">EUR/JPY — a direct cross, bypassing USD entirely</text>
+        </svg>
+        <figcaption>Fig. 1 — Every major routes through the dollar. A cross like EUR/JPY connects two economies directly, with the dollar's own moves removed from the equation.</figcaption>
+      </div>
+
+      <div class="callout"><strong>Why this matters:</strong> trading only majors means your opportunity set rises and falls entirely with how active the dollar is. Crosses open up dozens of additional relationships that can be trending and tradeable even during a quiet, directionless period for the dollar itself.</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="hidden-force">
+      <div class="lesson-kicker"><span class="num">02</span> Hidden Mechanics</div>
+      <h2>The Hidden Force Moving Your Dollar Pairs</h2>
+      <p class="dek">Cross pair movements can affect your dollar trades even when you never look at a cross.</p>
+
+      <p>Because every major pair shares the dollar, and crosses are mathematically derived from combinations of majors, a sharp move in a cross pair can quietly pull on one of your dollar trades — even if you never glance at the cross itself.</p>
+
+      <p>For example, EUR/GBP is mathematically related to EUR/USD and GBP/USD: <code>EUR/GBP ≈ EUR/USD ÷ GBP/USD</code>. A sharp, GBP-specific move (a surprise BoE decision, for instance) shows up in EUR/GBP and GBP/USD simultaneously — and through that relationship, can put pressure on EUR/USD even though nothing fundamentally changed about the euro or the dollar that day.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="180" fill="#FFFFFF"/>
+          <text x="20" y="25" font-family="Inter" font-size="13" fill="#4A5159">A surprise, sharply hawkish BoE decision strengthens GBP broadly:</text>
+          <g font-family="JetBrains Mono" font-size="11">
+            <rect x="40" y="50" width="180" height="36" fill="#FBEAE7" stroke="#B23A2E"/><text x="130" y="73" text-anchor="middle" fill="#B23A2E">EUR/GBP falls (GBP up)</text>
+            <rect x="280" y="50" width="180" height="36" fill="#E3F2E9" stroke="#1E7B4D"/><text x="370" y="73" text-anchor="middle" fill="#1E7B4D">GBP/USD rises (GBP up)</text>
+            <rect x="520" y="50" width="200" height="36" fill="#F1E6D2" stroke="#A8772E"/><text x="620" y="73" text-anchor="middle" fill="#A8772E">EUR/USD pressured lower</text>
+          </g>
+          <text x="20" y="130" font-family="Inter" font-size="12" fill="#4A5159">— purely through the cross-pair arithmetic linking the three, even though nothing about EUR or USD itself changed.</text>
+        </svg>
+        <figcaption>Fig. 2 — A pure GBP event rippling into EUR/USD through the cross relationship, invisible if you only watch the dollar pairs themselves.</figcaption>
+      </div>
+
+      <div class="warn"><strong>Practical implication:</strong> if you trade dollar majors exclusively, keeping half an eye on the relevant cross pairs can explain otherwise puzzling moves in your own trades.</div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="which-trade">
+      <div class="lesson-kicker"><span class="num">03</span> Decision Support</div>
+      <h2>Which Trade Do You Take? Ask the Cross.</h2>
+      <p class="dek">Use a cross pair to identify which of two similar dollar pair signals is actually the stronger trade.</p>
+
+      <p>Suppose your analysis flags both a long EUR/USD setup and a long GBP/USD setup at the same time. Both can't be your "best" trade — and taking both means you're really just taking one large dollar-weakness bet split across two tickets. The relevant cross, EUR/GBP, tells you which currency is actually outperforming the other.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <text x="20" y="25" font-family="Inter" font-size="13" fill="#4A5159">Both EUR/USD and GBP/USD look bullish. Check EUR/GBP:</text>
+          <polyline points="40,110 120,100 200,105 280,80 360,60" fill="none" stroke="#1E7B4D" stroke-width="2"/>
+          <text x="400" y="60" font-family="Inter" font-size="13" fill="#1E7B4D">EUR/GBP rising → EUR is the stronger of the two →</text>
+          <text x="400" y="82" font-family="Inter" font-size="13" fill="#1E7B4D">the long EUR/USD setup is the higher-conviction trade.</text>
+        </svg>
+        <figcaption>Fig. 3 — The cross pair acts as a tiebreaker: it isolates which currency is genuinely outperforming, independent of broad dollar weakness lifting both at once.</figcaption>
+      </div>
+
+      <p>This removes a common beginner trap: mistaking "the dollar is weak today" for "I found two great independent setups." The cross pair reveals whether you actually have two distinct opportunities or one dollar trade wearing two different tickers.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="fundamental-cross">
+      <div class="lesson-kicker"><span class="num">04</span> Application</div>
+      <h2>How to Trade Your Fundamental View With a Cross Pair</h2>
+      <p class="dek">Match the strongest currency against the weakest and trade that relationship directly — no USD view required.</p>
+
+      <p>Module 08 covered building a fundamental thesis. Often, that thesis isn't really about the dollar at all — it might be a view that the Australian economy is outperforming Japan's, with the RBA on a different policy path than the BoJ. A cross pair like AUD/JPY lets you express that view directly, without taking on any unrelated USD exposure or noise.</p>
+
+      <h3>A Simple Process</h3>
+      <ol>
+        <li><strong>Rank currencies</strong> by your fundamental conviction — strongest expected performer at one end, weakest at the other (a full ranking framework using fundamentals appears again in Module 17).</li>
+        <li><strong>Pair the strongest against the weakest</strong> for the cleanest expression of the view, assuming a liquid cross exists between them.</li>
+        <li><strong>Apply price action and multi-timeframe analysis</strong> (Modules 01–04) to time the actual entry on that cross.</li>
+      </ol>
+
+      <div class="callout"><strong>Why this can be cleaner than trading majors:</strong> pairing your strongest-conviction currency against your weakest-conviction one isolates the relationship you actually have an opinion about, rather than diluting it with a dollar view you may not hold at all.</div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="worth-trading">
+      <div class="lesson-kicker"><span class="num">05</span> Practical Filtering</div>
+      <h2>Which Crosses Are Actually Worth Trading?</h2>
+      <p class="dek">Which pairs to start with, which to approach with caution, and which to avoid until you know what you're doing.</p>
+
+      <table class="ref">
+        <tr><th>Category</th><th>Examples</th><th>Why</th></tr>
+        <tr><td>Start here — most liquid</td><td>EUR/GBP, EUR/JPY, GBP/JPY, AUD/JPY</td><td>Tight spreads, reliable liquidity, well-established trending behavior</td></tr>
+        <tr><td>Approach with caution</td><td>EUR/AUD, GBP/CHF, NZD/CAD</td><td>Lower liquidity than the above, wider spreads, more prone to erratic moves</td></tr>
+        <tr><td>Avoid until experienced</td><td>Crosses involving thinly-traded emerging market currencies</td><td>Wide spreads, unpredictable liquidity gaps, higher intervention risk</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="140" fill="#FFFFFF"/>
+          <rect x="20" y="40" width="220" height="60" fill="#E3F2E9" stroke="#1E7B4D"/><text x="130" y="75" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#1E7B4D">TIGHT SPREAD</text>
+          <rect x="270" y="40" width="220" height="60" fill="#F1E6D2" stroke="#A8772E"/><text x="380" y="75" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#A8772E">MODERATE SPREAD</text>
+          <rect x="520" y="40" width="220" height="60" fill="#FBEAE7" stroke="#B23A2E"/><text x="630" y="75" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#B23A2E">WIDE / UNRELIABLE</text>
+        </svg>
+        <figcaption>Fig. 4 — Spread width is a quick, practical proxy for how comfortable a cross is to trade as a beginner.</figcaption>
+      </div>
+
+      <div class="warn"><strong>A simple starting rule:</strong> if you wouldn't recognize the spread on a cross as reasonable compared to a major pair, treat that as a sign to either trade smaller or skip it until you've built more experience.</div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Currency Crosses</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. What defines a currency cross?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Any pair that includes the U.S. dollar</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) A currency pair that does not include the U.S. dollar</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) Any pair involving an emerging market currency</label>
+        <div class="reveal"><strong>Answer: B.</strong> A cross pair is any pair that excludes USD — EUR/GBP, AUD/JPY, GBP/CAD, and similar combinations.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Why can a trader who only trades dollar majors really be making one repeated underlying bet?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) Because every major pair shares USD, so each trade is fundamentally a bet on dollar strength or weakness</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Because major pairs are not actually tradeable</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Because dollar pairs have no relationship to one another</label>
+        <div class="reveal"><strong>Answer: A.</strong> Since USD sits on one side of every major pair, trading only majors means repeatedly betting on the same underlying dollar direction.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Both EUR/USD and GBP/USD look bullish at the same time. What can checking EUR/GBP reveal?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) Nothing useful — crosses are unrelated to majors</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Whether you actually have two distinct opportunities, or just one dollar-weakness bet split across two tickets</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) The exact time the next news release will occur</label>
+        <div class="reveal"><strong>Answer: B.</strong> The cross isolates which of the two non-dollar currencies is genuinely the stronger performer, revealing whether both signals are really just one dollar trade in disguise.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. Why might a trader use a cross pair like AUD/JPY to express a fundamental view, rather than a dollar pair?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) Because the view is specifically about two economies' relative performance, with no actual opinion on the U.S. dollar</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Because cross pairs always have lower spreads than majors</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) Because dollar pairs cannot be used to express fundamental views</label>
+        <div class="reveal"><strong>Answer: A.</strong> A cross lets a trader express a relative view between two specific economies directly, without taking on unrelated USD exposure.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. What's a practical, beginner-friendly way to judge whether a cross is worth trading?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) Trade any cross regardless of spread or liquidity</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) Compare the spread to a major pair — wide or unreliable spreads are a sign to trade smaller or avoid it for now</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">C) Only trade crosses involving emerging market currencies</label>
+        <div class="reveal"><strong>Answer: B.</strong> Spread width is a quick, practical proxy for liquidity and trading comfort — wide, unreliable spreads are a reasonable signal to proceed cautiously or avoid the pair for now.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 09 — CURRENCY CROSSES · NEXT MODULE: CARRY TRADE
+    </footer>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Country Risk, Geopolitics, and Market Interventions — Module 07</title>
+<style>
+  :root{
+    --bg:#FAF9F6; --panel:#FFFFFF; --ink:#1C2024; --ink-soft:#4A5159; --line:#E1DDD3;
+    --gold:#A8772E; --gold-soft:#F1E6D2; --teal:#1F5F5B; --teal-soft:#E3EFEE;
+    --bull:#1E7B4D; --bull-soft:#E3F2E9; --bear:#B23A2E; --bear-soft:#FBEAE7;
+    --mono:'JetBrains Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.65; font-size:16.5px;}
+  a{color:var(--teal); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .shell{display:grid; grid-template-columns:280px 1fr; max-width:1280px; margin:0 auto;}
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .toc{position:relative !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--line);}
+  }
+  .toc{position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:28px 18px 60px 24px; background:var(--panel);}
+  .toc-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .toc-title{font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 22px 0; line-height:1.2;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  .toc li{counter-increment:tocnum; margin-bottom:2px;}
+  .toc a{display:flex; gap:10px; align-items:baseline; color:var(--ink-soft); font-size:14px; padding:7px 8px; border-radius:6px;}
+  .toc a:hover{background:var(--gold-soft); color:var(--ink); text-decoration:none;}
+  .toc a::before{content:counter(tocnum,decimal-leading-zero); font-family:var(--mono); font-size:11.5px; color:var(--gold); flex-shrink:0; padding-top:1px;}
+  .toc .quiz-link::before{content:"Q"; color:var(--bear);}
+  main{padding:0 0 80px 0;}
+  .hero{padding:70px 64px 50px 64px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;}
+  .hero-eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+  .hero h1{font-family:var(--serif); font-size:46px; line-height:1.06; margin:0 0 20px 0; font-weight:600; max-width:780px;}
+  .hero p.lede{font-size:18px; color:var(--ink-soft); max-width:680px; margin:0 0 30px 0;}
+  .hero-ticker{display:flex; gap:6px; align-items:flex-end; height:64px; opacity:.9;}
+  section.lesson{padding:56px 64px; border-bottom:1px solid var(--line); max-width:880px;}
+  section.lesson:last-of-type{border-bottom:none;}
+  .lesson-kicker{font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .lesson-kicker .num{background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:3px; font-size:11px;}
+  .lesson h2{font-family:var(--serif); font-size:32px; margin:0 0 8px 0; font-weight:600;}
+  .lesson .dek{color:var(--ink-soft); font-size:16.5px; margin:0 0 28px 0; font-style:italic;}
+  .lesson h3{font-family:var(--serif); font-size:21px; margin:34px 0 12px 0; font-weight:600;}
+  .lesson p{margin:0 0 16px 0;}
+  .lesson ul, .lesson ol{margin:0 0 18px 0; padding-left:22px;}
+  .lesson li{margin-bottom:8px;}
+  .callout{background:var(--teal-soft); border-left:3px solid var(--teal); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .callout strong{color:var(--teal);}
+  .warn{background:var(--bear-soft); border-left:3px solid var(--bear); padding:16px 20px; border-radius:4px; margin:22px 0; font-size:15.5px;}
+  .warn strong{color:var(--bear);}
+  .figure{margin:30px 0; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px;}
+  .figure svg{width:100%; height:auto; display:block;}
+  .figure figcaption{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; letter-spacing:.02em;}
+  table.ref{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  table.ref th, table.ref td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  table.ref th{background:var(--gold-soft); font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+  table.ref tr:nth-child(even) td{background:#FCFBF9;}
+  .grid-cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0;}
+  @media (max-width:700px){.grid-cards{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--panel);}
+  .card .tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:8px; display:block;}
+  .card h4{margin:0 0 8px 0; font-family:var(--serif); font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--ink-soft);}
+  .quiz{padding:56px 64px 90px 64px; max-width:880px;}
+  .quiz-q{border:1px solid var(--line); border-radius:10px; padding:22px 24px; margin-bottom:18px; background:var(--panel);}
+  .quiz-q p.q{font-weight:600; margin:0 0 12px 0;}
+  .quiz-q label{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; cursor:pointer; font-size:15px;}
+  .quiz-q label:hover{background:var(--gold-soft);}
+  .quiz-q .reveal{margin-top:12px; padding:12px 14px; background:var(--bull-soft); border-left:3px solid var(--bull); border-radius:4px; font-size:14px; display:none;}
+  .quiz-q.show .reveal{display:block;}
+  footer.endcap{padding:40px 64px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-eyebrow">School of the Market · Module 07</div>
+    <p class="toc-title">Country Risk, Geopolitics<br>&amp; Interventions</p>
+    <ol>
+      <li><a href="#danger-premium">The Danger Premium</a></li>
+      <li><a href="#geopolitics">Geopolitical Risk &amp; Safe Havens</a></li>
+      <li><a href="#intervention">Currency Intervention</a></li>
+      <li><a href="#quiz" class="quiz-link">Quiz</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">Module 07 of the Trading Curriculum</div>
+      <h1>Country Risk, Geopolitics, and Market Interventions</h1>
+      <p class="lede">Interest rates and economic data explain a lot. They don't explain everything. This module covers the forces that operate above them: the danger premium investors demand to hold a riskier currency, the geopolitical events that can override a fundamental thesis in minutes, and the central banks that step directly into the market when they decide the price is wrong.</p>
+      <svg class="hero-ticker" viewBox="0 0 600 64" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="0,30 80,30 100,55 160,10 200,40 260,30 300,30" fill="none" stroke="#B23A2E" stroke-width="2" opacity="0.7"/>
+        <circle cx="100" cy="55" r="4" fill="#B23A2E"/>
+        <circle cx="160" cy="10" r="4" fill="#1E7B4D"/>
+      </svg>
+    </div>
+
+    <!-- 1 -->
+    <section class="lesson" id="danger-premium">
+      <div class="lesson-kicker"><span class="num">01</span> Country Risk</div>
+      <h2>The Danger Premium: How Country Risk Moves Currencies</h2>
+      <p class="dek">Risk differentials drive currency moves even when interest rates are identical.</p>
+
+      <p>Two countries can offer the exact same interest rate and still see their currencies behave completely differently, because investors demand compensation for risk independent of yield. This compensation — the extra return investors require to hold a riskier country's assets — is the danger premium, also called the country risk premium or sovereign risk premium.</p>
+
+      <h3>The Four Components of Country Risk</h3>
+      <table class="ref">
+        <tr><th>Component</th><th>What it captures</th></tr>
+        <tr><td>Political risk</td><td>Government stability, policy unpredictability, corruption, rule of law</td></tr>
+        <tr><td>Economic risk</td><td>Fiscal sustainability, debt levels, structural imbalances, dependency on a narrow set of exports</td></tr>
+        <tr><td>External/liquidity risk</td><td>Foreign currency reserves, current account position, ability to meet external obligations</td></tr>
+        <tr><td>Institutional risk</td><td>Central bank independence, legal system reliability, property rights enforcement</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="180" fill="#FFFFFF"/>
+          <g font-family="JetBrains Mono" font-size="11" text-anchor="middle">
+            <text x="200" y="30" fill="#4A5159">STABLE COUNTRY</text>
+            <rect x="100" y="50" width="200" height="40" fill="#E3F2E9" stroke="#1E7B4D"/><text x="200" y="74" fill="#1E7B4D">Rate: 4% + low risk premium</text>
+            <text x="560" y="30" fill="#4A5159">RISKIER COUNTRY</text>
+            <rect x="460" y="50" width="200" height="40" fill="#FBEAE7" stroke="#B23A2E"/><text x="560" y="74" fill="#B23A2E">Rate: 4% + high risk premium</text>
+          </g>
+          <text x="380" y="135" text-anchor="middle" font-family="Inter" font-size="13" fill="#4A5159">Same nominal rate, very different required return — the riskier</text>
+          <text x="380" y="155" text-anchor="middle" font-family="Inter" font-size="13" fill="#4A5159">country's currency still tends to trade weaker, all else equal.</text>
+        </svg>
+        <figcaption>Fig. 1 — Identical interest rates, different risk profiles. The country risk premium explains the gap rate differentials alone can't.</figcaption>
+      </div>
+
+      <div class="callout"><strong>Why this can outweigh yield:</strong> a high nominal rate offered by a country with deteriorating political or fiscal conditions can fail to attract capital, or even repel it, if investors judge the risk premium required to be larger than the yield on offer.</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="geopolitics">
+      <div class="lesson-kicker"><span class="num">02</span> External Shocks</div>
+      <h2>Geopolitical Risk, Trade Policy, and Safe Haven Flows</h2>
+      <p class="dek">No model predicts these events. Knowing how markets typically respond to them is still possible.</p>
+
+      <p>Geopolitical shocks — wars, sanctions, elections with unexpected outcomes, sudden trade policy changes, and similar events — share one feature that makes them distinct from the rest of this module: they are not forecastable by economic models. What's learnable instead is the typical pattern of market response once such a shock occurs.</p>
+
+      <h3>The Typical Response Pattern</h3>
+      <ul>
+        <li><strong>Risk-off flows accelerate immediately.</strong> Capital moves quickly out of perceived risk assets and into traditional safe havens.</li>
+        <li><strong>Volatility spikes sharply</strong> across asset classes, often disproportionate to the size of the underlying economic impact, at least initially.</li>
+        <li><strong>Correlations can temporarily break down</strong> (a theme explored in depth in Module 17, Currency Correlations) as the shock dominates normal relationships.</li>
+      </ul>
+
+      <h3>The Traditional Safe Havens</h3>
+      <table class="ref">
+        <tr><th>Asset</th><th>Why it's treated as a safe haven</th></tr>
+        <tr><td>USD</td><td>The world's primary reserve currency and deepest, most liquid government bond market</td></tr>
+        <tr><td>JPY</td><td>Japan's large net foreign asset position and history of low domestic rates supporting repatriation flows during stress</td></tr>
+        <tr><td>CHF</td><td>Switzerland's political neutrality, stable institutions, and current account surplus</td></tr>
+        <tr><td>Gold</td><td>A non-sovereign store of value with no counterparty risk, with millennia of monetary history behind it</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="160" fill="#FFFFFF"/>
+          <circle cx="150" cy="80" r="60" fill="#FBEAE7" stroke="#B23A2E"/><text x="150" y="78" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B23A2E">SHOCK EVENT</text><text x="150" y="95" text-anchor="middle" font-family="Inter" font-size="10" fill="#4A5159">war, sanctions, surprise vote</text>
+          <line x1="215" y1="60" x2="350" y2="40" stroke="#1C2024" stroke-width="1.5" marker-end="url(#arrg)"/>
+          <line x1="215" y1="100" x2="350" y2="120" stroke="#1C2024" stroke-width="1.5" marker-end="url(#arrg)"/>
+          <text x="360" y="35" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">Capital flows OUT of risk assets</text>
+          <text x="360" y="125" font-family="JetBrains Mono" font-size="11" fill="#1E7B4D">Capital flows INTO USD / JPY / CHF / gold</text>
+          <defs><marker id="arrg" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1C2024"/></marker></defs>
+        </svg>
+        <figcaption>Fig. 2 — The basic shock-response pattern: a sudden, often violent rotation toward traditionally defensive assets.</figcaption>
+      </div>
+
+      <h3>Trade Policy as Its Own Category</h3>
+      <p>Sudden tariff announcements or trade policy shifts deserve separate attention from broader geopolitical risk, since they tend to hit specific currencies tied to affected trade flows directly (commodity exporters, manufacturing-heavy economies) rather than triggering a uniform global risk-off response.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="intervention">
+      <div class="lesson-kicker"><span class="num">03</span> Direct Action</div>
+      <h2>Currency Intervention: When Central Banks Enter the Market</h2>
+      <p class="dek">What it is, how to spot it coming, and how to manage risk when a central bank decides it doesn't like where the price is.</p>
+
+      <p>Currency intervention occurs when a central bank or government directly buys or sells its own currency in the open market to influence the exchange rate — rather than relying solely on interest rate policy to do so indirectly.</p>
+
+      <h3>Why Central Banks Intervene</h3>
+      <ul>
+        <li><strong>An excessively strong currency</strong> hurting export competitiveness (a frequent BoJ and SNB concern historically).</li>
+        <li><strong>An excessively weak currency</strong> threatening to import inflation or destabilize confidence.</li>
+        <li><strong>Disorderly moves</strong> — rapid, one-directional price action seen as a threat to financial stability, independent of the level itself.</li>
+      </ul>
+
+      <h3>Spotting Intervention Risk Before It Happens</h3>
+      <table class="ref">
+        <tr><th>Warning sign</th><th>What it suggests</th></tr>
+        <tr><td>Verbal intervention ("jawboning")</td><td>Officials publicly commenting on the currency's level — often a precursor to actual action</td></tr>
+        <tr><td>Extreme, one-sided positioning</td><td>Crowded trades (see Module 12, Sentiment Analysis) make a currency a more attractive intervention target</td></tr>
+        <tr><td>Approaching historically significant levels</td><td>Round numbers or levels defended in the past raise the odds of a defensive response</td></tr>
+      </table>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="760" height="200" fill="#FFFFFF"/>
+          <polyline points="40,150 100,140 160,130 220,100 280,80 320,60" fill="none" stroke="#1C2024" stroke-width="2"/>
+          <circle cx="320" cy="60" r="4" fill="#A8772E"/><text x="280" y="45" font-family="Inter" font-size="10" fill="#A8772E">verbal warnings begin</text>
+          <polyline points="320,60 360,140 400,170" fill="none" stroke="#B23A2E" stroke-width="3"/>
+          <text x="410" y="155" font-family="Inter" font-size="11" fill="#B23A2E">Actual intervention — sharp, fast move</text>
+          <text x="410" y="175" font-family="Inter" font-size="11" fill="#B23A2E">in the opposite direction, minutes-scale</text>
+        </svg>
+        <figcaption>Fig. 3 — Verbal warnings often precede actual intervention, but once it happens, the move can be sudden and severe.</figcaption>
+      </div>
+
+      <div class="warn"><strong>Risk management implication:</strong> intervention-driven moves can blow through normal stop-loss logic in seconds. When intervention risk is elevated (extreme positioning, active jawboning, a level being defended historically), consider reduced position size, wider stops, or simply standing aside until the risk passes.</div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+      <div class="lesson-kicker"><span class="num">Q</span> Check Your Understanding</div>
+      <h2 style="font-family:var(--serif); font-size:30px; margin-top:0;">Quiz: Country Risk, Geopolitics, and Market Interventions</h2>
+      <p class="dek" style="margin-bottom:30px;">Click an answer to reveal the explanation.</p>
+
+      <div class="quiz-q" id="q1">
+        <p class="q">1. Two countries offer identical nominal interest rates, but one has much weaker institutions and fiscal stability. What typically happens?</p>
+        <label onclick="document.getElementById('q1').classList.add('show')">A) Both currencies trade identically since rates are equal</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">B) The riskier country's currency tends to trade weaker due to the country risk premium investors demand</label>
+        <label onclick="document.getElementById('q1').classList.add('show')">C) The riskier country's currency automatically strengthens</label>
+        <div class="reveal"><strong>Answer: B.</strong> Investors require extra compensation (the danger premium) to hold a riskier country's currency, even when nominal yields match.</div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <p class="q">2. Which of these is NOT typically considered one of the four components of country risk?</p>
+        <label onclick="document.getElementById('q2').classList.add('show')">A) Political risk</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">B) Institutional risk</label>
+        <label onclick="document.getElementById('q2').classList.add('show')">C) Technical chart pattern risk</label>
+        <div class="reveal"><strong>Answer: C.</strong> The four components are political, economic, external/liquidity, and institutional risk — chart patterns aren't part of the country risk framework.</div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <p class="q">3. Why are USD, JPY, and CHF traditionally treated as safe havens during geopolitical shocks?</p>
+        <label onclick="document.getElementById('q3').classList.add('show')">A) They have no relationship to global risk sentiment</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">B) Factors like deep liquidity, large net foreign assets, and political stability make them attractive during periods of stress</label>
+        <label onclick="document.getElementById('q3').classList.add('show')">C) They are the only currencies allowed to be traded during a crisis</label>
+        <div class="reveal"><strong>Answer: B.</strong> Deep liquidity (USD), large net foreign asset positions and repatriation flows (JPY), and political neutrality with current account surpluses (CHF) all support their safe-haven status.</div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <p class="q">4. What is "jawboning" in the context of currency intervention?</p>
+        <label onclick="document.getElementById('q4').classList.add('show')">A) A formal name for a rate decision</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">B) Officials verbally commenting on a currency's level, often as a precursor to actual intervention</label>
+        <label onclick="document.getElementById('q4').classList.add('show')">C) A type of economic data release</label>
+        <div class="reveal"><strong>Answer: B.</strong> Verbal intervention ("jawboning") is when officials publicly signal concern about a currency's level, frequently ahead of actual market action.</div>
+      </div>
+
+      <div class="quiz-q" id="q5">
+        <p class="q">5. Why is currency intervention particularly dangerous for normal risk management practices?</p>
+        <label onclick="document.getElementById('q5').classList.add('show')">A) It never actually affects price</label>
+        <label onclick="document.getElementById('q5').classList.add('show')">B) It can produce sudden, severe moves that blow through normal stop-loss logic within seconds</label>
+        <label onclky="document.getElementById('q5').classList.add('show')">C) It is always announced well in advance with exact timing</label>
+        <div class="reveal"><strong>Answer: B.</strong> Intervention-driven moves can be abrupt and severe, which is why reduced size or wider stops are worth considering when intervention risk is elevated.</div>
+      </div>
+    </section>
+
+    <footer class="endcap">
+      MODULE 07 — COUNTRY RISK, GEOPOLITICS, AND MARKET INTERVENTIONS · NEXT MODULE: APPLYING MACRO FUNDAMENTALS
+    </footer>
+  </main>
+</div>
+</body>
+</html>
